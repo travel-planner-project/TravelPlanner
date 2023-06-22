@@ -24,4 +24,4 @@ logging:
               BasicBinder: TRACE
 
 server:
-  port: 3030
+  port: 8080
