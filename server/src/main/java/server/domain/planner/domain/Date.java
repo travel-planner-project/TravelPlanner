@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.planner.domain.Todo.*;
+import server.domain.planner.plan.domain.Todo.*;
 import server.domain.planner.dto.request.DateCreateRequest;
 import server.domain.planner.dto.request.DateUpdateRequest;
 
@@ -52,7 +53,6 @@ public class Date {
 
     // 교통 Todo
     @OneToMany(cascade = CascadeType.ALL)
-    @Builder.Default
     private List<TransportTodo> transportTodos = new ArrayList<>();
 
 

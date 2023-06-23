@@ -9,7 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.planner.dto.request.PlannerCreateRequest;
 import server.domain.planner.dto.request.PlannerUpdateRequest;
-import server.domain.planner.domain.travelGroup.TravelGroup;
+import server.domain.planner.travelGroup.domain.TravelGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,9 +23,6 @@ import java.util.List;
 @Builder
 @Getter
 public class Planner {
-
-    // 유저
-    private String userNickname;
 
     // 플래너 인덱스
     @Id
