@@ -1,17 +1,15 @@
 package server.domain.user.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import server.global.util.file.File;
 
 import javax.persistence.*;
 
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -30,6 +28,7 @@ public class Profile {
     private String statusMessage;
 
     // 프로필 이미지
-    @OneToOne(cascade = CascadeType.ALL)
-    private File file;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "filePath")
+//    private File file;
 }

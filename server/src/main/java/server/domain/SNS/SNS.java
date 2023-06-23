@@ -1,8 +1,10 @@
 package server.domain.SNS;
 
+import lombok.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.comment.domain.Comment;
@@ -19,11 +21,13 @@ import java.util.List;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 public class SNS {
 
     // post 인덱스
     @Id
+    @GeneratedValue
     private Long postId;
 
     // post 작성자
@@ -35,8 +39,9 @@ public class SNS {
     private String postTitle;
 
     // post 사진
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<File> files = new ArrayList<>();
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @Builder.Default
+//    private List<File> files = new ArrayList<>();
 
     // post 내용
     private String postContent;
@@ -46,6 +51,7 @@ public class SNS {
     private LocalDateTime createdAt;
 
     // post 댓글
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)    
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 }
