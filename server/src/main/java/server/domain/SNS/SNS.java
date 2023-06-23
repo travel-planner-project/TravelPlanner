@@ -1,6 +1,10 @@
 package server.domain.SNS;
 
 import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.comment.domain.Comment;
@@ -47,7 +51,7 @@ public class SNS {
     private LocalDateTime createdAt;
 
     // post 댓글
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)    
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 }
