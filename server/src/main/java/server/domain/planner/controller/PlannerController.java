@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import server.domain.planner.dto.request.PlannerCreateRequest;
 import server.domain.planner.dto.request.PlannerUpdateRequest;
+import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.service.PlannerService;
 
 import java.util.Map;
@@ -52,5 +53,14 @@ public class PlannerController {
             @RequestParam Long plannerId
     ) {
         plannerService.deletePlanner(plannerId);
+    }
+
+    // 플래너 상세
+    @GetMapping(value = "detail")
+    @ResponseBody
+    public PlannerDetailResponse plannerDetail (
+            @RequestParam Long plannerId
+    ) {
+        return plannerService.findPlannerByPlannerId(plannerId);
     }
 }
