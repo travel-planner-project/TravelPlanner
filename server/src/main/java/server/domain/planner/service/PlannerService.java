@@ -26,18 +26,9 @@ public class PlannerService {
 
 
     // 플래너 리스트
-    public Map<String, Object> findPlannerListByUserNickname (String userNickname, Pageable pageable) {
-
-        Page<Planner> page = plannerRepository.findByUserNickname(userNickname, pageable);
-
-        Paging paging =
-
-                Paging.builder()
-                        .page(page)
-                        .blockCnt(5)
-                        .build();
-
-        return Map.of ("plannerList", PlannerListResponse.plannerListResponses(page.getContent()),"paging", paging);
+    @Transactional(readOnly = true)
+    public Page<Planner> findPlannerListByUserNickname (String userNickname, Pageable pageable) {
+        return plannerRepository.findByUserNickname(userNickname, pageable);
     }
 
     // 플래너 생성
