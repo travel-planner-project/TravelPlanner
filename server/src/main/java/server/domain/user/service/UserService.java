@@ -17,34 +17,33 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
-    public User insert(User user){
-        return userRepository.save(user);
-    }
-
 
     // 비밀번호 일치 확인
-    public boolean signUpCheck(UserRequestDto userRequestDto){
-        String password = userRequestDto.getPassword();
-        String passwordCheck = userRequestDto.getPasswordCheck();
+    public boolean signUpCheck(UserRequestDto request){
+        String password = request.getPassword();
+        String passwordCheck = request.getPasswordCheck();
 
         return password.equals(passwordCheck);
     }
 
     //회원가입
-    public UserRequestDto signUp(UserRequestDto requestDto){
+    public void signup (UserRequestDto request) {
+
         // 비밀번호 일치 확인
-        if(!signUpCheck(requestDto)) throw new IllegalArgumentException("입력하신 비밀번호가 일치하지 않습니다.");
+        if(!signUpCheck(request)) throw new IllegalArgumentException("입력하신 비밀번호가 일치하지 않습니다.");
 
         //회원 닉네임 중복 확인
-        Optional<User> find = userRepository.findByUserNickName(requestDto.getUserNickName());
+        Optional<User> find = userRepository.findByEmail(request.getEmail());
         if(find.isPresent()){
-            throw new IllegalArgumentException("이미 등록된 닉네임 입니다!");
+            throw new IllegalArgumentException("이미 등록된 이메일 입니다.");
         }
+
+        // 비밀번호 Encoder
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        User user = new User();
-        userRepository.save(user);
-        System.out.println(requestDto + "service");
-        return requestDto;
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        User user = User.createUser(request);
+
+        userRepository.saveAndFlush(user);
     }
 }

@@ -1,12 +1,16 @@
 package server.domain.user.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import server.domain.user.dto.UserRequestDto;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Entity
@@ -14,6 +18,7 @@ import javax.persistence.Id;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 public class User {
 
@@ -28,5 +33,17 @@ public class User {
     private String password;
 
     // 유저 권한
-    private String userRoles;
+    @Enumerated(EnumType.STRING)
+    private Role userRole;
+
+
+    public static User createUser (UserRequestDto request) {
+
+        return User.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .userNickname(request.getUserNickname())
+                .userRole(Role.ROLE_MEMBER)
+                .build();
+    }
 }

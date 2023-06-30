@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
+
 
 @RequiredArgsConstructor
 @Component
@@ -66,7 +66,7 @@ public class JwtTokenProvider {
         return  request.getHeader("X-AUTH-TOKEN");
     }
 
-    // 토큰 유혀ㅛ성 + 만료일자 확인
+    // 토큰 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken){
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);

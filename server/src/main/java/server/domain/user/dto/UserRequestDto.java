@@ -13,8 +13,5 @@ public class UserRequestDto {
 
     private String passwordCheck;
 
-    private String userNickName;
-
-
-
+    private String userNickname;
 }
