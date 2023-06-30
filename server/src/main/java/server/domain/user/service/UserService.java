@@ -1,6 +1,7 @@
 package server.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.domain.user.domain.User;
@@ -13,8 +14,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
 
+    public User insert(User user){
+        return userRepository.save(user);
+    }
 
 
     // 비밀번호 일치 확인

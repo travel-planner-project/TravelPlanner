@@ -17,14 +17,26 @@ import server.domain.user.userRepository.UserRepository;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-    private final UserService userService;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
 
 
 
-    //회원가입
+
+    // 회원가입 2 (1이 안돼서 2로 진행해봄)
+    @PostMapping("/signUp2")
+    public User signUp2(@RequestBody User req){
+        User userEntity = User.builder().email(req.getEmail())
+                .password(req.getPassword())
+                .passwordCheck(req.getPasswordCheck())
+                .userNickName(req.getUserNickName())
+                .build();
+        return userService.insert(userEntity);
+    }
+
+    //회원가입 1
     @PostMapping("/signUp")
     public UserRequestDto signUp(@RequestBody UserRequestDto requestDto) {
         userService.signUp(requestDto);
