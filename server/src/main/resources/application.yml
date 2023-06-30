@@ -1,4 +1,10 @@
 spring:
+  profiles.active: dev
+
+  web:
+    resources:
+      static-locations: classpath:/static, classpath:/frontend
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/travel?serverTimezone=UTC&characterEncoding=UTF-8
@@ -8,7 +14,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true

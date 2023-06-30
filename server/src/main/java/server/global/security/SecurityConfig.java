@@ -1,48 +1,46 @@
 package server.global.security;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+@Slf4j
 @Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    // 비밀번호 암호화
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return new BCryptPasswordEncoder();
-    }
+        http.headers().frameOptions().disable(); // iframe 허용안함
+        http.csrf().disable(); // csrf 허용안함
 
+        http.cors().configurationSource(configurationSource());
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.formLogin().disable();
+        http.httpBasic().disable();
 
-        http
-                .httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-                .exceptionHandling()
-//                .authenticationEntryPoint()
-//                .accessDeniedHandler()
-
-                .and()
-                .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
-
-//                .and()
-//                .apply();
+        http.authorizeHttpRequests()
+                .antMatchers("/api/v1/**", "/swagger-ui/**").permitAll();
 
         return http.build();
+    }
+
+    public CorsConfigurationSource configurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
