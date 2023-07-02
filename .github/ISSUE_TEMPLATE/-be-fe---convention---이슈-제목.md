@@ -1,6 +1,6 @@
 ---
 name: "[BE/FE] {convention}: 이슈 제목"
-about: 이슈 등록 템플릿 입니다. (기능 한 개 일 때)
+about: 이슈 등록 템플릿 입니다.
 title: ''
 labels: ''
 assignees: ''
