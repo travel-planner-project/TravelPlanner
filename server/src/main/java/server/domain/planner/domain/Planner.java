@@ -1,15 +1,12 @@
 package server.domain.planner.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.planner.dto.request.PlannerCreateRequest;
 import server.domain.planner.dto.request.PlannerUpdateRequest;
-import server.domain.planner.travelGroup.domain.TravelGroup;
+import server.domain.planner.domain.travelGroup.TravelGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,6 +20,9 @@ import java.util.List;
 @Builder
 @Getter
 public class Planner {
+
+    // 유저
+    private String userNickname;
 
     // 플래너 인덱스
     @Id
@@ -54,6 +54,7 @@ public class Planner {
     public static Planner createPlanner (PlannerCreateRequest request) {
 
         return Planner.builder()
+                .userNickname(request.getUserNickname())
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
                 .build();

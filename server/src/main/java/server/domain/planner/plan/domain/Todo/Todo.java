@@ -1,9 +1,8 @@
-package server.domain.planner.domain.Todo;
+package server.domain.planner.plan.domain.Todo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -16,10 +15,9 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 @Getter
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn
+@DiscriminatorColumn(name = "TODOTYPE")
 public class Todo {
 
     // 투두 인덱스
@@ -44,5 +42,4 @@ public class Todo {
     // 투두 공개 여부
     @ColumnDefault("false")
     protected Boolean isPrivate;
-
 }
