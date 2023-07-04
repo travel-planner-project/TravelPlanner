@@ -1,22 +1,23 @@
 import { NavLink } from 'react-router-dom'
 import { NavBarContent } from '../../router/routerData'
+import styles from './Navbar.module.scss'
+import NavbarProfile from './NavbarProfile'
 
 function Navbar() {
   return (
-    <div className='container text-center bg-light bg-tertiary-color text-secondary'>
+    <div className={styles.container}>
       <ul>
-        {/* 프로필 네비
-         <li>
-          <NavLink to='/'>
-            <img src='' alt='profile' />
-          </NavLink>
-        </li> */}
+        <NavbarProfile />
 
         {NavBarContent.map(navElement => {
           return (
             <li key={navElement.id}>
               <NavLink to={navElement.path}>
-                <div>{navElement.label}</div>
+                {({ isActive }) => (
+                  <div className={isActive ? `${styles.active}` : `${styles.inactive}`}>
+                    {navElement.label}
+                  </div>
+                )}
               </NavLink>
             </li>
           )

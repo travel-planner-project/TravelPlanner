@@ -1,0 +1,18 @@
+@use '../../styles/color' as C;
+@use '../../styles/typography' as T;
+@use '../../styles/utils' as U;
+
+.container {
+  min-width: 190px;
+  @include U.size(20%, 100%);
+  background-color: C.$gray100;
+  padding: 40px;
+}
+
+.active {
+  @include T.blue-regular-24;
+}
+
+.inactive {
+  @include T.black-regular-24;
+}
