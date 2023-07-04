@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { routerData } from './router/routerData'
 import GeneralLayout from './layout/GeneralLayout'
+import './styles/global.scss'
 
 const router = createBrowserRouter(
   routerData.map(routerElement => ({
