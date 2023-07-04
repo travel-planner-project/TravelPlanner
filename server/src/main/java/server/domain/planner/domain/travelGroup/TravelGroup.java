@@ -1,6 +1,7 @@
 package server.domain.planner.domain.travelGroup;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,6 +19,7 @@ import java.util.List;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 public class TravelGroup {
 
@@ -29,4 +31,13 @@ public class TravelGroup {
     // 여행 그룹 멤버
     @OneToMany
     private List<GroupMember> groupMembers = new ArrayList<>();
+
+
+    public void addMembers(GroupMember groupMember) {
+        groupMembers.add(groupMember);
+    }
+
+    public void removeParticipant(GroupMember groupMember) {
+        groupMembers.remove(groupMember);
+    }
 }
