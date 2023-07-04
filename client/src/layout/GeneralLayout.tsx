@@ -1,4 +1,5 @@
 import Navbar from '../components/Common/Navbar'
+import style from './GeneralLayout.module.scss'
 
 type GeneralLayoutProps = {
   children: React.ReactNode
@@ -7,10 +8,10 @@ type GeneralLayoutProps = {
 
 function GeneralLayout({ children, withAuth }: GeneralLayoutProps) {
   return (
-    <>
-      {children}
+    <div className={style.container}>
       <Navbar />
-    </>
+      {children}
+    </div>
   )
 }
 
