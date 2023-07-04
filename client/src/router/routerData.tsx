@@ -19,6 +19,30 @@ type RouterElement = {
 
 export const routerData: RouterElement[] = [
   {
+    id: 0,
+    path: '/profile',
+    label: 'user name',
+    element: (
+      <Suspense fallback={<div>loading</div>}>
+        <Profile />
+      </Suspense>
+    ),
+    onNavBar: false,
+    withAuth: true,
+  },
+  {
+    id: 0,
+    path: '/user/login',
+    label: '로그인/회원가입',
+    element: (
+      <Suspense fallback={<div>loading</div>}>
+        <SignIn />
+      </Suspense>
+    ),
+    onNavBar: false,
+    withAuth: false,
+  },
+  {
     id: 1,
     path: '/',
     label: 'HOME',
@@ -44,30 +68,6 @@ export const routerData: RouterElement[] = [
   },
   {
     id: 3,
-    path: '/profile',
-    label: 'user name',
-    element: (
-      <Suspense fallback={<div>loading</div>}>
-        <Profile />
-      </Suspense>
-    ),
-    onNavBar: true,
-    withAuth: true,
-  },
-  {
-    id: 4,
-    path: '/user/login',
-    label: '로그인',
-    element: (
-      <Suspense fallback={<div>loading</div>}>
-        <SignIn />
-      </Suspense>
-    ),
-    onNavBar: true,
-    withAuth: false,
-  },
-  {
-    id: 5,
     path: '/feed',
     label: 'FEED',
     element: (
@@ -79,7 +79,7 @@ export const routerData: RouterElement[] = [
     withAuth: true,
   },
   {
-    id: 6,
+    id: 4,
     path: '/board',
     label: 'BOARD',
     element: (
