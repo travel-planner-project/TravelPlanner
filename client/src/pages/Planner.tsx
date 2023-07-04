@@ -103,6 +103,24 @@ function PlannerView({ add, edit }: PlannerViewProps) {
                   </div>
                   <div className={styles.plannerUserName}>유저 2</div>
                 </div>
+                <div className={styles.plannerUser}>
+                  <div className={styles.plannerUserProfileBox}>
+                    <img className={styles.plannerUserProfile} src='' alt='' />
+                  </div>
+                  <div className={styles.plannerUserName}>유저 3</div>
+                </div>
+                <div className={styles.plannerUser}>
+                  <div className={styles.plannerUserProfileBox}>
+                    <img className={styles.plannerUserProfile} src='' alt='' />
+                  </div>
+                  <div className={styles.plannerUserName}>유저 4</div>
+                </div>
+                <div className={styles.plannerUser}>
+                  <div className={styles.plannerUserProfileBox}>
+                    <img className={styles.plannerUserProfile} src='' alt='' />
+                  </div>
+                  <div className={styles.plannerUserName}>유저 5</div>
+                </div>
               </div>
               <div className={styles.tripPeriod}>
                 <div className={styles.startDate}>2023. 08. 14</div>
