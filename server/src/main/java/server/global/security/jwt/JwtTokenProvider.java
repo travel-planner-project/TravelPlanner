@@ -1,4 +1,4 @@
-package server.domain.user.jwt;
+package server.global.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

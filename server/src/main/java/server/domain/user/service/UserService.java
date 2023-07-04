@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.domain.user.domain.User;
 import server.domain.user.dto.UserRequestDto;
-import server.domain.user.userRepository.UserRepository;
+import server.domain.user.repository.UserRepository;
 
 import java.util.Optional;
 

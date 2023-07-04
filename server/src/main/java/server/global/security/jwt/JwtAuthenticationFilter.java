@@ -1,4 +1,4 @@
-package server.domain.user.jwt;
+package server.global.security.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
