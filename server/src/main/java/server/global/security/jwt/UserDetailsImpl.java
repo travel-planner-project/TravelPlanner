@@ -1,4 +1,4 @@
-package server.domain.user.detail;
+package server.global.security.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
