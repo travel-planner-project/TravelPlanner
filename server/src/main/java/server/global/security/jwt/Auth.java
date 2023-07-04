@@ -1,4 +1,4 @@
-package server.domain.user.domain;
+package server.global.security.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
