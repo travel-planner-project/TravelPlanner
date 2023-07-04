@@ -33,6 +33,9 @@
 @mixin gray-regular-20 {
   @include U.font($weight: 400, $size: 2rem, $color: C.$gray);
 }
+@mixin gray-regular-18 {
+  @include U.font($weight: 400, $size: 1.8rem, $color: C.$gray);
+}
 @mixin gray-regular-16 {
   @include U.font($weight: 400, $size: 1.6rem, $color: C.$gray);
 }
