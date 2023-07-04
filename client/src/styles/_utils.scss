@@ -1,0 +1,28 @@
+@use './color' as C;
+
+@mixin font($style: normal, $weight: 400, $size: 1.6rem, $color: C.$black) {
+  font-style: $style;
+  font-weight: $weight;
+  font-size: $size;
+  color: $color;
+}
+
+@mixin flex-c($direction: row, $justify: center, $align: center) {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+@mixin box-shadow($dp: 4px) {
+  box-shadow: 0px $dp $dp rgba(50, 50, 71, 0.06), 0px $dp $dp * 2 rgba(50, 50, 71, 0.06);
+}

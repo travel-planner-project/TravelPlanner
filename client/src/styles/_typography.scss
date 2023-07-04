@@ -1,0 +1,76 @@
+@use './color' as C;
+@use './utils' as U;
+
+// black-bold
+@mixin black-bold-52 {
+  @include U.font($weight: 700, $size: 5.2rem, $color: C.$black);
+}
+@mixin black-bold-32 {
+  @include U.font($weight: 700, $size: 3.2rem, $color: C.$black);
+}
+@mixin black-bold-24 {
+  @include U.font($weight: 700, $size: 2.4rem, $color: C.$black);
+}
+@mixin black-bold-20 {
+  @include U.font($weight: 700, $size: 2rem, $color: C.$black);
+}
+
+// black-regular
+@mixin black-regular-24 {
+  @include U.font($weight: 400, $size: 2.4rem, $color: C.$black);
+}
+@mixin black-regular-20 {
+  @include U.font($weight: 400, $size: 2rem, $color: C.$black);
+}
+@mixin black-regular-16 {
+  @include U.font($weight: 400, $size: 1.6rem, $color: C.$black);
+}
+@mixin black-regular-14 {
+  @include U.font($weight: 400, $size: 1.4rem, $color: C.$black);
+}
+
+// gray-regular
+@mixin gray-regular-20 {
+  @include U.font($weight: 400, $size: 2rem, $color: C.$gray);
+}
+@mixin gray-regular-16 {
+  @include U.font($weight: 400, $size: 1.6rem, $color: C.$gray);
+}
+@mixin gray-regular-12 {
+  @include U.font($weight: 400, $size: 1.2rem, $color: C.$gray);
+}
+
+// blue-bold
+@mixin blue-regular-20 {
+  @include U.font($weight: 700, $size: 2rem, $color: C.$blue400);
+}
+@mixin blue-regular-48 {
+  @include U.font($weight: 700, $size: 4.8rem, $color: C.$blue400);
+}
+
+// blue-regular
+@mixin blue-regular-24 {
+  @include U.font($weight: 400, $size: 2.4rem, $color: C.$blue400);
+}
+@mixin blue-regular-16 {
+  @include U.font($weight: 400, $size: 1.6rem, $color: C.$blue400);
+}
+@mixin blue-regular-12 {
+  @include U.font($weight: 400, $size: 1.2rem, $color: C.$blue400);
+}
+
+// white-bold
+@mixin white-bold-36 {
+  @include U.font($weight: 700, $size: 3.6rem, $color: C.$white);
+}
+@mixin white-bold-20 {
+  @include U.font($weight: 700, $size: 2rem, $color: C.$white);
+}
+@mixin white-bold-16 {
+  @include U.font($weight: 700, $size: 1.6rem, $color: C.$white);
+}
+
+// white-regular
+@mixin white-regular-12 {
+  @include U.font($weight: 400, $size: 1.2rem, $color: C.$white);
+}
