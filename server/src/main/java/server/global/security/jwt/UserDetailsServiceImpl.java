@@ -1,4 +1,4 @@
-package server.domain.user.detail;
+package server.global.security.jwt;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
