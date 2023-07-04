@@ -1,5 +1,8 @@
 package server.domain.user.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +24,36 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    // 회원가입
+    @ApiOperation(
+            value = "회원가입"
+            , notes = "이메일, 닉네임, 비밀번호, 비밀번호 확인을 통해 회원 가입"
+    )
+    @ApiResponses(
+            {
+                    @ApiResponse(code = 200, message = "SIGN-IN SUCCESS")
+                    , @ApiResponse(code = 400, message = "BAD REQUEST: PLEASE CHECK INPUT DATA")
+                    , @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
+            }
+    )
     @PostMapping("/register")
     public void signUp2(@RequestBody UserRequestDto request){
 
         userService.signup(request);
-
-        System.out.println("회원가입 request: " + request);
     }
 
 
 
-    // 로그인
+    @ApiOperation(
+            value = "로그인"
+            , notes = "이메일, 비밀번호를 통해 로그인"
+    )
+    @ApiResponses(
+            {
+                    @ApiResponse(code = 200, message = "LOGIN SUCCESS")
+                    , @ApiResponse(code = 400, message = "BAD REQUEST: PLEASE CHECK INPUT DATA")
+                    , @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
+            }
+    )
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDto loginrequestDto){
         User user = userRepository.findByEmail(loginrequestDto.getEmail()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 회원입니다."));
