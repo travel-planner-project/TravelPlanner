@@ -1,5 +1,6 @@
 @use '../styles/utils' as U;
 
 .container {
+  @include U.size(100%);
   @include U.flex-c(row, flex-start, flex-start);
 }
