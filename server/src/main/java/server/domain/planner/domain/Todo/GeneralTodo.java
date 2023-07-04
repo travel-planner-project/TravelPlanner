@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import server.domain.planner.dto.request.todo.AccommodationCreateRequest;
-import server.domain.planner.dto.request.todo.AccommodationUpdateRequest;
+import server.domain.planner.dto.request.todo.GeneralTodoCreateRequest;
+import server.domain.planner.dto.request.todo.GeneralTodoUpdateRequest;
 
 import javax.persistence.Entity;
 
@@ -18,32 +18,31 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @SuperBuilder
 @Getter
-public class AccommodationTodo extends Todo {
+public class GeneralTodo extends Todo {
 
-    // 여행 주소
-    private String accommodationAddress;
+    // 테스트 겸 가상으로 넣어봤습니다.
+    private String tag;
 
+    // 투두 생성
+    public static GeneralTodo createGeneralTodo (GeneralTodoCreateRequest request) {
 
-    // 여행 투두 추가
-    public static AccommodationTodo createAccommodationTodo (AccommodationCreateRequest request) {
-
-        return AccommodationTodo.builder()
-                .todoType(TodoType.ACCOMMODATION)
+        return GeneralTodo.builder()
+                .todoType(TodoType.GENERAL)
                 .todoTitle(request.getTodoTitle())
                 .todoDate(request.getTodoDate())
                 .todoContent(request.getTodoContent())
                 .isPrivate(request.getIsPrivate())
-                .accommodationAddress(request.getAccommodationAddress())
+                .tag(request.getTag())
                 .build();
     }
 
-    // 여행 투두 수정
-    public void updateAccommodationTodo (AccommodationUpdateRequest request) {
+    // 투두 수정
+    public void updateGeneralTodo (GeneralTodoUpdateRequest request) {
 
         this.todoTitle = request.getTodoTitle();
         this.todoDate = request.getTodoDate();
         this.todoContent = request.getTodoContent();
         this.isPrivate = request.getIsPrivate();
-        this.accommodationAddress = request.getAccommodationAddress();
     }
 }
+

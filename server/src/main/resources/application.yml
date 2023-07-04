@@ -1,9 +1,9 @@
 spring:
   profiles.active: dev
 
-  web:
-    resources:
-      static-locations: classpath:/static, classpath:/frontend
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,7 +14,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import server.domain.planner.domain.Todo.*;
-import server.domain.planner.plan.domain.Todo.*;
 import server.domain.planner.dto.request.DateCreateRequest;
 import server.domain.planner.dto.request.DateUpdateRequest;
 
@@ -53,6 +52,7 @@ public class Date {
 
     // 교통 Todo
     @OneToMany(cascade = CascadeType.ALL)
+    @Builder.Default
     private List<TransportTodo> transportTodos = new ArrayList<>();
 
 
@@ -75,44 +75,12 @@ public class Date {
 
 
     // 투두 추가
-    public void createTodoCommon(Todo todoComomon) {
-        todos.add(todoComomon);
-    }
-
-    public void createAccommodationTodo (AccommodationTodo accommodationTodo) {
-        accommodationTodos.add(accommodationTodo);
-    }
-
-    public void createAttractionTodo (AttractionTodo attractionTodo) {
-        attractionTodos.add(attractionTodo);
-    }
-
-    public void createBudgetTodo (BudgetTodo budgetTodo) {
-        budgetTodos.add(budgetTodo);
-    }
-
-    public void createTransportTodo (TransportTodo transportTodo) {
-        transportTodos.add(transportTodo);
+    public void createTodo(Todo todo) {
+        todos.add(todo);
     }
 
     // 투두 삭제
     public void deleteTodo (Todo todo) {
         todos.remove(todo);
-    }
-
-    public void deleteAccommodationTodo (AccommodationTodo accommodationTodo) {
-        accommodationTodos.remove(accommodationTodo);
-    }
-
-    public void deleteAttractionTodo (AttractionTodo attractionTodo) {
-        attractionTodos.remove(attractionTodo);
-    }
-
-    public void deleteBudgetTodo (BudgetTodo budgetTodo) {
-        budgetTodos.remove(budgetTodo);
-    }
-
-    public void deleteTransportTodo (TransportTodo transportTodo) {
-        transportTodos.remove(transportTodo);
     }
 }

@@ -32,6 +32,9 @@ public class TodoResponse {
 
 
     // 투두 타입 별 특이 내용
+    // 태그
+    private String tag;
+
     // 숙소 주소
     private String accommodationAddress;
 
@@ -105,6 +108,17 @@ public class TodoResponse {
         this.arriveTime = entity.getArriveTime();
     }
 
+    // 일반투두
+    private TodoResponse (GeneralTodo entity) {
+
+        this.todoId = entity.getTodoId();
+        this.todoType = entity.getTodoType();
+        this.isPrivate = entity.getIsPrivate();
+        this.todoTitle = entity.getTodoTitle();
+        this.todoDate = entity.getTodoDate();
+        this.todoContent = entity.getTodoContent();
+        this.tag = entity.getTag();
+    }
 
 
     public static TodoResponse createTodoResponse (Todo todo) {
@@ -120,6 +134,9 @@ public class TodoResponse {
 
         } else if (todo instanceof TransportTodo) {
             return new TodoResponse((TransportTodo) todo);
+
+        } else if (todo instanceof GeneralTodo) {
+            return new TodoResponse((GeneralTodo) todo);
         }
 
         return null;
