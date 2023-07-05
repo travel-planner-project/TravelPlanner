@@ -72,7 +72,7 @@ export const routerData: RouterElement[] = [
     label: 'FEED',
     element: (
       <Suspense fallback={<div>loading</div>}>
-        <Board />
+        <Feed />
       </Suspense>
     ),
     onNavBar: false,
@@ -84,7 +84,7 @@ export const routerData: RouterElement[] = [
     label: 'BOARD',
     element: (
       <Suspense fallback={<div>loading</div>}>
-        <Feed />
+        <Board />
       </Suspense>
     ),
     onNavBar: false,
