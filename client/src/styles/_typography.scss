@@ -15,6 +15,10 @@
   @include U.font($weight: 700, $size: 2rem, $color: C.$black);
 }
 
+@mixin black-semibold-20 {
+  @include U.font($weight: 500, $size: 2rem, $color: C.$black);
+}
+
 // black-regular
 @mixin black-regular-24 {
   @include U.font($weight: 400, $size: 2.4rem, $color: C.$black);
@@ -76,4 +80,8 @@
 // white-regular
 @mixin white-regular-12 {
   @include U.font($weight: 400, $size: 1.2rem, $color: C.$white);
+}
+
+@mixin white-regular-20 {
+  @include U.font($weight: 400, $size: 2rem, $color: C.$white);
 }
