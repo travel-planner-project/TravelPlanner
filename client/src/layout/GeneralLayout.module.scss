@@ -2,5 +2,6 @@
 
 .container {
   @include U.size(100%);
-  @include U.flex-c(row, flex-start, flex-start);
+  display: grid;
+  grid-template-columns: 1fr 4fr;
 }
