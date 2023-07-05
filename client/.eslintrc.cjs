@@ -22,6 +22,7 @@ module.exports = {
   root: true,
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react/require-default-props': 'off',
     'prettier/prettier': [
       'error',
       {
