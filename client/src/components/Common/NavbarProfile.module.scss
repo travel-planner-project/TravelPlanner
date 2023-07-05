@@ -1,0 +1,17 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.profileBox {
+  @include U.size(120px);
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  background-color: C.$gray;
+}
+
+.profileName {
+  @include T.gray-regular-18;
+  margin: 15px 0;
+  text-align: center;
+}
