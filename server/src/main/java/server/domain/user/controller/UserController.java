@@ -4,14 +4,18 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import server.domain.user.domain.User;
-import server.domain.user.dto.LoginRequestDto;
-import server.domain.user.dto.UserRequestDto;
+import server.domain.user.dto.LoginRequest;
+import server.domain.user.dto.SignUpRequest;
+import server.domain.user.dto.TokenResponse;
 import server.global.security.jwt.JwtTokenProvider;
 import server.domain.user.service.UserService;
 import server.domain.user.repository.UserRepository;
+import server.global.security.jwt.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +40,7 @@ public class UserController {
             }
     )
     @PostMapping("/register")
-    public void signUp2(@RequestBody UserRequestDto request){
+    public void signUp(@RequestBody SignUpRequest request){
 
         userService.signup(request);
     }
@@ -55,12 +59,12 @@ public class UserController {
             }
     )
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginrequestDto){
-        User user = userRepository.findByEmail(loginrequestDto.getEmail()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 회원입니다."));
+    public String login(@RequestBody LoginRequest request){
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         // 비밀번호 복호화(password Encoder 사용)
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if(passwordEncoder.matches(user.getPassword(),loginrequestDto.getPassword())){
+        if(passwordEncoder.matches(user.getPassword(),request.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
         System.out.println("로그인이 완료 되었습니다.");
@@ -68,14 +72,14 @@ public class UserController {
     }
 
     // 로그인 후 token이 생성되면 해당 토큰을 이용해 유저네임출력
-//    @GetMapping("/info")
-//    @ResponseBody
-//    public String getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-//        if(userDetailsImpl != null){
-//            System.out.println("로그인 완료");
-//            return userDetailsImpl.getUser().getUserNickname();
-//        }
-//
-//        return "토큰생성 완료!";
-//    }
+    @GetMapping("/info")
+    @ResponseBody
+    public String getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        if(userDetailsImpl != null){
+            System.out.println("로그인 완료");
+            return userDetailsImpl.getUser().getUserNickname();
+        }
+
+        return "토큰생성 완료!";
+    }
 }

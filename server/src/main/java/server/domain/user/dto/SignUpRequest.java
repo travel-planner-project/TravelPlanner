@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class UserRequestDto {
+public class SignUpRequest {
 
     private String email;
 

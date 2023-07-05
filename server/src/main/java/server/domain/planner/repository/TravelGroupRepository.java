@@ -6,4 +6,6 @@ import server.domain.planner.domain.travelGroup.TravelGroup;
 
 @Repository
 public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> {
+
+    TravelGroup findByTravelGroupId(Long travelGroupId);
 }

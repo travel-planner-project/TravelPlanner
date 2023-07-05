@@ -7,12 +7,20 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import server.domain.planner.domain.travelGroup.GroupMemberType;
+import server.domain.planner.dto.request.GroupMemberUpdateRequest;
 import server.domain.planner.dto.request.PlannerCreateRequest;
 import server.domain.planner.dto.request.PlannerUpdateRequest;
+import server.domain.planner.dto.request.UserSearchRequest;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.dto.response.PlannerListResponse;
 import server.domain.planner.service.PlannerService;
+import server.global.security.jwt.UserDetailsImpl;
 
 import java.util.Map;
 
@@ -22,6 +30,7 @@ import java.util.Map;
 public class PlannerController {
 
     private final PlannerService plannerService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
 
     // 플래너 리스트 뷰
@@ -44,9 +53,10 @@ public class PlannerController {
     )
     @GetMapping(value = "")
     public Page<PlannerListResponse> getPlannerList(
-            @RequestParam String userNickname, final Pageable pageable
+            @RequestParam Long userId, final Pageable pageable
     ) {
-        return plannerService.findPlannerListByUserNickname(userNickname, pageable).map(PlannerListResponse::new);
+        return plannerService.findPlannerListByUserId(
+                userId, pageable).map(PlannerListResponse::new);
     }
 
 
@@ -61,7 +71,7 @@ public class PlannerController {
             }
     )
     @PostMapping(value = "")
-    public void createPlanner (
+    public void createPlanner(
             @RequestBody PlannerCreateRequest request
     ) {
         plannerService.createPlanner(request);
@@ -81,7 +91,7 @@ public class PlannerController {
             }
     )
     @PatchMapping(value = "")
-    public void updatePlanner (
+    public void updatePlanner(
             @RequestBody PlannerUpdateRequest request
     ) {
         plannerService.updatePlanner(request);
@@ -100,7 +110,7 @@ public class PlannerController {
             }
     )
     @DeleteMapping(value = "")
-    public void deletePlanner (
+    public void deletePlanner(
             @RequestParam Long plannerId
     ) {
         plannerService.deletePlanner(plannerId);
@@ -127,9 +137,40 @@ public class PlannerController {
     )
     @GetMapping(value = "detail")
     @ResponseBody
-    public PlannerDetailResponse plannerDetail (
+    public PlannerDetailResponse plannerDetail(
             @RequestParam Long plannerId
     ) {
         return plannerService.findPlannerByPlannerId(plannerId);
+    }
+
+    // 그룹멤버 추가
+    @MessageMapping("/add-member/{plannerId}")
+    public void addGroupMember(
+            @DestinationVariable("plannerId") Long plannerId,
+            GroupMemberUpdateRequest request
+    ) throws Exception {
+
+        simpMessagingTemplate.convertAndSend(
+                "/sub/planner-message" + plannerId
+                , Map.of(
+                        "type", "add-member",
+                        "msg", plannerService.addGroupMember(request, plannerId)
+                )
+        );
+    }
+
+    // 유저 검색
+    @MessageMapping("/search-user/{plannerId}")
+    public void searchGroup(
+            @DestinationVariable("plannerId") Long plannerId
+            , UserSearchRequest request
+    ) throws Exception {
+
+        simpMessagingTemplate.convertAndSend("/sub/planner-message" + plannerId
+                , Map.of(
+                        "type", "search-user"
+                        ,"msg", plannerService.searchUser(request)
+                )
+        );
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.domain.user.domain.User;
-import server.domain.user.dto.UserRequestDto;
+import server.domain.user.dto.SignUpRequest;
 import server.domain.user.repository.UserRepository;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class UserService {
 
 
     // 비밀번호 일치 확인
-    public boolean signUpCheck(UserRequestDto request){
+    public boolean signUpCheck(SignUpRequest request){
         String password = request.getPassword();
         String passwordCheck = request.getPasswordCheck();
 
@@ -27,7 +27,7 @@ public class UserService {
     }
 
     //회원가입
-    public void signup (UserRequestDto request) {
+    public void signup (SignUpRequest request) {
 
         // 비밀번호 일치 확인
         if(!signUpCheck(request)) throw new IllegalArgumentException("입력하신 비밀번호가 일치하지 않습니다.");

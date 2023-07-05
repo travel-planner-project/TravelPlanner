@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class PlannerListResponse {
 
     // 유저 이름
-    private String userNickname;
+    private Long userId;
 
     // 플래너 인덱스
     private Long plannerId;
@@ -23,7 +23,7 @@ public class PlannerListResponse {
 
         this.plannerId = entity.getPlannerId();
         this.planTitle = entity.getPlanTitle();
-        this.userNickname = entity.getUserNickname();
+        this.userId = entity.getUserId();
     }
 
     //  플래너 리스트

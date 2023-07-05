@@ -9,5 +9,5 @@ import server.domain.planner.domain.Planner;
 @Repository
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
 
-    Page<Planner> findByUserNickname (String userNickname, Pageable pageable);
+    Page<Planner> findByUserId (Long userId, Pageable pageable);
 }

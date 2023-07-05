@@ -37,7 +37,7 @@ public class TravelGroup {
         groupMembers.add(groupMember);
     }
 
-    public void removeParticipant(GroupMember groupMember) {
+    public void removeMember(GroupMember groupMember) {
         groupMembers.remove(groupMember);
     }
 }
