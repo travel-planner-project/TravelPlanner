@@ -1,0 +1,30 @@
+@use '../styles/color' as C;
+@use '../styles/utils' as U;
+@use '../styles/typography' as T;
+
+.container {
+  padding: 96px;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 24px;
+
+  button {
+    margin-top: 24px;
+    background-color: C.$blue400;
+    border-radius: 6px;
+    color: C.$white;
+    padding: 10px 16px;
+  }
+}
+
+.label {
+  @include T.black-regular-14;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 12px;
+
+  input {
+    padding-left: 10px;
+    border: 1px solid C.$gray300;
+    border-radius: 6px;
+    @include U.size(240px, 40px);
+  }
+}
