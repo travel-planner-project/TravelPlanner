@@ -1,5 +1,7 @@
 import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 import styles from './SignUp.module.scss'
+import Icon from '../components/Common/Icon'
 
 type FormValueType = {
   email: string
@@ -15,6 +17,17 @@ const passwordReg =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]])[a-zA-Z0-9~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]]+$/
 
 function SignUp() {
+  const [show, setShow] = useState({
+    password: false,
+    passwordCheck: false,
+  })
+
+  const handleShow = (type: 'password' | 'passwordCheck') => {
+    setShow(pre => {
+      return { ...pre, [type]: !pre[type] }
+    })
+  }
+
   const {
     register,
     handleSubmit,
@@ -130,7 +143,7 @@ function SignUp() {
         <div className={styles.inputErrorBox}>
           <input
             id='password'
-            type='password'
+            type={show.password ? 'text' : 'password'}
             name={passwordName}
             onChange={passwordOnChange}
             onBlur={passwordOnBlur}
@@ -138,6 +151,15 @@ function SignUp() {
             placeholder='8~15자 이하 영문, 숫자, 특수문자 조합'
             required
           />
+          {show.password ? (
+            <button type='button' onClick={() => handleShow('password')}>
+              <Icon name='eye' size={16} />
+            </button>
+          ) : (
+            <button type='button' onClick={() => handleShow('password')}>
+              <Icon name='eye-close' size={16} />
+            </button>
+          )}
           <span className={styles.errorMessage}>
             {dirtyFields.password && errors.password && errors.password.message}
           </span>
@@ -149,7 +171,7 @@ function SignUp() {
         <div className={styles.inputErrorBox}>
           <input
             id='passwordCheck'
-            type='password'
+            type={show.passwordCheck ? 'text' : 'password'}
             name={passwordCheckName}
             onChange={passwordCheckOnChange}
             onBlur={passwordCheckOnBlur}
@@ -157,6 +179,15 @@ function SignUp() {
             placeholder='비밀번호를 한번 더 입력해주세요'
             required
           />
+          {show.passwordCheck ? (
+            <button type='button' onClick={() => handleShow('passwordCheck')}>
+              <Icon name='eye' size={16} />
+            </button>
+          ) : (
+            <button type='button' onClick={() => handleShow('passwordCheck')}>
+              <Icon name='eye-close' size={16} />
+            </button>
+          )}
           <span className={styles.errorMessage}>
             {dirtyFields.passwordCheck && errors.passwordCheck && errors.passwordCheck.message}
           </span>
