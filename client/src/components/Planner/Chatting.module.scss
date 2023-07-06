@@ -1,0 +1,74 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+// .background {
+//   @include U.size(100%);
+// }
+
+.chatContainer {
+  position: fixed;
+  right: 1%;
+  bottom: 2%;
+  width: 30%;
+  max-width: 450px;
+  padding: 10px;
+  border-radius: 12px;
+  background-color: C.$blue100;
+  @include U.box-shadow();
+
+  .chatHeader {
+    @include U.flex-c(row, center, space-between);
+    padding: 10px;
+
+    h1 {
+      flex-grow: 1;
+      text-align: center;
+    }
+    // 아이콘 정렬
+  }
+
+  .chatBody {
+    height: 400px;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: C.$white;
+
+    .message {
+      margin-bottom: 10px;
+
+      .sender {
+        @include T.black-bold-16;
+      }
+
+      .text {
+        @include T.black-regular-16;
+      }
+    }
+  }
+
+  .chatFooter {
+    @include U.flex-c(row, center, space-between);
+    padding: 20px 0;
+
+    .chatInput {
+      width: calc(100% - 80px);
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-style: none;
+      border-radius: 6px;
+    }
+
+    .chatInput:focus {
+      outline: none;
+    }
+
+    .sendButton {
+      padding: 7px 14px;
+      border: none;
+      border-radius: 6px;
+      color: C.$white;
+      background: C.$blue500;
+    }
+  }
+}
