@@ -8,6 +8,8 @@
   object-fit: cover;
   overflow: hidden;
   background-color: C.$gray;
+  margin: auto;
+  @include U.flex-c(row, center, center);
 }
 
 .profileName {
