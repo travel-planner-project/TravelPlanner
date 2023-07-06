@@ -2,7 +2,7 @@
 @use '../styles/utils' as U;
 @use '../styles/typography' as T;
 
-.container {
+.signUpForm {
   padding: 96px;
   @include U.flex-c(column, flex-start, flex-start);
   gap: 24px;
@@ -19,10 +19,10 @@
   gap: 10px;
 
   input {
-    padding-left: 10px;
+    padding-left: 16px;
     border: 1px solid C.$gray300;
     border-radius: 6px;
-    @include U.size(240px, 40px);
+    @include U.size(300px, 40px);
   }
 }
 

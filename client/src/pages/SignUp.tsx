@@ -86,7 +86,7 @@ function SignUp() {
   })
 
   return (
-    <form className={styles.container} onSubmit={() => handleSubmit}>
+    <form className={styles.signUpForm} onSubmit={() => handleSubmit}>
       <label className={styles.label} htmlFor='email'>
         이메일
         <div className={styles.inputErrorBox}>
