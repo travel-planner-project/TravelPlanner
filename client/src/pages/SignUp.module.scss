@@ -17,6 +17,7 @@
 .inputErrorBox {
   @include U.flex-c(row, flex-start, center);
   gap: 10px;
+  position: relative;
 
   input {
     padding-left: 16px;

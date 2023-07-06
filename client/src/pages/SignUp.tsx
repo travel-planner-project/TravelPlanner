@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import styles from './SignUp.module.scss'
-import Icon from '../components/Common/Icon'
+import ShowPasswordButton from '../components/SignUp/showPasswordButton'
 
 type FormValueType = {
   email: string
@@ -151,15 +151,7 @@ function SignUp() {
             placeholder='8~15자 이하 영문, 숫자, 특수문자 조합'
             required
           />
-          {show.password ? (
-            <button type='button' onClick={() => handleShow('password')}>
-              <Icon name='eye' size={16} />
-            </button>
-          ) : (
-            <button type='button' onClick={() => handleShow('password')}>
-              <Icon name='eye-close' size={16} />
-            </button>
-          )}
+          <ShowPasswordButton show={show} handleShow={handleShow} labelName='password' />
           <span className={styles.errorMessage}>
             {dirtyFields.password && errors.password && errors.password.message}
           </span>
@@ -179,15 +171,7 @@ function SignUp() {
             placeholder='비밀번호를 한번 더 입력해주세요'
             required
           />
-          {show.passwordCheck ? (
-            <button type='button' onClick={() => handleShow('passwordCheck')}>
-              <Icon name='eye' size={16} />
-            </button>
-          ) : (
-            <button type='button' onClick={() => handleShow('passwordCheck')}>
-              <Icon name='eye-close' size={16} />
-            </button>
-          )}
+          <ShowPasswordButton show={show} handleShow={handleShow} labelName='passwordCheck' />
           <span className={styles.errorMessage}>
             {dirtyFields.passwordCheck && errors.passwordCheck && errors.passwordCheck.message}
           </span>
