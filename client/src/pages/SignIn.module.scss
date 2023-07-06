@@ -1,0 +1,35 @@
+@use '../styles/color' as C;
+@use '../styles/utils' as U;
+@use '../styles/typography' as T;
+
+.signInForm {
+  padding: 96px;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 24px;
+}
+
+.label {
+  @include T.black-regular-14;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 12px;
+
+  input {
+    padding-left: 16px;
+    border: 1px solid C.$gray300;
+    border-radius: 6px;
+    @include U.size(300px, 40px);
+  }
+}
+
+.btnBox {
+  @include U.flex-c(row, flex-start, center);
+  @include T.blue-regular-16;
+  gap: 12px;
+}
+
+.signInBtn {
+  @include T.white-semibold-16;
+  background-color: C.$blue400;
+  border-radius: 6px;
+  padding: 10px 16px;
+}
