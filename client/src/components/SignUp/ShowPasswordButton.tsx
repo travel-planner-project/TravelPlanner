@@ -9,11 +9,11 @@ function ShowPasswordButton({ show, handleShow }: ShowPasswordButtonProps) {
   return (
     <div className={styles.showPasswordBtn}>
       {show ? (
-        <button type='button' onClick={() => handleShow()}>
+        <button type='button' onClick={handleShow}>
           <Icon name='eye' size={16} />
         </button>
       ) : (
-        <button type='button' onClick={() => handleShow()}>
+        <button type='button' onClick={handleShow}>
           <Icon name='eye-close' size={16} />
         </button>
       )}

@@ -1,4 +1,9 @@
-import { FieldErrors, UseFormRegister, UseFormGetValues } from 'react-hook-form'
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormGetValues,
+  UseFormHandleSubmit,
+} from 'react-hook-form'
 
 export type FormValueType = {
   email: string
@@ -22,4 +27,9 @@ export interface ReactHookFormProps {
 
 export interface PasswordCheckProps extends ReactHookFormProps {
   getValues: UseFormGetValues<FormValueType>
+}
+
+export interface SignUpViewProps extends PasswordCheckProps {
+  handleSubmit: UseFormHandleSubmit<FormValueType, undefined>
+  isSubmitting: boolean
 }
