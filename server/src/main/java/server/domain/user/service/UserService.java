@@ -32,7 +32,7 @@ public class UserService {
         // 비밀번호 일치 확인
         if(!signUpCheck(request)) throw new IllegalArgumentException("입력하신 비밀번호가 일치하지 않습니다.");
 
-        //회원 닉네임 중복 확인
+        //회원 이메일 중복 확인
         Optional<User> find = userRepository.findByEmail(request.getEmail());
         if(find.isPresent()){
             throw new IllegalArgumentException("이미 등록된 이메일 입니다.");
