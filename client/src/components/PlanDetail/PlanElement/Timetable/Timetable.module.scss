@@ -3,8 +3,16 @@
 @use '../../../../styles/utils' as U;
 
 .container {
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 6px;
   border: 1px solid C.$gray;
   border-radius: 4px;
   background-color: C.$gray100;
   padding: 8px 20px;
+}
+
+.plusBtn {
+  width: 100%;
+  @include U.flex-c(row, center, center);
+  margin-top: 6px;
 }

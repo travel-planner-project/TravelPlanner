@@ -3,10 +3,16 @@ import DropDown from './Dropdown'
 import Icon from '../../../Common/Icon'
 import styles from './Timeline.module.scss'
 
+type TimelineProps = {
+  handleTimelineCounts: (type: 'plus' | 'minus', line: number) => void
+  line: number
+  disabledMinusBtn: boolean
+}
+
 const TimeOptions = Array.from({ length: 24 }, (_, idx) => String(idx).padStart(2, '0'))
 const MinuteOptions = Array.from({ length: 6 }, (_, idx) => String(idx * 10).padStart(2, '0'))
 
-function Timeline() {
+function Timeline({ handleTimelineCounts, line, disabledMinusBtn }: TimelineProps) {
   const [showDropdown, setShowDropdown] = useState<{ time: boolean; minute: boolean }>({
     time: false,
     minute: false,
@@ -48,7 +54,12 @@ function Timeline() {
         )}
       </div>
       <input type='text' className={styles.input} />
-      <button type='button'>
+      <button
+        type='button'
+        onClick={() => handleTimelineCounts('minus', line)}
+        className={disabledMinusBtn ? styles.disabledBtn : ''}
+        disabled={disabledMinusBtn}
+      >
         <Icon name='minus-square' />
       </button>
     </div>
