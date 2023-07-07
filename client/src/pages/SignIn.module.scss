@@ -21,6 +21,11 @@
   }
 }
 
+.passwordInput {
+  @include U.flex-c(row, flex-start, center);
+  position: relative;
+}
+
 .btnBox {
   @include U.flex-c(row, flex-start, center);
   @include T.blue-regular-16;

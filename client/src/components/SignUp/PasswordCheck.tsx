@@ -29,7 +29,7 @@ function PasswordCheck({
       <div className={styles.inputErrorBox}>
         <input
           id='passwordCheck'
-          type={show.passwordCheck ? 'text' : 'password'}
+          type={show ? 'text' : 'password'}
           name={passwordCheckName}
           onChange={passwordCheckOnChange}
           onBlur={passwordCheckOnBlur}

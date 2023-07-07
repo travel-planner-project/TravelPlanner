@@ -7,11 +7,6 @@ export type FormValueType = {
   passwordCheck: string
 }
 
-export type ShowType = {
-  password: boolean
-  passwordCheck: boolean
-}
-
 type DirtyFields = {
   email: boolean | undefined
   nickname: boolean | undefined
@@ -26,7 +21,7 @@ export interface ReactHookFormProps {
 }
 
 export interface PasswordProps extends ReactHookFormProps {
-  show: ShowType
+  show: boolean
   handleShow: (type: 'password' | 'passwordCheck') => void
 }
 

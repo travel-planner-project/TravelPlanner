@@ -5,18 +5,44 @@ import Email from '../components/SignUp/Email'
 import Nickname from '../components/SignUp/Nickname'
 import Password from '../components/SignUp/Password'
 import PasswordCheck from '../components/SignUp/PasswordCheck'
-import { ShowType, FormValueType } from '../types/SignUp'
+import { FormValueType } from '../types/SignUp'
+
+// function SingUpView ({register, handleSubmit, dirtyFields, errors, show, handleShow, getValues, isSubmitting}) {
+//   return (
+//     <form className={styles.signUpForm} onSubmit={() => handleSubmit}>
+//       <Email register={register} dirtyFields={dirtyFields} errors={errors} />
+//       <Nickname register={register} dirtyFields={dirtyFields} errors={errors} />
+//       <Password
+//         register={register}
+//         dirtyFields={dirtyFields}
+//         errors={errors}
+//         show={show}
+//         handleShow={handleShow}
+//       />
+//       <PasswordCheck
+//         register={register}
+//         dirtyFields={dirtyFields}
+//         errors={errors}
+//         getValues={getValues}
+//         show={show}
+//         handleShow={handleShow}
+//       />
+//       <button type='submit' className={styles.submitBtn} disabled={isSubmitting}>
+//         회원가입
+//       </button>
+//     </form>
+//   )
+// }
 
 function SignUp() {
-  const [show, setShow] = useState<ShowType>({
-    password: false,
-    passwordCheck: false,
-  })
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [showPasswordCheck, setShowPasswordCheck] = useState<boolean>(false)
 
   const handleShow = (type: 'password' | 'passwordCheck') => {
-    setShow(pre => {
-      return { ...pre, [type]: !pre[type] }
-    })
+    if (type === 'password') {
+      return setShowPassword(pre => !pre)
+    }
+    return setShowPasswordCheck(pre => !pre)
   }
 
   const {
@@ -34,7 +60,7 @@ function SignUp() {
         register={register}
         dirtyFields={dirtyFields}
         errors={errors}
-        show={show}
+        show={showPassword}
         handleShow={handleShow}
       />
       <PasswordCheck
@@ -42,7 +68,7 @@ function SignUp() {
         dirtyFields={dirtyFields}
         errors={errors}
         getValues={getValues}
-        show={show}
+        show={showPasswordCheck}
         handleShow={handleShow}
       />
       <button type='submit' className={styles.submitBtn} disabled={isSubmitting}>

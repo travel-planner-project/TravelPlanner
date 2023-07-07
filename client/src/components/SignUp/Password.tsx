@@ -34,7 +34,7 @@ function Password({ register, dirtyFields, errors, show, handleShow }: PasswordP
       <div className={styles.inputErrorBox}>
         <input
           id='password'
-          type={show.password ? 'text' : 'password'}
+          type={show ? 'text' : 'password'}
           name={passwordName}
           onChange={passwordOnChange}
           onBlur={passwordOnBlur}
