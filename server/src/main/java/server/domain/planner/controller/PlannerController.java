@@ -20,12 +20,11 @@ import server.domain.planner.dto.request.UserSearchRequest;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.dto.response.PlannerListResponse;
 import server.domain.planner.service.PlannerService;
-import server.global.security.jwt.UserDetailsImpl;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/planner")
+@RequestMapping("/api/planner")
 @AllArgsConstructor
 public class PlannerController {
 
