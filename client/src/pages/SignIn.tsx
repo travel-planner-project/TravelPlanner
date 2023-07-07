@@ -27,7 +27,7 @@ function SignIn() {
             placeholder='비밀번호를 입력해주세요'
             required
           />
-          <ShowPasswordButton show={showPassword} handleShow={handleShow} labelName='password' />
+          <ShowPasswordButton show={showPassword} handleShow={handleShow} />
         </div>
       </label>
 

@@ -1,4 +1,5 @@
-import { PasswordProps } from '../../types/SignUp'
+import { useState } from 'react'
+import { ReactHookFormProps } from '../../types/SignUp'
 import styles from './form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
@@ -6,7 +7,13 @@ const passwordReg =
   // eslint-disable-next-line no-useless-escape
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]])[a-zA-Z0-9~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]]+$/
 
-function Password({ register, dirtyFields, errors, show, handleShow }: PasswordProps) {
+function Password({ register, dirtyFields, errors }: ReactHookFormProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+
+  const handleShow = () => {
+    setShowPassword(pre => !pre)
+  }
+
   const {
     onChange: passwordOnChange,
     onBlur: passwordOnBlur,
@@ -34,7 +41,7 @@ function Password({ register, dirtyFields, errors, show, handleShow }: PasswordP
       <div className={styles.inputErrorBox}>
         <input
           id='password'
-          type={show ? 'text' : 'password'}
+          type={showPassword ? 'text' : 'password'}
           name={passwordName}
           onChange={passwordOnChange}
           onBlur={passwordOnBlur}
@@ -42,7 +49,7 @@ function Password({ register, dirtyFields, errors, show, handleShow }: PasswordP
           placeholder='8~15자 이하 영문, 숫자, 특수문자 조합'
           required
         />
-        <ShowPasswordButton show={show} handleShow={handleShow} labelName='password' />
+        <ShowPasswordButton show={showPassword} handleShow={handleShow} />
         <span className={styles.errorMessage}>
           {dirtyFields.password && errors.password && errors.password.message}
         </span>

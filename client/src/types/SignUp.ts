@@ -20,11 +20,6 @@ export interface ReactHookFormProps {
   errors: FieldErrors<FormValueType>
 }
 
-export interface PasswordProps extends ReactHookFormProps {
-  show: boolean
-  handleShow: (type: 'password' | 'passwordCheck') => void
-}
-
-export interface PasswordCheckProps extends PasswordProps {
+export interface PasswordCheckProps extends ReactHookFormProps {
   getValues: UseFormGetValues<FormValueType>
 }

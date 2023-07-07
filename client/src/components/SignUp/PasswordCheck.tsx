@@ -1,15 +1,15 @@
+import { useState } from 'react'
 import { PasswordCheckProps } from '../../types/SignUp'
 import styles from './form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
-function PasswordCheck({
-  register,
-  dirtyFields,
-  errors,
-  getValues,
-  show,
-  handleShow,
-}: PasswordCheckProps) {
+function PasswordCheck({ register, dirtyFields, errors, getValues }: PasswordCheckProps) {
+  const [showPasswordCheck, setShowPasswordCheck] = useState<boolean>(false)
+
+  const handleShow = () => {
+    setShowPasswordCheck(pre => !pre)
+  }
+
   const {
     onChange: passwordCheckOnChange,
     onBlur: passwordCheckOnBlur,
@@ -29,7 +29,7 @@ function PasswordCheck({
       <div className={styles.inputErrorBox}>
         <input
           id='passwordCheck'
-          type={show ? 'text' : 'password'}
+          type={showPasswordCheck ? 'text' : 'password'}
           name={passwordCheckName}
           onChange={passwordCheckOnChange}
           onBlur={passwordCheckOnBlur}
@@ -37,7 +37,7 @@ function PasswordCheck({
           placeholder='비밀번호를 한번 더 입력해주세요'
           required
         />
-        <ShowPasswordButton show={show} handleShow={handleShow} labelName='passwordCheck' />
+        <ShowPasswordButton show={showPasswordCheck} handleShow={handleShow} />
         <span className={styles.errorMessage}>
           {dirtyFields.passwordCheck && errors.passwordCheck && errors.passwordCheck.message}
         </span>

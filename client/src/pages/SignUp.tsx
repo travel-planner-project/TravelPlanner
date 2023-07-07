@@ -35,16 +35,6 @@ import { FormValueType } from '../types/SignUp'
 // }
 
 function SignUp() {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [showPasswordCheck, setShowPasswordCheck] = useState<boolean>(false)
-
-  const handleShow = (type: 'password' | 'passwordCheck') => {
-    if (type === 'password') {
-      return setShowPassword(pre => !pre)
-    }
-    return setShowPasswordCheck(pre => !pre)
-  }
-
   const {
     register,
     handleSubmit,
@@ -56,20 +46,12 @@ function SignUp() {
     <form className={styles.signUpForm} onSubmit={() => handleSubmit}>
       <Email register={register} dirtyFields={dirtyFields} errors={errors} />
       <Nickname register={register} dirtyFields={dirtyFields} errors={errors} />
-      <Password
-        register={register}
-        dirtyFields={dirtyFields}
-        errors={errors}
-        show={showPassword}
-        handleShow={handleShow}
-      />
+      <Password register={register} dirtyFields={dirtyFields} errors={errors} />
       <PasswordCheck
         register={register}
         dirtyFields={dirtyFields}
         errors={errors}
         getValues={getValues}
-        show={showPasswordCheck}
-        handleShow={handleShow}
       />
       <button type='submit' className={styles.submitBtn} disabled={isSubmitting}>
         회원가입
