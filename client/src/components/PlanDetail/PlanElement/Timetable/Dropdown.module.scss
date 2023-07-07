@@ -1,14 +1,16 @@
-@use '../../../styles/color' as C;
-@use '../../../styles/typography' as T;
-@use '../../../styles/utils' as U;
+@use '../../../../styles/color' as C;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/utils' as U;
 
 .container {
-  @include U.size(60px, auto);
-  max-height: 212px;
+  max-height: 224px;
   @include U.flex-c(column, flex-start, center);
-  border-radius: 6px;
-  border: 1px solid C.$gray;
+  border-radius: 0 0 6px 6px;
+  border-left: 1px solid C.$gray;
+  border-right: 1px solid C.$gray;
+  border-bottom: 1px solid C.$gray;
   overflow: scroll;
+  background-color: C.$white;
 
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -19,7 +21,7 @@
 }
 
 .option {
-  @include U.size(100%, 30px);
+  @include U.size(100%);
   padding: 8px 12px;
   @include T.black-regular-14;
 

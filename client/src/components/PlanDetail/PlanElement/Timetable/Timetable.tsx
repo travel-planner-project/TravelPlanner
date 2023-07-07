@@ -1,8 +1,9 @@
 import Timeline from './Timeline'
+import styles from './Timetable.module.scss'
 
 function Timetable() {
   return (
-    <div>
+    <div className={styles.container}>
       <Timeline />
     </div>
   )

@@ -1,0 +1,10 @@
+@use '../../../../styles/color' as C;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/utils' as U;
+
+.container {
+  border: 1px solid C.$gray;
+  border-radius: 4px;
+  background-color: C.$gray100;
+  padding: 8px 20px;
+}
