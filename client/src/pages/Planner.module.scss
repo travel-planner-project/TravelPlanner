@@ -51,15 +51,15 @@
 
 .plans {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 36px;
-  gap: 24px;
+  gap: 36px;
 }
 
 .planBox {
   @include U.box-shadow();
   width: 350px;
-  height: 200px;
+
   border-radius: 12px;
 }
 
@@ -67,7 +67,7 @@
   @include U.flex-c(row, flex-start, center);
   @include T.white-regular-20;
   padding-left: 24px;
-  height: 60px;
+  height: 50px;
   background-color: C.$blue400;
   border-radius: 12px 12px 0 0;
 }
