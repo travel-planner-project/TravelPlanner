@@ -72,8 +72,8 @@ public class UserController {
     @ResponseBody
     public String getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
         if( userDetails != null){
-            System.out.println( userDetails.getUser().getUserNickname() + " 로그인 된 상태입니다." );
-            return userDetails.getUser().getUserNickname();
+            System.out.println( userDetails.getUser().getEmail() + " 로그인 된 상태입니다." );
+            return userDetails.getUser().getEmail();
         }
         return "확인 불가";
     }

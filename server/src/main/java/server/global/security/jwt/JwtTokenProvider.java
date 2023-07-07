@@ -22,7 +22,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "spring-boot-react-travel-planner-project";
+    private String secretKey = "asdfasdfasdfasdfasdfasdfasdfqwerqwerqwerqwerqwerqwer";
 
     // 토큰 유효시간 30분
     private long tokenValidTime = 30 * 60 * 1000L;
