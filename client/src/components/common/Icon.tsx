@@ -3,8 +3,6 @@ import SpriteIcon from '../../assets/sprite-icon.svg'
 type IconNameType =
   | 'chatting-plus'
   | 'chatting-dots'
-  | 'bag-minus'
-  | 'bag-plus'
   | 'box-arrow-left'
   | 'box-arrow-right'
   | 'calendar'
@@ -26,6 +24,8 @@ type IconNameType =
   | 'profile'
   | 'eye'
   | 'eye-close'
+  | 'minus-square'
+  | 'plus-square'
 
 type IconProps = {
   name: IconNameType

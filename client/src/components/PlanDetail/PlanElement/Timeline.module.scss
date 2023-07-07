@@ -1,0 +1,10 @@
+@use '../../../styles/utils' as U;
+
+.container {
+  @include U.flex-c(row, flex-start, flex-start);
+  gap: 4px;
+}
+
+.timeDropdownBox {
+  text-align: center;
+}

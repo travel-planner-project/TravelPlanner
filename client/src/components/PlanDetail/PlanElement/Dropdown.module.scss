@@ -1,0 +1,35 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/typography' as T;
+@use '../../../styles/utils' as U;
+
+.container {
+  @include U.size(60px, auto);
+  max-height: 212px;
+  @include U.flex-c(column, flex-start, center);
+  border-radius: 6px;
+  border: 1px solid C.$gray;
+  overflow: scroll;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.option {
+  @include U.size(100%, 30px);
+  padding: 8px 12px;
+  @include T.black-regular-14;
+
+  &:hover {
+    background-color: C.$blue100;
+  }
+}
+
+.selectedOpt {
+  @extend .option;
+  background-color: C.$blue400;
+  color: C.$white;
+}
