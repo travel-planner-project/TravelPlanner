@@ -14,7 +14,11 @@ function ListItem() {
       <button type='button' onClick={handleCheckBox}>
         {check ? <Icon name='check-box' size={16} /> : <Icon name='uncheck-box' size={16} />}
       </button>
-      <input className={check ? styles.checked : styles.input} />
+      <input
+        type='text'
+        placeholder='여기에 입력하세요.'
+        className={check ? styles.checked : styles.input}
+      />
     </li>
   )
 }
