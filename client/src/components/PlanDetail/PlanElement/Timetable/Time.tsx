@@ -10,7 +10,7 @@ function Time({ dropDownOptions }: TimeProps) {
   const [time, setTime] = useState<string>('00')
   const [showDropdown, setShowDropdown] = useState<boolean>(false)
 
-  const handleShowDropdown = (action: 'open' | 'close') => {
+  const handleDropdown = (action: 'open' | 'close') => {
     setShowDropdown(action === 'open')
   }
 
@@ -19,7 +19,7 @@ function Time({ dropDownOptions }: TimeProps) {
       <button
         type='button'
         className={showDropdown ? styles.showDropdown : styles.timeBtn}
-        onClick={() => handleShowDropdown('open')}
+        onClick={() => handleDropdown('open')}
       >
         {time}
       </button>
@@ -28,7 +28,7 @@ function Time({ dropDownOptions }: TimeProps) {
           handleOption={setTime}
           options={dropDownOptions}
           selectedOption={time}
-          closeDropdown={() => handleShowDropdown('close')}
+          closeDropdown={() => handleDropdown('close')}
         />
       )}
     </div>

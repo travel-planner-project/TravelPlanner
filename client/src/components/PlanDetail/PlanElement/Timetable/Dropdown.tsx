@@ -14,18 +14,22 @@ function Dropdown({ handleOption, options, selectedOption, closeDropdown }: Drop
   }
 
   return (
-    <div className={styles.container}>
-      {options.map(opt => (
-        <button
-          className={opt === selectedOption ? styles.selectedOpt : styles.option}
-          type='button'
-          key={opt}
-          onClick={() => selectOption(opt)}
-        >
-          {opt}
-        </button>
-      ))}
-    </div>
+    <>
+      <div role='presentation' className={styles.background} onClick={() => closeDropdown()} />
+      <ul className={styles.dropDown}>
+        {options.map(opt => (
+          <li key={opt}>
+            <button
+              className={opt === selectedOption ? styles.selectedOpt : styles.option}
+              type='button'
+              onClick={() => selectOption(opt)}
+            >
+              {opt}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }
 

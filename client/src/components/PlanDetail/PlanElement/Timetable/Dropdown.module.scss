@@ -2,7 +2,16 @@
 @use '../../../../styles/typography' as T;
 @use '../../../../styles/utils' as U;
 
-.container {
+.background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.dropDown {
   max-height: 224px;
   @include U.flex-c(column, flex-start, center);
   border-radius: 0 0 6px 6px;
@@ -12,6 +21,9 @@
   overflow: scroll;
   background-color: C.$white;
   width: 100%;
+  li {
+    width: 100%;
+  }
 
   position: absolute;
   z-index: 100;
@@ -20,7 +32,7 @@
   scrollbar-width: none; /* Firefox */
 }
 
-.container::-webkit-scrollbar {
+.dropDown::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
 
