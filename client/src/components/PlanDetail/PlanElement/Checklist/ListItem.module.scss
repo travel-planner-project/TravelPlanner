@@ -1,0 +1,21 @@
+@use '../../../../styles/utils' as U;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/color' as C;
+
+.listContainer {
+  @include U.flex-c(row, flex-start, flex-end);
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.input {
+  border: none;
+  @include T.black-regular-12;
+  line-height: 1;
+}
+
+.checked {
+  @extend .input;
+  text-decoration: line-through;
+  @include T.gray-regular-12;
+}
