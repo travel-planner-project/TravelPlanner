@@ -1,29 +1,9 @@
 @use '../../../../styles/utils' as U;
 @use '../../../../styles/color' as C;
-@use '../../../../styles/typography' as T;
 
 .container {
   @include U.flex-c(row, flex-start, flex-start);
   gap: 4px;
-}
-
-.timeDropdownBox {
-  position: relative;
-  @include U.size(60px, auto);
-  text-align: center;
-}
-
-.timeBtn {
-  @include U.size(100%);
-}
-
-.showDropdown {
-  @extend .timeBtn;
-  background-color: C.$white;
-  border-radius: 6px 6px 0 0;
-  border-top: 1px solid C.$gray;
-  border-left: 1px solid C.$gray;
-  border-right: 1px solid C.$gray;
 }
 
 .input {
