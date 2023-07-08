@@ -5,7 +5,8 @@ import styles from './Timetable.module.scss'
 
 function Timetable() {
   const [timelines, setTimeLines] = useState<number[]>([1])
-  const handleTimelineCounts = (type: 'plus' | 'minus', line?: number) => {
+
+  const handleTimeline = (type: 'plus' | 'minus', line?: number) => {
     if (type === 'plus') {
       return setTimeLines(pre => [...pre, pre[pre.length - 1] + 1])
     }
@@ -19,13 +20,12 @@ function Timetable() {
       {timelines.map(line => (
         <Timeline
           key={line}
-          handleTimelineCounts={handleTimelineCounts}
-          line={line}
+          deleteTimeline={() => handleTimeline('minus', line)}
           disabledMinusBtn={disabledMinusBtn}
         />
       ))}
 
-      <button type='button' className={styles.plusBtn} onClick={() => handleTimelineCounts('plus')}>
+      <button type='button' className={styles.plusBtn} onClick={() => handleTimeline('plus')}>
         <Icon name='plus-square' />
       </button>
     </div>
