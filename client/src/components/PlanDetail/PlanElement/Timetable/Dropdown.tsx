@@ -4,11 +4,13 @@ type DropdownProps = {
   handleOption: React.Dispatch<React.SetStateAction<string>>
   options: string[]
   selectedOption: string
+  closeDropdown: () => void
 }
 
-function Dropdown({ handleOption, options, selectedOption }: DropdownProps) {
+function Dropdown({ handleOption, options, selectedOption, closeDropdown }: DropdownProps) {
   const selectOption = (option: string) => {
     handleOption(option)
+    closeDropdown()
   }
 
   return (

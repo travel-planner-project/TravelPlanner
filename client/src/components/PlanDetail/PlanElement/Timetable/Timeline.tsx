@@ -20,9 +20,9 @@ function Timeline({ handleTimelineCounts, line, disabledMinusBtn }: TimelineProp
   const [time, setTime] = useState<string>('00')
   const [minute, setMinute] = useState<string>('00')
 
-  const handleShowDropdown = (type: 'time' | 'minute') => {
+  const handleShowDropdown = (type: 'time' | 'minute', action: 'open' | 'close') => {
     setShowDropdown(pre => {
-      return { ...pre, [type]: !pre[type] }
+      return { ...pre, [type]: action === 'open' }
     })
   }
 
@@ -32,12 +32,17 @@ function Timeline({ handleTimelineCounts, line, disabledMinusBtn }: TimelineProp
         <button
           type='button'
           className={showDropdown.time ? styles.showDropdown : styles.timeBtn}
-          onClick={() => handleShowDropdown('time')}
+          onClick={() => handleShowDropdown('time', 'open')}
         >
           {time}
         </button>
         {showDropdown.time && (
-          <DropDown handleOption={setTime} options={TimeOptions} selectedOption={time} />
+          <DropDown
+            handleOption={setTime}
+            options={TimeOptions}
+            selectedOption={time}
+            closeDropdown={() => handleShowDropdown('time', 'close')}
+          />
         )}
       </div>
       :
@@ -45,12 +50,17 @@ function Timeline({ handleTimelineCounts, line, disabledMinusBtn }: TimelineProp
         <button
           type='button'
           className={showDropdown.minute ? styles.showDropdown : styles.timeBtn}
-          onClick={() => handleShowDropdown('minute')}
+          onClick={() => handleShowDropdown('minute', 'open')}
         >
           {minute}
         </button>
         {showDropdown.minute && (
-          <DropDown handleOption={setMinute} options={MinuteOptions} selectedOption={minute} />
+          <DropDown
+            handleOption={setMinute}
+            options={MinuteOptions}
+            selectedOption={minute}
+            closeDropdown={() => handleShowDropdown('minute', 'close')}
+          />
         )}
       </div>
       <input type='text' className={styles.input} />
