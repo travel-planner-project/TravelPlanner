@@ -3,6 +3,8 @@
 @use '../../../../styles/color' as C;
 
 .listContainer {
+  background-color: C.$white;
+  @include U.size(100%);
   @include U.flex-c(row, flex-start, flex-end);
   gap: 8px;
   padding: 10px 16px;
