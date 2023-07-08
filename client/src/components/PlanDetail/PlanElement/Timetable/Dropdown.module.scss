@@ -11,6 +11,10 @@
   border-bottom: 1px solid C.$gray;
   overflow: scroll;
   background-color: C.$white;
+  width: 100%;
+
+  position: absolute;
+  z-index: 100;
 
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
