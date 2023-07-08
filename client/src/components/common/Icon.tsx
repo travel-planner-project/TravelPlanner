@@ -19,6 +19,8 @@ type IconNameType =
   | 'pencil-box'
   | 'person'
   | 'trash-bin'
+  | 'eye'
+  | 'eye-close'
 
 type IconProps = {
   name: IconNameType

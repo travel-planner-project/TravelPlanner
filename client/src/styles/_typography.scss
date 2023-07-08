@@ -69,15 +69,15 @@
   @include U.font($weight: 400, $size: 1.2rem, $color: C.$blue400);
 }
 
-// white-bold
-@mixin white-bold-36 {
-  @include U.font($weight: 700, $size: 3.6rem, $color: C.$white);
+// white-semibold
+@mixin white-semibold-36 {
+  @include U.font($weight: 500, $size: 3.6rem, $color: C.$white);
 }
-@mixin white-bold-20 {
-  @include U.font($weight: 700, $size: 2rem, $color: C.$white);
+@mixin white-semibold-20 {
+  @include U.font($weight: 500, $size: 2rem, $color: C.$white);
 }
-@mixin white-bold-16 {
-  @include U.font($weight: 700, $size: 1.6rem, $color: C.$white);
+@mixin white-semibold-16 {
+  @include U.font($weight: 500, $size: 1.6rem, $color: C.$white);
 }
 
 // white-regular
