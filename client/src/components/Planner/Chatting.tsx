@@ -38,6 +38,17 @@ function Chatting() {
   const [newChat, setNewChat] = useState<string>('')
 
   const clientRef = useRef<StompJs.Client | null>(null)
+  const scrollContainerRef = useRef(null)
+
+  // 리스트 갱신 시 스크롤 맨 아래로
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current as HTMLElement | null
+    if (!scrollContainer) {
+      return
+    }
+    const { scrollHeight } = scrollContainer
+    scrollContainer.scrollTo(0, scrollHeight)
+  }, [chatList])
 
   useEffect(() => {
     // 1. 클라이언트 객체 생성
@@ -118,7 +129,7 @@ function Chatting() {
           <h1>그룹 채팅</h1>
           <Icon name='x' size={18} />
         </div>
-        <div className={styles.chatBody}>
+        <div className={styles.chatBody} ref={scrollContainerRef}>
           {chatList.map(chat => (
             <div className={styles.message} key={uuidv4()}>
               <span
