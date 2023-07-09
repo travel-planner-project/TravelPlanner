@@ -23,31 +23,37 @@ function PlanDetailView() {
           <div className={styles.users}>
             <div className={styles.user}>
               <div className={styles.userProfileBox}>
-                <img src='' alt='' />
+                {/* <img src='' alt='' /> */}
+                <Icon name='profile' size={42} />
               </div>
               <div className={styles.userName}>시은</div>
             </div>
             <div className={styles.user}>
               <div className={styles.userProfileBox}>
-                <img src='' alt='' />
+                {/* <img src='' alt='' /> */}
+                <Icon name='profile' size={42} />
               </div>
               <div className={styles.userName}>설화</div>
             </div>
             <div className={styles.user}>
               <div className={styles.userProfileBox}>
-                <img src='' alt='' />
+                {/* <img src='' alt='' /> */}
+                <Icon name='profile' size={42} />
               </div>
               <div className={styles.userName}>예슬</div>
             </div>
           </div>
           <div className={styles.addUserBtnBox}>
-            <button type='button'>addUser</button>
+            <button type='button' className={styles.addPerson}>
+              <Icon name='add-person' size={50} />
+            </button>
           </div>
         </div>
         <div className={styles.planner}>
           <div className={styles.planList}>
             <div className={styles.plan}>
               <div className={styles.dayTitle}>Day 1</div>
+              <Element />
               <Element />
               <div className={styles.addElementBtn}>+</div>
             </div>

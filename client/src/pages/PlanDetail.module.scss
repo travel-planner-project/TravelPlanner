@@ -64,10 +64,15 @@
 }
 
 .userProfileBox {
+  @include U.flex-c(row);
   width: 72px;
   height: 72px;
   border-radius: 50%;
   background-color: C.$gray200;
+}
+
+.addPerson {
+  padding-bottom: 24px;
 }
 
 .planner {

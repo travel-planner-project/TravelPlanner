@@ -17,4 +17,19 @@
   width: 100%;
   gap: 12px;
   font-size: 1.6rem;
+  .okBtn {
+    @include U.flex-c(row);
+    background-color: C.$blue400;
+    color: white;
+    padding: 3px;
+    width: 48px;
+    border-radius: 4px;
+  }
+  .deleteBtn {
+    @include U.flex-c(row);
+    color: C.$blue400;
+    padding: 3px;
+    width: 48px;
+    border-radius: 4px;
+  }
 }

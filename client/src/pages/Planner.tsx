@@ -1,3 +1,4 @@
+import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
 
 type PlannerViewProps = {
@@ -12,6 +13,7 @@ function PlannerView({ add, edit, openDetail }: PlannerViewProps) {
       <div className={styles.header}>
         <div className={styles.profileBox}>
           <img className={styles.profileImage} src='' alt='' />
+          <Icon name='profile' size={64} />
         </div>
         <div className={styles.describtionBox}>
           <div className={styles.tripDescribtion}>
@@ -48,13 +50,14 @@ function PlannerView({ add, edit, openDetail }: PlannerViewProps) {
                 {/* 유저 리스트 맵으로 돌리기 */}
                 <div className={styles.plannerUser}>
                   <div className={styles.plannerUserProfileBox}>
-                    <img className={styles.plannerUserProfile} src='' alt='' />
+                    {/* <img className={styles.plannerUserProfile} src='' alt='' /> */}
+                    {/* <Icon name='profile' size={28} /> */}
                   </div>
                   <div className={styles.plannerUserName}>유저 1</div>
                 </div>
                 <div className={styles.plannerUser}>
                   <div className={styles.plannerUserProfileBox}>
-                    <img className={styles.plannerUserProfile} src='' alt='' />
+                    {/* <img className={styles.plannerUserProfile} src='' alt='' /> */}
                   </div>
                   <div className={styles.plannerUserName}>유저 2</div>
                 </div>
@@ -68,11 +71,11 @@ function PlannerView({ add, edit, openDetail }: PlannerViewProps) {
           </div>
         </div>
         <div className={styles.buttons}>
-          <button type='button' className={styles.button} onClick={add}>
-            여행 추가하기
+          <button type='button' className={styles.addBtn} onClick={add}>
+            추가하기
           </button>
-          <button type='button' className={styles.button} onClick={edit}>
-            여행 편집하기
+          <button type='button' className={styles.editBtn} onClick={edit}>
+            편집하기
           </button>
         </div>
       </div>

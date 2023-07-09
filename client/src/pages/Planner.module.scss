@@ -28,6 +28,7 @@
 }
 
 .profileBox {
+  @include U.flex-c(row);
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -104,6 +105,16 @@
 }
 
 .buttons {
-  @include U.flex-c(column, flex-start, flex-start);
-  gap: 24px;
+  @include U.flex-c(row, flex-start, flex-start);
+  gap: 12px;
+  .addBtn {
+    background-color: C.$blue400;
+    padding: 12px;
+    color: white;
+    border-radius: 4px;
+  }
+  .editBtn {
+    padding: 12px;
+    color: C.$blue400;
+  }
 }
