@@ -44,7 +44,7 @@ public class User {
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .userNickname(request.getUserNickname())
-                .userRole(Role.MEMBER)
+                .userRole(Role.ROLE_MEMBER)
                 .build();
     }
 }

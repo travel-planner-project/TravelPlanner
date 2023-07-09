@@ -1,6 +1,6 @@
 package server.domain.user.domain;
 
 public enum Role {
-    ADMIN,
-    MEMBER
+    ROLE_ADMIN,
+    ROLE_MEMBER
 }
