@@ -10,6 +10,8 @@ type IconNameType =
   | 'calendar'
   | 'camera'
   | 'check-box'
+  | 'uncheck-box'
+  | 'document'
   | 'x'
   | 'skyblue-x-circle'
   | 'pencil-box'
