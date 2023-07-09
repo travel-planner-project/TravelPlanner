@@ -29,6 +29,8 @@ type IconNameType =
   | 'check-square-blue'
   | 'add-person'
   | 'profile'
+  | 'eye'
+  | 'eye-close'
 
 type IconProps = {
   name: IconNameType
