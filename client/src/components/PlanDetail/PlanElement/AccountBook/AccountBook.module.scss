@@ -8,10 +8,22 @@
   border-radius: 4px;
   padding: 8px 8px 24px 8px;
   @include U.flex-c(column, flex-start, center);
+  @include T.black-regular-12;
   gap: 12px;
+}
+
+.itemsBox {
+  width: 100%;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 4px;
 }
 
 .line {
   @include U.size(100%, 1px);
   background-color: C.$gray300;
+}
+
+.total {
+  width: 100%;
+  text-align: right;
 }

@@ -1,16 +1,29 @@
+import { useState } from 'react'
 import Icon from '../../../Common/Icon'
 import styles from './AccountItem.module.scss'
 
-function AccountItem() {
+type AccountItemProps = {
+  addCost: (cost: number) => void
+  deleteItem: (cost: number) => void
+}
+
+function AccountItem({ addCost, deleteItem }: AccountItemProps) {
+  const [cost, setCost] = useState(0)
+
+  const costChange = (event: React.FocusEvent<HTMLInputElement>) => {
+    addCost(+event.target.value)
+    setCost(+event.target.value)
+  }
+
   return (
-    <div className={styles.itemContainer}>
+    <li className={styles.itemContainer}>
       <input placeholder='이용내역' className={styles.inputText} />
-      <input placeholder='금액' type='number' step='1000' className={styles.cost} />
+      <input placeholder='금액' type='number' onBlur={costChange} className={styles.cost} />
       <span className={styles.won}>원</span>
-      <button type='button'>
+      <button type='button' onClick={() => deleteItem(cost)}>
         <Icon name='minus-square' size={12} />
       </button>
-    </div>
+    </li>
   )
 }
 
