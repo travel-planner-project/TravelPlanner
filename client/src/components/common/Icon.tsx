@@ -30,7 +30,7 @@ type IconNameType =
 
 type IconProps = {
   name: IconNameType
-  size?: 16 | 18 | 20 | 24 | 28 | 42 | 50 | 64 | 70
+  size?: 10 | 12 | 16 | 18 | 20 | 24 | 28 | 42 | 50 | 70
 }
 
 function Icon({ name, size = 24 }: IconProps) {
