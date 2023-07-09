@@ -3,11 +3,11 @@ package server.domain.planner.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.domain.planner.domain.Planner;
 import server.domain.planner.domain.travelGroup.GroupMember;
+import server.domain.planner.domain.travelGroup.GroupMemberType;
 import server.domain.planner.domain.travelGroup.TravelGroup;
 import server.domain.planner.dto.request.GroupMemberUpdateRequest;
 import server.domain.planner.dto.request.PlannerCreateRequest;
@@ -21,8 +21,11 @@ import server.domain.user.domain.User;
 import server.domain.user.repository.UserRepository;
 import server.global.code.ErrorCode;
 import server.global.exception.HandlableException;
-import server.global.security.jwt.UserDetailsImpl;
+import server.global.security.UserDetailsImpl;
+import server.global.security.UserDetailsServiceImpl;
+import server.global.security.jwt.JwtUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +38,8 @@ public class PlannerService {
     private final UserRepository userRepository;
     private final GroupMemerRepository groupMemberRepository;
     private final TravelGroupRepository travelGroupRepository;
-
+    private final JwtUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     // 플래너 리스트
     @Transactional(readOnly = true)
@@ -45,13 +49,21 @@ public class PlannerService {
 
     // 플래너 생성
     @Transactional
-    public void createPlanner (PlannerCreateRequest request) {
+    public void createPlanner (PlannerCreateRequest request, HttpServletRequest httpRequest) {
 
-        User user =  userRepository.findByUserId(request.getUserId()).get();
+        // 현재 사용자 정보
+        String token = jwtUtil.getHeaderToken(httpRequest, "Access");
+        String email = jwtUtil.getEmailFromToken(token);
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(email);
+        Long userId = userDetails.getUser().getUserId();
+
+        Optional<User> user = userRepository.findByUserId(userId);
 
         GroupMember groupMember = GroupMember.builder()
-                .user(user)
-                .groupMemberType(request.getGroupMemberType())
+                .user(user.get())
+                .userId(user.get().getUserId())
+                .userNickname(user.get().getUserNickname())
+                .groupMemberType(GroupMemberType.HOST)
                 .build();
 
         groupMemberRepository.save(groupMember);
@@ -65,17 +77,20 @@ public class PlannerService {
         plannerRepository.saveAndFlush(planner);
     }
 
+
     // 플래너 제거
     @Transactional
-    public void deletePlanner (Long plannerId) {
+    public void deletePlanner (Long plannerId, HttpServletRequest request) {
 
         // 제거할 플래너 찾기
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_PLANNER));
 
         // 현재 사용자 정보
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = ((UserDetailsImpl) principal).getUser().getUserId();
+        String token = jwtUtil.getHeaderToken(request, "Access");
+        String email = jwtUtil.getEmailFromToken(token);
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(email);
+        Long userId = userDetails.getUser().getUserId();
 
         // 플래너를 만든 사람이 내가 아니면, 플래너의 그룹에서 '나' 를 제거해야 한다.
         if (!userId.equals(planner.getUserId())) {
@@ -87,7 +102,7 @@ public class PlannerService {
 
             for(GroupMember groupMember: groupMembers) {
 
-                if (groupMember.getUser().getUserId().equals(((UserDetailsImpl) principal).getUser().getUserId())) {
+                if (groupMember.getUser().getUserId().equals(userId)) {
                     travelGroup.removeMember(groupMember);
                     break;
                 }
@@ -128,22 +143,36 @@ public class PlannerService {
 
     // 플래너 그룹에 멤버 추가
     @Transactional
-    public User addGroupMember (GroupMemberUpdateRequest request, Long plannerId) {
+    public Optional<User> addGroupMember (GroupMemberUpdateRequest request, Long plannerId) {
 
-        User user = userRepository.findByEmail(request.getEmail()).get();
+        Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_USER));
 
-        GroupMember groupMember = GroupMember.builder().user(user).build();
-        groupMemberRepository.save(groupMember);
+        if (groupMemberRepository.findByUserId(user.get().getUserId()) == null) {
 
-        TravelGroup travelGroup = travelGroupRepository.findById(planner.getTravelGroup().getTravelGroupId())
-                .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_GROUP));
-        travelGroup.addMembers(groupMember);
-        travelGroupRepository.save(travelGroup);
+            GroupMember groupMember = GroupMember.builder()
+                    .user(user.get())
+                    .userId(user.get().getUserId())
+                    .userNickname(user.get().getUserNickname())
+                    .groupMemberType(GroupMemberType.MEMBER)
+                    .build();
 
-        return user;
+            groupMemberRepository.save(groupMember);
+
+            TravelGroup travelGroup = travelGroupRepository.findById(planner.getTravelGroup().getTravelGroupId())
+                    .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_GROUP));
+            travelGroup.addMembers(groupMember);
+            travelGroupRepository.save(travelGroup);
+
+            return user;
+
+        }
+
+        System.out.println("이미 해당 유저가 존재합니다.");
+
+        return null;
     }
 
     // 플래너에서 유저 검색

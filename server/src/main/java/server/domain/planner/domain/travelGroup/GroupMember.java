@@ -28,6 +28,10 @@ public class GroupMember {
     @ManyToOne
     private User user;
 
+    Long userId;
+
+    String userNickname;
+
     // 멤버 Role
     @Enumerated(EnumType.STRING)
     private GroupMemberType groupMemberType;

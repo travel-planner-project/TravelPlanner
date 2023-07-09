@@ -5,14 +5,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import server.domain.planner.domain.travelGroup.GroupMemberType;
 import server.domain.planner.dto.request.GroupMemberUpdateRequest;
 import server.domain.planner.dto.request.PlannerCreateRequest;
 import server.domain.planner.dto.request.PlannerUpdateRequest;
@@ -20,9 +19,14 @@ import server.domain.planner.dto.request.UserSearchRequest;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.dto.response.PlannerListResponse;
 import server.domain.planner.service.PlannerService;
+import server.domain.user.repository.UserRepository;
+import server.global.security.jwt.JwtUtil;
+import server.global.security.jwt.RefreshTokenRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/planner")
 @AllArgsConstructor
@@ -54,8 +58,7 @@ public class PlannerController {
     public Page<PlannerListResponse> getPlannerList(
             @RequestParam Long userId, final Pageable pageable
     ) {
-        return plannerService.findPlannerListByUserId(
-                userId, pageable).map(PlannerListResponse::new);
+        return plannerService.findPlannerListByUserId(userId, pageable).map(PlannerListResponse::new);
     }
 
 
@@ -71,11 +74,9 @@ public class PlannerController {
     )
     @PostMapping(value = "")
     public void createPlanner(
-            @RequestBody PlannerCreateRequest request
+            @RequestBody PlannerCreateRequest request, HttpServletRequest httpRequest
     ) {
-        plannerService.createPlanner(request);
-
-        System.out.println("요청 " + request);
+        plannerService.createPlanner(request, httpRequest);
     }
 
 
@@ -110,9 +111,9 @@ public class PlannerController {
     )
     @DeleteMapping(value = "")
     public void deletePlanner(
-            @RequestParam Long plannerId
+            @RequestParam Long plannerId, HttpServletRequest request
     ) {
-        plannerService.deletePlanner(plannerId);
+        plannerService.deletePlanner(plannerId, request);
     }
 
 

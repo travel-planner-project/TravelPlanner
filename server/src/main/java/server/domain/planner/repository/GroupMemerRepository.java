@@ -6,4 +6,6 @@ import server.domain.planner.domain.travelGroup.GroupMember;
 
 @Repository
 public interface GroupMemerRepository extends JpaRepository<GroupMember, Long> {
+
+    GroupMember findByUserId(Long userId);
 }

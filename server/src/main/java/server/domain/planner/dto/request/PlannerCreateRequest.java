@@ -13,9 +13,6 @@ public class PlannerCreateRequest {
     // 플래너 작성 유저
     private Long userId;
 
-    // 플래너 작성 유저 유형
-    private GroupMemberType groupMemberType;
-
     // 플래너 제목
     @NotEmpty
     private String planTitle;
