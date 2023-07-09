@@ -4,13 +4,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import server.domain.user.dto.LoginRequest;
 import server.domain.user.dto.SignUpRequest;
 import server.domain.user.service.UserService;
-import server.global.security.UserDetailsImpl;
 
 import javax.servlet.http.HttpServletResponse;
 
