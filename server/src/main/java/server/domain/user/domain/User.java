@@ -6,12 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import server.domain.user.dto.UserRequestDto;
+import server.domain.user.dto.SignUpRequest;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @DynamicInsert
@@ -22,11 +19,15 @@ import javax.persistence.Id;
 @Getter
 public class User {
 
+    // 유저 인덱스
+    @Id
+    @GeneratedValue
+    private Long userId;
+
     // 유저 닉네임
     private String userNickname;
 
     // 이메일
-    @Id
     private String email;
 
     // 비밀번호
@@ -37,7 +38,7 @@ public class User {
     private Role userRole;
 
 
-    public static User createUser (UserRequestDto request) {
+    public static User createUser (SignUpRequest request) {
 
         return User.builder()
                 .email(request.getEmail())

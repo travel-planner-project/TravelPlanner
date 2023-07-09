@@ -2,6 +2,7 @@ package server.domain.planner.dto.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import server.domain.planner.domain.travelGroup.GroupMemberType;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -10,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 public class PlannerCreateRequest {
 
     // 플래너 작성 유저
-    private String userNickname;
+    private Long userId;
 
     // 플래너 제목
     @NotEmpty

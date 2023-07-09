@@ -22,7 +22,7 @@ import java.util.List;
 public class Planner {
 
     // 유저
-    private String userNickname;
+    private Long userId;
 
     // 플래너 인덱스
     @Id
@@ -51,10 +51,11 @@ public class Planner {
 
 
     // 플래너 생성
-    public static Planner createPlanner (PlannerCreateRequest request) {
+    public static Planner createPlanner (PlannerCreateRequest request, TravelGroup travelGroup) {
 
         return Planner.builder()
-                .userNickname(request.getUserNickname())
+                .travelGroup(travelGroup)
+                .userId(request.getUserId())
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
                 .build();
