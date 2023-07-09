@@ -205,4 +205,7 @@
       </clipPath>
     </defs>
   </symbol>
+  <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="uncheck-box">
+    <rect x="0.5" y="0.5" width="15" height="15" rx="1.5" fill="white" stroke="#ABB5BE"></rect>
+  </symbol>
 </svg>
