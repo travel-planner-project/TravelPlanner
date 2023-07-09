@@ -5,9 +5,8 @@
 .itemContainer {
   width: 100%;
   @include T.black-regular-12;
-  display: grid;
-  grid-template-columns: 12fr 7fr 2fr 1fr;
-  column-gap: 4px;
+  @include U.flex-c(row, flex-start, center);
+  gap: 4px;
 }
 
 /* input type=number 화살표 숨김 : Chrome, Safari, Edge, Opera */
@@ -31,7 +30,9 @@ input[type='number'] {
 
 .inputText {
   @extend .input;
+  width: 124px;
   padding: 0 5px;
+  flex-grow: 2;
 }
 
 .inputText::placeholder {
@@ -43,6 +44,8 @@ input[type='number'] {
   @extend .input;
   padding: 0 12px;
   text-align: right;
+  flex-grow: 1;
+  max-width: 100px;
 }
 
 .cost::placeholder {

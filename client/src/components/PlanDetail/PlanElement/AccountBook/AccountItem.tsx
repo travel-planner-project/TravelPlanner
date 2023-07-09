@@ -8,7 +8,7 @@ function AccountItem() {
       <input placeholder='금액' type='number' step='1000' className={styles.cost} />
       <span className={styles.won}>원</span>
       <button type='button'>
-        <Icon name='minus-square' size={10} />
+        <Icon name='minus-square' size={12} />
       </button>
     </div>
   )
