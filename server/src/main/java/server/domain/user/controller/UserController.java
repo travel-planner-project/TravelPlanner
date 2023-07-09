@@ -54,15 +54,4 @@ public class UserController {
         userService.login(request, response);
         System.out.println("Login Success");
     }
-
-    // 로그인 후 token이 생성되면 해당 토큰을 이용해 유저 이메일 출력
-    @GetMapping("/info")
-    @ResponseBody
-    public String getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        if( userDetails != null){
-            System.out.println( userDetails.getUser().getEmail() + " 로그인 된 상태입니다." );
-            return userDetails.getUser().getEmail();
-        }
-        return "확인 불가";
-    }
 }
