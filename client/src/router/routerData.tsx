@@ -100,7 +100,7 @@ export const routerData: RouterElement[] = [
         <PlanDetail />
       </Suspense>
     ),
-    onNavBar: true,
+    onNavBar: false,
     withAuth: false,
   },
 ]

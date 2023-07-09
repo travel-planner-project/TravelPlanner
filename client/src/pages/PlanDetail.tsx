@@ -1,17 +1,24 @@
+import Icon from '../components/Common/Icon'
+import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 
 function PlanDetailView() {
   return (
     <div className={styles.planContainer}>
-      <div className={styles.planHeader}>1</div>
-      <div className={styles.planBody}>
+      <div className={styles.planHeader}>
+        <div className={styles.planTitle}>제주 여행</div>
         <div className={styles.planPeriodBox}>
           <div className={styles.planPeriod}>
-            <div className={styles.startDate}>2023-07-14</div>
-            <span> ~ </span>
-            <div className={styles.endDate}>2023-07-16</div>
+            <Icon name='calendar' size={16} />
+            <div className={styles.dateBox}>
+              <div className={styles.startDate}>2023-07-14</div>
+              <span> ~ </span>
+              <div className={styles.endDate}>2023-07-16</div>
+            </div>
           </div>
         </div>
+      </div>
+      <div className={styles.planBody}>
         <div className={styles.userList}>
           <div className={styles.users}>
             <div className={styles.user}>
@@ -19,6 +26,18 @@ function PlanDetailView() {
                 <img src='' alt='' />
               </div>
               <div className={styles.userName}>시은</div>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userProfileBox}>
+                <img src='' alt='' />
+              </div>
+              <div className={styles.userName}>설화</div>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userProfileBox}>
+                <img src='' alt='' />
+              </div>
+              <div className={styles.userName}>예슬</div>
             </div>
           </div>
           <div className={styles.addUserBtnBox}>
@@ -28,9 +47,12 @@ function PlanDetailView() {
         <div className={styles.planner}>
           <div className={styles.planList}>
             <div className={styles.plan}>
-              <div className={styles.planTitle}>Day 1</div>
+              <div className={styles.dayTitle}>Day 1</div>
+              <Element />
+              <div className={styles.addElementBtn}>+</div>
             </div>
           </div>
+          <div className={styles.addDayBtn}>추가하기</div>
         </div>
       </div>
     </div>

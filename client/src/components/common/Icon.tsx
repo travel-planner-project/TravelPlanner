@@ -19,10 +19,18 @@ type IconNameType =
   | 'pencil-box'
   | 'person'
   | 'trash-bin'
+  | 'alarm-gray'
+  | 'alarm-blue'
+  | 'calculator-gray'
+  | 'calculator-blue'
+  | 'file-text-fill-gray'
+  | 'file-text-fill-blue'
+  | 'check-square-gray'
+  | 'check-square-blue'
 
 type IconProps = {
   name: IconNameType
-  size?: 16 | 18 | 24 | 28 | 50 | 70
+  size?: 16 | 18 | 20 | 24 | 28 | 50 | 70
 }
 
 function Icon({ name, size = 24 }: IconProps) {

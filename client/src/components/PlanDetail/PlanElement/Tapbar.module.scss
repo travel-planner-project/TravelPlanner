@@ -1,0 +1,18 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 36px;
+  width: 100%;
+  background-color: C.$gray100;
+  border: 1px solid C.$gray200;
+  border-radius: 4px;
+  padding: 12px 24px 12px 24px;
+}
+
+.tapContent {
+  @include U.flex-c(column);
+}
