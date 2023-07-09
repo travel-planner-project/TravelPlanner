@@ -6,27 +6,20 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import server.domain.user.domain.User;
 import server.domain.user.dto.LoginRequest;
 import server.domain.user.dto.SignUpRequest;
-import server.domain.user.dto.TokenResponse;
-import server.global.security.jwt.JwtTokenProvider;
 import server.domain.user.service.UserService;
-import server.domain.user.repository.UserRepository;
-import server.global.security.jwt.UserDetailsImpl;
+import server.global.security.UserDetailsImpl;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
-
-
 
     @ApiOperation(
             value = "회원가입"
@@ -40,7 +33,7 @@ public class UserController {
             }
     )
     @PostMapping("/register")
-    public void signUp2(@RequestBody SignUpRequest request){
+    public void signUp(@RequestBody SignUpRequest request){
 
         userService.signup(request);
     }
@@ -57,21 +50,9 @@ public class UserController {
             }
     )
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request){
-
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new IllegalArgumentException( "존재하지 않는 회원입니다." ));
-
-        // 비밀번호 복호화(password Encoder 사용)
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if(passwordEncoder.matches(user.getPassword(),request.getPassword())){
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-
-        TokenResponse tokenResponse = TokenResponse.builder()
-                .token(jwtTokenProvider.createToken(user.getEmail()))
-                .build();
-
-        return ResponseEntity.ok(tokenResponse);
+    public void login(@RequestBody LoginRequest request, HttpServletResponse response){
+        userService.login(request, response);
+        System.out.println("Login Success");
     }
 
     // 로그인 후 token이 생성되면 해당 토큰을 이용해 유저 이메일 출력
