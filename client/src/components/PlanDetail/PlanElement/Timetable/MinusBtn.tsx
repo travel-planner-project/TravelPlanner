@@ -14,7 +14,7 @@ function MinusBtn({ deleteTimeline, disabledMinusBtn }: MinusBtnProps) {
       className={disabledMinusBtn ? styles.disabledBtn : ''}
       disabled={disabledMinusBtn}
     >
-      <Icon name='minus-square' />
+      <Icon name='minus-square' size={12} />
     </button>
   )
 }

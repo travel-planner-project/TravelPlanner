@@ -26,7 +26,7 @@ function Timetable() {
       ))}
 
       <button type='button' className={styles.plusBtn} onClick={() => handleTimeline('plus')}>
-        <Icon name='plus-square' />
+        <Icon name='plus-square' size={16} />
       </button>
     </div>
   )
