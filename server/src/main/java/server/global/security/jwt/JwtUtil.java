@@ -3,7 +3,6 @@ package server.global.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Serializer;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import server.domain.user.domain.User;
 import server.domain.user.repository.UserRepository;
 import server.global.security.UserDetailsImpl;
 import server.global.security.UserDetailsServiceImpl;
@@ -22,13 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.*;
 
-// 토큰을 생성하고 검증하는 클래스입니다.
-// 해당 컴포넌트는 필터클래스에서 사전 검증을 거칩니다.
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtUtil {
-    private final UserRepository userRepository;
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -41,14 +36,13 @@ public class JwtUtil {
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    // bean으로 등록 되면서 딱 한번 실행이 됩니다.
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // header 토큰을 가져오는 기능
+    // header 토큰을 가져 오는 기능
     public String getHeaderToken(HttpServletRequest request, String type) {
         return type.equals("Access") ? request.getHeader(ACCESS_TOKEN) :request.getHeader(REFRESH_TOKEN);
     }
@@ -90,8 +84,6 @@ public class JwtUtil {
 
     // refreshToken 토큰 검증
     // db에 저장되어 있는 token과 비교
-    // db에 저장한다는 것이 jwt token을 사용한다는 강점을 상쇄시킨다.
-    // db 보다는 redis를 사용하는 것이 더욱 좋다. (in-memory db기 때문에 조회속도가 빠르고 주기적으로 삭제하는 기능이 기본적으로 존재합니다.)
     public Boolean refreshTokenValidation(String token) {
 
         // 1차 토큰 검증
@@ -106,11 +98,12 @@ public class JwtUtil {
     // 인증 객체 생성
     public Authentication createAuthentication(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
         // spring security 내에서 가지고 있는 객체입니다. (UsernamePasswordAuthenticationToken)
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 email 가져오는 기능
+    // 토큰에서 email 가져 오는 기능
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
