@@ -148,6 +148,7 @@ function Chatting() {
             type='text'
             className={styles.chatInput}
             placeholder='메시지를 입력하세요'
+            value={newChat}
             onChange={handleChange}
           />
           <button type='submit' className={styles.sendButton}>
