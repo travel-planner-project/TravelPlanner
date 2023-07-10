@@ -1,0 +1,53 @@
+@use '../../../../styles/color' as C;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/utils' as U;
+
+.background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.dropDown {
+  max-height: 224px;
+  @include U.flex-c(column, flex-start, center);
+  border-radius: 0 0 6px 6px;
+  border-left: 1px solid C.$gray;
+  border-right: 1px solid C.$gray;
+  border-bottom: 1px solid C.$gray;
+  overflow: scroll;
+  background-color: C.$white;
+  width: 100%;
+  li {
+    width: 100%;
+  }
+
+  position: absolute;
+  z-index: 100;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.dropDown::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.option {
+  @include U.size(100%);
+  padding: 8px 12px;
+  @include T.black-regular-14;
+
+  &:hover {
+    background-color: C.$blue100;
+  }
+}
+
+.selectedOpt {
+  @extend .option;
+  background-color: C.$blue400;
+  color: C.$white;
+}
