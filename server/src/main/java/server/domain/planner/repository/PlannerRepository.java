@@ -9,5 +9,5 @@ import server.domain.planner.domain.Planner;
 @Repository
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
 
-    Page<Planner> findByUserId (Long userId, Pageable pageable);
+    Page<Planner> findByTravelGroupGroupMembersUserUserId (Long userId, Pageable pageable);
 }

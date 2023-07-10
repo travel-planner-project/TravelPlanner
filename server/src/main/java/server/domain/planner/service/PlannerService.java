@@ -44,7 +44,7 @@ public class PlannerService {
     // 플래너 리스트
     @Transactional(readOnly = true)
     public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable) {
-        return plannerRepository.findByUserId(userId, pageable);
+        return plannerRepository.findByTravelGroupGroupMembersUserUserId(userId, pageable);
     }
 
     // 플래너 생성
@@ -181,7 +181,9 @@ public class PlannerService {
 
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
-        System.out.println("검색 유저:" + user);
+        if (!user.isPresent()) {
+            System.out.println("해당 유저가 존재하지 않습니다.");
+        }
 
         return user;
     }
