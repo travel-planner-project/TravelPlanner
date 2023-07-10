@@ -1,5 +1,6 @@
 package server.domain.planner.dto.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import server.domain.planner.domain.Date;
@@ -12,10 +13,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class DateResponse {
 
-    // 날짜 인덱스
+    @ApiModelProperty(example = "1")
     private Long dateId;
 
-    // 날짜 타이틀
+    @ApiModelProperty(example = "날짜 제목")
     private String dateTitle;
 
     // Todo Responses

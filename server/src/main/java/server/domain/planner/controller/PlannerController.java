@@ -19,9 +19,6 @@ import server.domain.planner.dto.request.UserSearchRequest;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.dto.response.PlannerListResponse;
 import server.domain.planner.service.PlannerService;
-import server.domain.user.repository.UserRepository;
-import server.global.security.jwt.JwtUtil;
-import server.global.security.jwt.RefreshTokenRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -39,10 +36,10 @@ public class PlannerController {
     // 플래너 리스트 뷰
     @ApiOperation(
             value = "플래너 리스트 조회"
-            , notes = "사용자의 닉네임을 통해 사용자의 플래너를 조회")
+            , notes = "사용자의 인덱스를 통해 사용자의 플래너를 조회")
     @ApiImplicitParam(
-            name = "userNickname"
-            , value = "사용자 닉네임"
+            name = "userId"
+            , value = "사용자 인덱스"
             , required = true
             , dataType = "string"
             , paramType = "query"
@@ -62,9 +59,7 @@ public class PlannerController {
     }
 
 
-    @ApiOperation(
-            value = "플래너 생성"
-            , notes = "플래너 생성")
+    @ApiOperation(value = "플래너 생성")
     @ApiResponses(
             {
                     @ApiResponse(code = 201, message = "CREATE SUCCESS")
@@ -80,9 +75,7 @@ public class PlannerController {
     }
 
 
-    @ApiOperation(
-            value = "플래너 수정"
-            , notes = "플래너 수정")
+    @ApiOperation(value = "플래너 수정")
     @ApiResponses(
             {
                     @ApiResponse(code = 200, message = "UPDATE SUCCESS")
@@ -102,7 +95,15 @@ public class PlannerController {
 
     @ApiOperation(
             value = "플래너 삭제"
-            , notes = "플래너 삭제")
+            , notes = "플래너 인덱스를 이용해 플래너 삭제")
+    @ApiImplicitParam(
+            name = "plannerId"
+            , value = "플래너 인덱스"
+            , required = true
+            , dataType = "integer"
+            , paramType = "query"
+            , defaultValue = "None"
+    )
     @ApiResponses(
             {
                     @ApiResponse(code = 200, message = "DELETE SUCCESS")

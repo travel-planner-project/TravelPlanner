@@ -24,7 +24,7 @@ public class UserController {
     )
     @ApiResponses(
             {
-                    @ApiResponse(code = 200, message = "SIGN-IN SUCCESS")
+                    @ApiResponse(code = 200, message = "REGISTER SUCCESS")
                     , @ApiResponse(code = 400, message = "BAD REQUEST: PLEASE CHECK INPUT DATA")
                     , @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
             }

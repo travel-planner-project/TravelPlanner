@@ -1,6 +1,7 @@
 package server.domain.planner.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import io.swagger.annotations.ApiModelProperty;
 import server.domain.planner.domain.Planner;
 
 import java.util.List;
@@ -9,13 +10,13 @@ import java.util.stream.Collectors;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class PlannerListResponse {
 
-    // 유저 이름
+    @ApiModelProperty(example = "1")
     private Long userId;
 
-    // 플래너 인덱스
+    @ApiModelProperty(example = "1")
     private Long plannerId;
 
-    // 플래너 제목
+    @ApiModelProperty(example = "플래너 제목")
     private String planTitle;
 
 

@@ -1,5 +1,6 @@
 package server.domain.planner.dto.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import server.domain.planner.domain.Planner;
@@ -11,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class PlannerDetailResponse {
 
-    // 플래너 인덱스
+    @ApiModelProperty(example = "1")
     private Long plannerId;
 
-    // 플래너 제목
+    @ApiModelProperty(example = "플래너 제목")
     private String planTitle;
 
-    // 플래너 공개여부
+    @ApiModelProperty(example = "false")
     private Boolean isPrivate;
 
     // TODO 리스트
