@@ -3,8 +3,6 @@ import SpriteIcon from '../../assets/sprite-icon.svg'
 type IconNameType =
   | 'chatting-plus'
   | 'chatting-dots'
-  | 'bag-minus'
-  | 'bag-plus'
   | 'box-arrow-left'
   | 'box-arrow-right'
   | 'calendar'
@@ -33,11 +31,7 @@ type IconNameType =
 
 type IconProps = {
   name: IconNameType
-<<<<<<< HEAD
-  size?: 16 | 18 | 20 | 24 | 28 | 42 | 50 | 64 | 70
-=======
-  size?: 10 | 12 | 16 | 18 | 24 | 28 | 50 | 70
->>>>>>> 0a6eb8d (Design: - 버튼 svg 아이콘으로 변경 (#41))
+  size?: number
 }
 
 function Icon({ name, size = 24 }: IconProps) {
