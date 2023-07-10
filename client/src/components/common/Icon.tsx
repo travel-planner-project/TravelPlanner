@@ -9,7 +9,6 @@ type IconNameType =
   | 'camera'
   | 'check-box'
   | 'uncheck-box'
-  | 'document'
   | 'x'
   | 'skyblue-x-circle'
   | 'pencil-box'
