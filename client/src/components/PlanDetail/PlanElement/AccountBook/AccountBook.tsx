@@ -27,6 +27,7 @@ function AccountBook() {
             key={line}
             addCost={addCost}
             deleteItem={(cost: number) => handleItems('minus', line, cost)}
+            disabledMinusBtn={items.length <= 1}
           />
         ))}
       </ul>
