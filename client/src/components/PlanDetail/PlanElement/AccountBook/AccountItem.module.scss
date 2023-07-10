@@ -1,0 +1,62 @@
+@use '../../../../styles/utils' as U;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/color' as C;
+
+.itemContainer {
+  width: 100%;
+  @include T.black-regular-12;
+  @include U.flex-c(row, flex-start, center);
+  gap: 4px;
+}
+
+/* input type=number 화살표 숨김 : Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* input type=number 화살표 숨김 : Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.input {
+  height: 20px;
+  border: 1px solid C.$gray300;
+  border-radius: 6px;
+}
+
+.inputText {
+  @extend .input;
+  width: 124px;
+  padding: 0 5px;
+  flex-grow: 2;
+}
+
+.inputText::placeholder {
+  text-align: center;
+  @include T.gray-regular-12;
+}
+
+.cost {
+  @extend .input;
+  padding: 0 12px;
+  text-align: right;
+  flex-grow: 1;
+  max-width: 100px;
+  width: 50px;
+}
+
+.cost::placeholder {
+  @include T.gray-regular-12;
+}
+
+.won {
+  text-align: center;
+}
+
+.disabled {
+  visibility: hidden;
+}
