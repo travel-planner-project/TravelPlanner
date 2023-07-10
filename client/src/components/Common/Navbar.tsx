@@ -8,7 +8,6 @@ function Navbar() {
     <div className={styles.container}>
       <ul>
         <NavbarProfile />
-
         {NavBarContent.map(navElement => {
           return (
             <li key={navElement.id}>

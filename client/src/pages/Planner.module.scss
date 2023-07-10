@@ -101,6 +101,7 @@
 
 .tripPeriod {
   @include U.flex-c(row, flex-start);
+  @include T.black-regular-14;
   gap: 6px;
 }
 
