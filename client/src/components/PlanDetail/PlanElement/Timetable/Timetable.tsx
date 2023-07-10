@@ -13,15 +13,13 @@ function Timetable() {
     return setTimeLines(pre => pre.filter(el => el !== line))
   }
 
-  const disabledMinusBtn = timelines.length === 1
-
   return (
     <div className={styles.container}>
       {timelines.map(line => (
         <Timeline
           key={line}
           deleteTimeline={() => handleTimeline('minus', line)}
-          disabledMinusBtn={disabledMinusBtn}
+          disableMinusBtn={timelines.length <= 1}
         />
       ))}
 

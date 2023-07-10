@@ -3,16 +3,16 @@ import styles from './MinusBtn.module.scss'
 
 export type MinusBtnProps = {
   deleteTimeline: () => void
-  disabledMinusBtn: boolean
+  disableMinusBtn: boolean
 }
 
-function MinusBtn({ deleteTimeline, disabledMinusBtn }: MinusBtnProps) {
+function MinusBtn({ deleteTimeline, disableMinusBtn }: MinusBtnProps) {
   return (
     <button
       type='button'
       onClick={deleteTimeline}
-      className={disabledMinusBtn ? styles.disabledBtn : ''}
-      disabled={disabledMinusBtn}
+      className={disableMinusBtn ? styles.disabledBtn : ''}
+      disabled={disableMinusBtn}
     >
       <Icon name='minus-square' size={12} />
     </button>
