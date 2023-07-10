@@ -51,11 +51,14 @@
 }
 
 // blue-bold
-@mixin blue-regular-20 {
+@mixin blue-bold-48 {
+  @include U.font($weight: 700, $size: 4.8rem, $color: C.$blue400);
+}
+@mixin blue-bold-20 {
   @include U.font($weight: 700, $size: 2rem, $color: C.$blue400);
 }
-@mixin blue-regular-48 {
-  @include U.font($weight: 700, $size: 4.8rem, $color: C.$blue400);
+@mixin blue-bold-16 {
+  @include U.font($weight: 700, $size: 1.6rem, $color: C.$blue400);
 }
 
 // blue-regular
