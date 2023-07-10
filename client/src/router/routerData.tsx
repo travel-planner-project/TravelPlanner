@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import PlanDetail from '../pages/PlanDetail'
 
 const Home = lazy(() => import('../pages/Home'))
 const Planner = lazy(() => import('../pages/Planner'))
@@ -98,6 +99,18 @@ export const routerData: RouterElement[] = [
     element: (
       <Suspense fallback={<div>loading</div>}>
         <Board />
+      </Suspense>
+    ),
+    onNavBar: false,
+    withAuth: false,
+  },
+  {
+    id: 4,
+    path: '/plandetail',
+    label: 'PLANDETAIL',
+    element: (
+      <Suspense fallback={<div>loading</div>}>
+        <PlanDetail />
       </Suspense>
     ),
     onNavBar: false,

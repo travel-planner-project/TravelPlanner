@@ -13,7 +13,7 @@ function NavbarProfile() {
           {profile && 로그인여부 ? (
             <img src={profile} alt='profile' />
           ) : (
-            <Icon name='person' size={70} />
+            <Icon name='profile' size={70} />
           )}
         </div>
         <div className={styles.profileName}>{로그인여부 ? '유저이름' : '로그인/회원가입'}</div>
