@@ -118,9 +118,9 @@ function Chatting() {
       if (clientRef.current) {
         clientRef.current.publish({ destination: `/pub/chat/${plannerId}`, body: msg })
       }
-      setNewChat('')
-      event.target.reset()
     }
+    setNewChat('')
+    event.target.reset()
   }
 
   return (
