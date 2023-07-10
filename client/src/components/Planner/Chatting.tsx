@@ -111,14 +111,16 @@ function Chatting() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault()
-    const newChatObj = { message: newChat }
-    const msg = JSON.stringify(newChatObj)
-    // 4. 메시지 보내기(퍼블리시)
-    if (clientRef.current) {
-      clientRef.current.publish({ destination: `/pub/chat/${plannerId}`, body: msg })
+    if (newChat.trim() !== '') {
+      const newChatObj = { message: newChat }
+      const msg = JSON.stringify(newChatObj)
+      // 4. 메시지 보내기(퍼블리시)
+      if (clientRef.current) {
+        clientRef.current.publish({ destination: `/pub/chat/${plannerId}`, body: msg })
+      }
+      setNewChat('')
+      event.target.reset()
     }
-    setNewChat('')
-    event.target.reset()
   }
 
   return (
