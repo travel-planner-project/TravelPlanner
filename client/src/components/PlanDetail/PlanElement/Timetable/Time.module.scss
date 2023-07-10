@@ -9,6 +9,9 @@
 
 .timeBtn {
   @include U.size(100%);
+  background-color: C.$white;
+  border: 1px solid C.$gray;
+  border-radius: 6px;
 }
 
 .showDropdown {
@@ -18,4 +21,5 @@
   border-top: 1px solid C.$gray;
   border-left: 1px solid C.$gray;
   border-right: 1px solid C.$gray;
+  border-bottom: 0;
 }
