@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import * as StompJs from '@stomp/stompjs'
 import styles from './Chatting.module.scss'
 import Icon from '../Common/Icon'
@@ -131,7 +130,7 @@ function Chatting() {
         </div>
         <div className={styles.chatBody} ref={scrollContainerRef}>
           {chatList.map(chat => (
-            <div className={styles.message} key={uuidv4()}>
+            <div className={styles.message} key={crypto.randomUUID()}>
               <span
                 className={`${
                   chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser
