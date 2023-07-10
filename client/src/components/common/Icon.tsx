@@ -3,13 +3,12 @@ import SpriteIcon from '../../assets/sprite-icon.svg'
 type IconNameType =
   | 'chatting-plus'
   | 'chatting-dots'
-  | 'bag-minus'
-  | 'bag-plus'
   | 'box-arrow-left'
   | 'box-arrow-right'
   | 'calendar'
   | 'camera'
   | 'check-box'
+  | 'uncheck-box'
   | 'x'
   | 'skyblue-x-circle'
   | 'pencil-box'
@@ -26,10 +25,12 @@ type IconNameType =
   | 'profile'
   | 'eye'
   | 'eye-close'
+  | 'minus-square'
+  | 'plus-square'
 
 type IconProps = {
   name: IconNameType
-  size?: 16 | 18 | 20 | 24 | 28 | 42 | 50 | 64 | 70
+  size?: number
 }
 
 function Icon({ name, size = 24 }: IconProps) {

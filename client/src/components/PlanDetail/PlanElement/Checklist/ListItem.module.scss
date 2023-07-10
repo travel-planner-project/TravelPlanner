@@ -1,0 +1,28 @@
+@use '../../../../styles/utils' as U;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/color' as C;
+
+.listContainer {
+  background-color: C.$white;
+  @include U.size(100%);
+  @include U.flex-c(row, flex-start, center);
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.input {
+  border: none;
+  @include T.black-regular-12;
+  line-height: 1;
+  flex-grow: 1;
+}
+
+.checked {
+  @extend .input;
+  text-decoration: line-through;
+  @include T.gray-regular-12;
+}
+
+.disabled {
+  visibility: hidden;
+}

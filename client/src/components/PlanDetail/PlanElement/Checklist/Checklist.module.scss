@@ -1,0 +1,24 @@
+@use '../../../../styles/utils' as U;
+@use '../../../../styles/typography' as T;
+@use '../../../../styles/color' as C;
+
+.container {
+  background-color: C.$gray100;
+  border: 1px solid C.$gray300;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.checklist {
+  border-radius: 8px;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 2px;
+  overflow: hidden;
+}
+
+.addBtn {
+  background-color: C.$white;
+  @include U.size(100%);
+  padding: 9px 0;
+  @include T.black-regular-12;
+}
