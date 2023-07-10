@@ -22,3 +22,7 @@
   text-decoration: line-through;
   @include T.gray-regular-12;
 }
+
+.disabled {
+  visibility: hidden;
+}

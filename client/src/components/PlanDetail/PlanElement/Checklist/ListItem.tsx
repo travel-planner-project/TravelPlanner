@@ -4,9 +4,10 @@ import styles from './ListItem.module.scss'
 
 type LitItem = {
   deleteItem: () => void
+  disableMinusBtn: boolean
 }
 
-function ListItem({ deleteItem }: LitItem) {
+function ListItem({ deleteItem, disableMinusBtn }: LitItem) {
   const [check, setCheck] = useState(false)
 
   const handleCheckBox = () => {
@@ -23,7 +24,12 @@ function ListItem({ deleteItem }: LitItem) {
         placeholder='여기에 입력하세요.'
         className={check ? styles.checked : styles.input}
       />
-      <button type='button' onClick={deleteItem}>
+      <button
+        type='button'
+        onClick={deleteItem}
+        disabled={disableMinusBtn}
+        className={disableMinusBtn ? styles.disabled : ''}
+      >
         <Icon name='minus-square' size={12} />
       </button>
     </li>

@@ -16,7 +16,11 @@ function Checklist() {
     <div className={styles.container}>
       <ul className={styles.checklist}>
         {list.map(line => (
-          <ListItem key={line} deleteItem={() => handleListItem('minus', line)} />
+          <ListItem
+            key={line}
+            deleteItem={() => handleListItem('minus', line)}
+            disableMinusBtn={list.length <= 1}
+          />
         ))}
         <button className={styles.addBtn} type='button' onClick={() => handleListItem('plus')}>
           항목 추가하기
