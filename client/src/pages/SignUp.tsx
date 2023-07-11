@@ -5,17 +5,19 @@ import Password from '../components/SignUp/Password'
 import PasswordCheck from '../components/SignUp/PasswordCheck'
 import { FormValueType, SignUpViewProps } from '../types/signUpTypes'
 import styles from './SignUp.module.scss'
+import { signUp } from '../apis/user'
+import useRouter from '../components/hooks/useRouter'
 
 function SingUpView({
   register,
-  handleSubmit,
+  onSubmit,
   dirtyFields,
   errors,
   getValues,
   isSubmitting,
 }: SignUpViewProps) {
   return (
-    <form className={styles.signUpForm} onSubmit={() => handleSubmit}>
+    <form className={styles.signUpForm} onSubmit={onSubmit}>
       <Email register={register} dirtyFields={dirtyFields} errors={errors} />
       <Nickname register={register} dirtyFields={dirtyFields} errors={errors} />
       <Password register={register} dirtyFields={dirtyFields} errors={errors} />
@@ -33,6 +35,7 @@ function SingUpView({
 }
 
 function SignUp() {
+  const { routeTo } = useRouter()
   const {
     register,
     handleSubmit,
@@ -40,9 +43,19 @@ function SignUp() {
     getValues,
   } = useForm<FormValueType>({ mode: 'onChange' })
 
+  const submitSignUp = (data: FormValueType) => {
+    signUp(data).then(res => {
+      if (res === 200) {
+        routeTo('/')
+      } else {
+        alert('회원가입에 실패했습니다')
+      }
+    })
+  }
+
   const props = {
     register,
-    handleSubmit,
+    onSubmit: handleSubmit(data => submitSignUp(data)),
     dirtyFields,
     errors,
     getValues,
