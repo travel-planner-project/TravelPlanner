@@ -8,7 +8,7 @@ type SignInType = {
 
 export const signUp = async ({ email, password, passwordCheck, userNickname }: FormValueType) => {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register`, {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/register`, {
       email,
       password,
       passwordCheck,
@@ -23,7 +23,10 @@ export const signUp = async ({ email, password, passwordCheck, userNickname }: F
 
 export const signIn = async ({ email, password }: SignInType) => {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/login`, { email, password })
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/login`, {
+      email,
+      password,
+    })
     return response.status
   } catch (error: unknown) {
     const axiosError = error as AxiosError
