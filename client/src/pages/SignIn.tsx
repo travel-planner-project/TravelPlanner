@@ -2,10 +2,27 @@ import { Link } from 'react-router-dom'
 import styles from './SignIn.module.scss'
 import Password from '../components/SignIn/Password'
 import Email from '../components/SignIn/Email'
+import { signIn } from '../apis/user'
+import useRouter from '../components/hooks/useRouter'
 
 function SignIn() {
+  const { routeTo } = useRouter()
+  const submitSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')
+    const password = formData.get('password')
+    const response = await signIn({ email, password })
+    if (response === 200) {
+      routeTo('/')
+    } else {
+      alert('로그인에 실패했습니다.')
+    }
+  }
+
   return (
-    <form className={styles.signInForm}>
+    <form className={styles.signInForm} onSubmit={submitSignIn}>
       <Email />
       <Password />
       <div className={styles.btnBox}>
