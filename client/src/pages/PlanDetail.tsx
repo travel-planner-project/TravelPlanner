@@ -45,7 +45,7 @@ function PlanDetailView() {
           </div>
           <div className={styles.addUserBtnBox}>
             <button type='button' className={styles.addPerson}>
-              <Icon name='add-person' size={50} />
+              <Icon name='add-person' size={42} />
             </button>
           </div>
         </div>

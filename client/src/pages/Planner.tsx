@@ -1,64 +1,73 @@
-import { useEffect, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
 import getCurrentUserPlanner from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'
+import AddPlanModal from '../components/Planner/AddPlanModal'
 
 type PlannerViewProps = {
   add: () => void
   edit: () => void
   linkToDetail: () => void
   plannerList: PlannerDataType | null
+  modal: boolean
 }
 
-function PlannerView({ add, edit, linkToDetail, plannerList }: PlannerViewProps) {
+function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerViewProps) {
   return (
-    <div className={styles.plannerContainer}>
-      <div className={styles.header}>
-        <div className={styles.profileBox}>
-          <img className={styles.profileImage} src='' alt='' />
-          <Icon name='profile' size={64} />
-        </div>
-        <div className={styles.describtionBox}>
-          <div className={styles.tripDescribtion}>
-            <div className={styles.pastTripCount}>
-              <span>지난 여행 </span>
+    <>
+      {modal ? <AddPlanModal /> : null}
+      <div className={styles.plannerContainer}>
+        <div className={styles.header}>
+          <div className={styles.profileBox}>
+            <img className={styles.profileImage} src='' alt='' />
+            <Icon name='profile' size={64} />
+          </div>
+          <div className={styles.describtionBox}>
+            <div className={styles.tripDescribtion}>
+              <div className={styles.pastTripCount}>
+                <span>지난 여행 </span>
+                <span>1</span>
+                <span>개</span>
+              </div>
+              <span className={styles.grayText}>|</span>
+              <div className={styles.entireTripCount}>
+                <span>총 여행 계획 </span>
+                <span>{plannerList?.length}</span>
+                <span>개</span>
+              </div>
+            </div>
+            <div className={styles.descriptionMsg}>
+              <span>다가오는 </span>
               <span>1</span>
-              <span>개</span>
-            </div>
-            <span className={styles.grayText}>|</span>
-            <div className={styles.entireTripCount}>
-              <span>총 여행 계획 </span>
-              <span>{plannerList?.length}</span>
-              <span>개</span>
+              <span>개의 여행이 있어요.</span>
             </div>
           </div>
-          <div className={styles.descriptionMsg}>
-            <span>다가오는 </span>
-            <span>1</span>
-            <span>개의 여행이 있어요.</span>
+        </div>
+        <div className={styles.plansBox}>
+          <div className={styles.plans}>
+            {/* 플래너 리스트 맵으로 돌리기 */}
+            {plannerList?.map(planner => {
+              return (
+                <PlanElement
+                  key={planner.plannerId}
+                  planner={planner}
+                  linkToDetail={linkToDetail}
+                />
+              )
+            })}
+          </div>
+          <div className={styles.buttons}>
+            <button type='button' className={styles.addBtn} onClick={add}>
+              추가하기
+            </button>
+            <button type='button' className={styles.editBtn} onClick={edit}>
+              편집하기
+            </button>
           </div>
         </div>
       </div>
-      <div className={styles.plansBox}>
-        <div className={styles.plans}>
-          {/* 플래너 리스트 맵으로 돌리기 */}
-          {plannerList?.map(planner => {
-            return (
-              <PlanElement key={planner.plannerId} planner={planner} linkToDetail={linkToDetail} />
-            )
-          })}
-        </div>
-        <div className={styles.buttons}>
-          <button type='button' className={styles.addBtn} onClick={add}>
-            추가하기
-          </button>
-          <button type='button' className={styles.editBtn} onClick={edit}>
-            편집하기
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   )
 }
 
@@ -70,10 +79,11 @@ type PlannerDataType = {
 
 function Planner() {
   const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const apiUrl = `${import.meta.env.VITE_API_SERVER}/planner?userId=14`
 
   const handleAddButtonClick = () => {
-    console.log('추가하기')
+    setIsModalOpened(true)
   }
   const handleEditButtonClick = () => {
     console.log('편집하기')
@@ -100,6 +110,7 @@ function Planner() {
       edit={handleEditButtonClick}
       linkToDetail={handlePlannerClick}
       plannerList={plannerList}
+      modal={isModalOpened}
     />
   )
 }
