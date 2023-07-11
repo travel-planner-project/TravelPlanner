@@ -6,7 +6,7 @@ import PasswordCheck from '../components/SignUp/PasswordCheck'
 import { FormValueType, SignUpViewProps } from '../types/signUpTypes'
 import styles from './SignUp.module.scss'
 import { signUp } from '../apis/user'
-import useRouter from '../components/hooks/useRouter'
+import useRouter from '../hooks/useRouter'
 
 function SingUpView({
   register,

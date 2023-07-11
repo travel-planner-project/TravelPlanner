@@ -3,7 +3,7 @@ import styles from './SignIn.module.scss'
 import Password from '../components/SignIn/Password'
 import Email from '../components/SignIn/Email'
 import { signIn } from '../apis/user'
-import useRouter from '../components/hooks/useRouter'
+import useRouter from '../hooks/useRouter'
 
 function SignIn() {
   const { routeTo } = useRouter()
