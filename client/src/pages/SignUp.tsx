@@ -46,7 +46,7 @@ function SignUp() {
   const submitSignUp = (data: FormValueType) => {
     signUp(data).then(res => {
       if (res === 200) {
-        routeTo('/')
+        routeTo('/user/login')
       } else {
         alert('회원가입에 실패했습니다')
       }
