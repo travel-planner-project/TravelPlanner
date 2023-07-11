@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
+import Chatting from '../components/Planner/Chatting'
 
 function PlanDetailView() {
+  const [chatModal, setChatModal] = useState(false)
+
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
@@ -61,6 +65,17 @@ function PlanDetailView() {
           <div className={styles.addDayBtn}>추가하기</div>
         </div>
       </div>
+      {chatModal ? (
+        <Chatting setChatModal={setChatModal} />
+      ) : (
+        <button
+          type='button'
+          className={styles.chatModalBtn}
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => setChatModal(true)}
+        >
+          <Icon name='chatting-dots' size={50} />
+        </button>
+      )}
     </div>
   )
 }

@@ -113,3 +113,17 @@
   padding: 12px;
   border-radius: 4px;
 }
+
+.chatModalBtn {
+  position: fixed;
+  right: 2%;
+  bottom: 4%;
+  width: 90px;
+  height: 90px;
+  background-color: C.$blue100;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include U.box-shadow();
+}

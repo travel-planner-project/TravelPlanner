@@ -10,7 +10,11 @@ type Chat = {
   message: string
 }
 
-function Chatting() {
+type ChattingProps = {
+  setChatModal: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function Chatting({ setChatModal }: ChattingProps) {
   // 임의의 더미 데이터
   // const chatList = [
   //   {
@@ -34,7 +38,7 @@ function Chatting() {
   const plannerId = 1 // 임시로 1로 설정. useParams()로 받아오는 게 좋을 듯.
   const userId = 13 // 임시로 13으로 설정. 로그인 기능 구현 후, 로그인한 유저의 id로 설정.
   const [chatList, setChatList] = useState<Chat[]>([])
-  const [newChat, setNewChat] = useState<string>('')
+  const [newChat, setNewChat] = useState('')
 
   const clientRef = useRef<StompJs.Client | null>(null)
   const scrollContainerRef = useRef(null)
@@ -128,7 +132,12 @@ function Chatting() {
       <div className={styles.chatContainer}>
         <div className={styles.chatHeader}>
           <h1>그룹 채팅</h1>
-          <Icon name='x' size={18} />
+          <button
+            type='button'
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => setChatModal(false)}
+          >
+            <Icon name='x' size={18} />
+          </button>
         </div>
         <div className={styles.chatBody} ref={scrollContainerRef}>
           {chatList.map(chat => (
