@@ -6,11 +6,9 @@ type SignInType = {
   password: FormDataEntryValue | null
 }
 
-const BaseURL = 'http://61.82.175.32:8080/api/user'
-
 export const signUp = async ({ email, password, passwordCheck, userNickname }: FormValueType) => {
   try {
-    const response = await axios.post(`${BaseURL}/register`, {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register`, {
       email,
       password,
       passwordCheck,
@@ -25,7 +23,7 @@ export const signUp = async ({ email, password, passwordCheck, userNickname }: F
 
 export const signIn = async ({ email, password }: SignInType) => {
   try {
-    const response = await axios.post(`${BaseURL}/login`, { email, password })
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/login`, { email, password })
     return response.status
   } catch (error: unknown) {
     const axiosError = error as AxiosError
