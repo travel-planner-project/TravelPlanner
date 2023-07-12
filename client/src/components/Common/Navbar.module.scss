@@ -17,9 +17,3 @@
   @include T.black-regular-24;
   margin: 15px 0;
 }
-
-.logout {
-  @include U.flex-c(row, center, center);
-  gap: 8px;
-  @include T.gray-regular-20;
-}
