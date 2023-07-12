@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import server.domain.user.dto.SignUpRequest;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DynamicInsert
@@ -25,15 +26,19 @@ public class User {
     private Long userId;
 
     // 유저 닉네임
+    @NotNull
     private String userNickname;
 
     // 이메일
+    @NotNull
     private String email;
 
     // 비밀번호
+    @NotNull
     private String password;
 
     // 유저 권한
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
