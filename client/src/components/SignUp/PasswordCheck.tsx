@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PasswordCheckProps } from '../../types/SignUp'
+import { PasswordCheckProps } from '../../types/signUpTypes'
 import styles from './form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 

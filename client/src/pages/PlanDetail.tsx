@@ -4,7 +4,7 @@ import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
-import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/PlanDetail'
+import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/planDetailTypes'
 
 function PlanDetailView({
   userId,

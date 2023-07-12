@@ -3,7 +3,7 @@ import Email from '../components/SignUp/Email'
 import Nickname from '../components/SignUp/Nickname'
 import Password from '../components/SignUp/Password'
 import PasswordCheck from '../components/SignUp/PasswordCheck'
-import { FormValueType, SignUpViewProps } from '../types/SignUp'
+import { FormValueType, SignUpViewProps } from '../types/signUpTypes'
 import styles from './SignUp.module.scss'
 
 function SingUpView({

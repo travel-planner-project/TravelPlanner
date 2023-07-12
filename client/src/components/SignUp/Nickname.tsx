@@ -1,4 +1,4 @@
-import { ReactHookFormProps } from '../../types/SignUp'
+import { ReactHookFormProps } from '../../types/signUpTypes'
 import styles from './form.module.scss'
 
 const specialCharacterReg = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]+$/
