@@ -3,6 +3,7 @@
 @use '../../styles/utils' as U;
 
 .container {
+  @include U.flex-c(column, space-between, center);
   background-color: C.$gray100;
   padding: 40px;
 }
@@ -15,4 +16,10 @@
 .inactive {
   @include T.black-regular-24;
   margin: 15px 0;
+}
+
+.logout {
+  @include U.flex-c(row, center, center);
+  gap: 8px;
+  @include T.gray-regular-20;
 }
