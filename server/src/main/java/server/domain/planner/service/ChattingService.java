@@ -24,6 +24,7 @@ public class ChattingService {
 
         Optional<User> user = userRepository.findByUserId(request.getUserId());
         response.setUserNickname(user.get().getUserNickname());
+        response.setUserId(user.get().getUserId());
 
         return response;
     }
