@@ -11,10 +11,10 @@ type Chat = {
 }
 
 type ChattingProps = {
-  setChatModal: React.Dispatch<React.SetStateAction<boolean>>
+  onChatModalFalse: () => void
 }
 
-function Chatting({ setChatModal }: ChattingProps) {
+function Chatting({ onChatModalFalse }: ChattingProps) {
   // 임의의 더미 데이터
   // const chatList = [
   //   {
@@ -56,30 +56,26 @@ function Chatting({ setChatModal }: ChattingProps) {
   useEffect(() => {
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
-      // brokerURL 속성이 존재하는 경우, 해당 URL을 기반으로 새로운 WebSocket을 생성한다.
       brokerURL: import.meta.env.VITE_BROKER_URL,
 
-      // 연결에 사용될 로그인 정보 -> 토큰..? 필요할지 모르겠음.
+      // 연결에 사용될 로그인 정보
       // connectHeaders: {
       //   Authorization: `Bearer ${token}`,
       // },
 
       // 디버깅용
-      // debug(str) {
-      //   console.log(str)
-      // },
+      debug(str) {
+        console.log(str)
+      },
 
-      // 재연결 시도 사이의 지연 시간: 5초
       reconnectDelay: 5000,
-      // 수신 및 송신 하트비트 주기: 4초
-      // 하트비트란 정기적으로 보내지는 작은 메시지로, 상대방이 연결되어 있는지 확인하는 용도로 사용된다.
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     })
 
     // 3. 클라이언트가 메시지 브로커에 연결(커넥트)되었을 때 호출되는 함수
     client.onConnect = function (frame) {
-      // console.log(`Connected: ${frame}`)
+      console.log(`Connected: ${frame}`)
       // 메시지 받는 함수
       const callback = function (message: any) {
         if (message.body) {
@@ -132,10 +128,7 @@ function Chatting({ setChatModal }: ChattingProps) {
       <div className={styles.chatContainer}>
         <div className={styles.chatHeader}>
           <h1>그룹 채팅</h1>
-          <button
-            type='button'
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => setChatModal(false)}
-          >
+          <button type='button' onClick={onChatModalFalse}>
             <Icon name='x' size={18} />
           </button>
         </div>

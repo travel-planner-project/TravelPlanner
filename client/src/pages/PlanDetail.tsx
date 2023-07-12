@@ -4,9 +4,13 @@ import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import Chatting from '../components/Planner/Chatting'
 
-function PlanDetailView() {
-  const [chatModal, setChatModal] = useState(false)
+type PlanDetailProps = {
+  chatModal: boolean
+  onChatModalTrue: () => void
+  onChatModalFalse: () => void
+}
 
+function PlanDetailView({ chatModal, onChatModalTrue, onChatModalFalse }: PlanDetailProps) {
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
@@ -66,21 +70,26 @@ function PlanDetailView() {
         </div>
       </div>
       {chatModal ? (
-        <Chatting setChatModal={setChatModal} />
+        <Chatting onChatModalFalse={onChatModalFalse} />
       ) : (
-        <button
-          type='button'
-          className={styles.chatModalBtn}
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => setChatModal(true)}
-        >
+        <button type='button' className={styles.chatModalBtn} onClick={onChatModalTrue}>
           <Icon name='chatting-dots' size={50} />
         </button>
       )}
     </div>
   )
 }
+
 function PlanDetail() {
-  return <PlanDetailView />
+  const [chatModal, setChatModal] = useState(false)
+
+  const props: PlanDetailProps = {
+    chatModal,
+    onChatModalTrue: () => setChatModal(true),
+    onChatModalFalse: () => setChatModal(false),
+  }
+
+  return <PlanDetailView {...props} />
 }
 
 export default PlanDetail
