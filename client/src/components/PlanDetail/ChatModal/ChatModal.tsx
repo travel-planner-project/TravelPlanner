@@ -1,25 +1,16 @@
 import { useEffect, useRef } from 'react'
-import styles from './Chatting.module.scss'
-import Icon from '../Common/Icon'
-import { Chat } from '../../types/PlanDetail'
+import styles from './ChatModal.module.scss'
+import Icon from '../../Common/Icon'
+import { ChatModalProps } from '../../../types/PlanDetail'
 
-type ChattingProps = {
-  userId: number
-  chatList: Chat[]
-  newChat: string
-  onChatModalFalse: () => void
-  onChatChange: (event: any) => void
-  onChatSubmit: (event: any) => void
-}
-
-function Chatting({
+function ChatModal({
   userId,
   chatList,
   newChat,
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
-}: ChattingProps) {
+}: ChatModalProps) {
   const scrollContainerRef = useRef(null)
 
   // 리스트 갱신 시 스크롤 맨 아래로
@@ -72,4 +63,4 @@ function Chatting({
   )
 }
 
-export default Chatting
+export default ChatModal

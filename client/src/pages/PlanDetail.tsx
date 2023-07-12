@@ -3,19 +3,8 @@ import * as StompJs from '@stomp/stompjs'
 import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
-import Chatting from '../components/Planner/Chatting'
-import { Chat } from '../types/PlanDetail'
-
-type PlanDetailProps = {
-  userId: number
-  chatModal: boolean
-  chatList: Chat[]
-  newChat: string
-  onChatModalTrue: () => void
-  onChatModalFalse: () => void
-  onChatChange: (event: any) => void
-  onChatSubmit: (event: any) => void
-}
+import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
+import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/PlanDetail'
 
 function PlanDetailView({
   userId,
@@ -26,7 +15,7 @@ function PlanDetailView({
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
-}: PlanDetailProps) {
+}: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
@@ -86,7 +75,7 @@ function PlanDetailView({
         </div>
       </div>
       {chatModal ? (
-        <Chatting
+        <ChatModal
           userId={userId}
           chatList={chatList}
           newChat={newChat}
@@ -178,16 +167,21 @@ function PlanDetail() {
     event.target.reset()
   }
 
-  const props: PlanDetailProps = {
+  const planDetailProps: PlanDetailProps = {
     userId,
     chatModal,
+    onChatModalTrue: () => setChatModal(true),
+  }
+
+  const chattingProps: ChattingProps = {
     chatList,
     newChat,
-    onChatModalTrue: () => setChatModal(true),
     onChatModalFalse: () => setChatModal(false),
     onChatChange: (event: any) => setNewChat(event.target.value),
     onChatSubmit,
   }
+
+  const props = { ...planDetailProps, ...chattingProps }
 
   return <PlanDetailView {...props} />
 }
