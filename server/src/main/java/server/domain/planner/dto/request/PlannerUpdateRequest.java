@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class PlannerUpdateRequest {
@@ -16,4 +18,7 @@ public class PlannerUpdateRequest {
 
     @ApiModelProperty(example = "false")
     private Boolean isPrivate;
+
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }

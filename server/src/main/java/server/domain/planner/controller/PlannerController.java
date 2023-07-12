@@ -12,10 +12,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import server.domain.planner.dto.request.GroupMemberUpdateRequest;
-import server.domain.planner.dto.request.PlannerCreateRequest;
-import server.domain.planner.dto.request.PlannerUpdateRequest;
-import server.domain.planner.dto.request.UserSearchRequest;
+import server.domain.planner.dto.request.*;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.dto.response.PlannerListResponse;
 import server.domain.planner.service.PlannerService;
@@ -144,6 +141,7 @@ public class PlannerController {
         return plannerService.findPlannerByPlannerId(plannerId);
     }
 
+
     // 그룹멤버 추가
     @MessageMapping("/add-member/{plannerId}")
     public void addGroupMember(
@@ -156,6 +154,21 @@ public class PlannerController {
                 , Map.of(
                         "type", "add-member",
                         "msg", plannerService.addGroupMember(request, plannerId)
+                )
+        );
+    }
+
+    // 그룹 멤버 삭제
+    @MessageMapping("/delete-member/{plannerId}")
+    public void deleteGroupMember(
+            @DestinationVariable("plannerId") Long plannerId,
+            GroupMemberDeleteRequest request
+    ) throws Exception {
+
+        simpMessagingTemplate.convertAndSend( "/sub/planner-message" + plannerId
+                , Map.of(
+                        "type", "delete-user"
+                        , "msg", plannerService.deleteGroupMember(request)
                 )
         );
     }

@@ -9,10 +9,7 @@ import server.domain.planner.domain.Planner;
 import server.domain.planner.domain.travelGroup.GroupMember;
 import server.domain.planner.domain.travelGroup.GroupMemberType;
 import server.domain.planner.domain.travelGroup.TravelGroup;
-import server.domain.planner.dto.request.GroupMemberUpdateRequest;
-import server.domain.planner.dto.request.PlannerCreateRequest;
-import server.domain.planner.dto.request.PlannerUpdateRequest;
-import server.domain.planner.dto.request.UserSearchRequest;
+import server.domain.planner.dto.request.*;
 import server.domain.planner.dto.response.PlannerDetailResponse;
 import server.domain.planner.repository.GroupMemerRepository;
 import server.domain.planner.repository.PlannerRepository;
@@ -92,23 +89,29 @@ public class PlannerService {
         UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(email);
         Long userId = userDetails.getUser().getUserId();
 
+
         // 플래너를 만든 사람이 내가 아니면, 플래너의 그룹에서 '나' 를 제거해야 한다.
         if (!userId.equals(planner.getUserId())) {
 
-            TravelGroup travelGroup = travelGroupRepository.findById(planner.getTravelGroup().getTravelGroupId())
+            TravelGroup travelGroup = travelGroupRepository.findByTravelGroupId(planner.getTravelGroup().getTravelGroupId())
                     .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_GROUP_MEMBER));
 
             List<GroupMember> groupMembers = travelGroup.getGroupMembers();
 
-            for(GroupMember groupMember: groupMembers) {
+            for (GroupMember groupMember : groupMembers) {
 
-                if (groupMember.getUser().getUserId().equals(userId)) {
+                if (groupMember.getUserId().equals(userId)) {
+
                     travelGroup.removeMember(groupMember);
                     break;
                 }
             }
 
             travelGroupRepository.save(travelGroup);
+
+            // groupMember 에서도 삭제
+            GroupMember groupMember = groupMemberRepository.findByUserId(userId);
+            groupMemberRepository.delete(groupMember);
 
         } else {
 
@@ -173,6 +176,36 @@ public class PlannerService {
         System.out.println("이미 해당 유저가 존재합니다.");
 
         return null;
+    }
+
+    // 플래너 에서 유저 삭제
+    @Transactional
+    public TravelGroup deleteGroupMember (GroupMemberDeleteRequest request) {
+
+        Planner planner = plannerRepository.findById(request.getPlannerId())
+                .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_PLANNER));
+
+        TravelGroup travelGroup = travelGroupRepository.findByTravelGroupId(planner.getTravelGroup().getTravelGroupId())
+                .orElseThrow(() -> new HandlableException(ErrorCode.NOT_EXISTS_GROUP_MEMBER));
+
+        List<GroupMember> groupMembers = travelGroup.getGroupMembers();
+
+        for (GroupMember groupMember : groupMembers) {
+
+            if (groupMember.getUserId().equals(request.getUserId())) {
+
+                travelGroup.removeMember(groupMember);
+                break;
+            }
+        }
+
+        travelGroupRepository.save(travelGroup);
+
+        // groupMember 에서도 삭제
+        GroupMember groupMember = groupMemberRepository.findByUserId(request.getUserId());
+        groupMemberRepository.delete(groupMember);
+
+        return travelGroup;
     }
 
     // 플래너에서 유저 검색

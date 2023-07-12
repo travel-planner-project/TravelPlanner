@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import server.domain.planner.domain.travelGroup.GroupMemberType;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +21,10 @@ public class PlannerCreateRequest {
 
     @ApiModelProperty(example = "false")
     private Boolean isPrivate;
+
+    // 여행 시작 날짜
+    private LocalDateTime startDate;
+
+    // 여행 도착 날짜
+    private LocalDateTime endDate;
 }
