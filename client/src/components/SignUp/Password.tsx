@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ReactHookFormProps } from '../../types/SignUp'
+import { ReactHookFormProps } from '../../types/signUpTypes'
 import styles from './form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
