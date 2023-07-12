@@ -11,12 +11,20 @@ type PlannerViewProps = {
   linkToDetail: () => void
   plannerList: PlannerDataType | null
   modal: boolean
+  modalClose: () => void
 }
 
-function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerViewProps) {
+function PlannerView({
+  add,
+  edit,
+  linkToDetail,
+  plannerList,
+  modal,
+  modalClose,
+}: PlannerViewProps) {
   return (
     <>
-      {modal ? <AddPlanModal /> : null}
+      {modal ? <AddPlanModal modalClose={modalClose} /> : null}
       <div className={styles.plannerContainer}>
         <div className={styles.header}>
           <div className={styles.profileBox}>
@@ -81,10 +89,15 @@ function Planner() {
   const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const apiUrl = `${import.meta.env.VITE_API_SERVER}/planner?userId=14`
+  console.log(plannerList)
 
   const handleAddButtonClick = () => {
     setIsModalOpened(true)
   }
+  const handleCloseModal = () => {
+    setIsModalOpened(false)
+  }
+
   const handleEditButtonClick = () => {
     console.log('편집하기')
   }
@@ -111,6 +124,7 @@ function Planner() {
       linkToDetail={handlePlannerClick}
       plannerList={plannerList}
       modal={isModalOpened}
+      modalClose={handleCloseModal}
     />
   )
 }

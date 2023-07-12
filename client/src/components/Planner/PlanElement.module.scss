@@ -16,6 +16,10 @@
   height: 50px;
   background-color: C.$blue400;
   border-radius: 12px 12px 0 0;
+  button {
+    @include U.flex-c(row, flex-start, center);
+    width: 100%;
+  }
 }
 
 .planContents {

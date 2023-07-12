@@ -1,14 +1,18 @@
 import styles from './AddPlanModal.module.scss'
 
-function AddPlanModal() {
+type AddPlanModalProps = {
+  modalClose: () => void
+}
+
+function AddPlanModal({ modalClose }: AddPlanModalProps) {
   const today = new Date().toISOString().split('T')[0]
 
   const addPlanHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const planTitle = formData.get('title')
-    const startDate = formData.get('start-date')
-    const endDate = formData.get('end-date')
+    const startDate = new Date(formData.get('start-date') as string)
+    const endDate = new Date(formData.get('end-date') as string)
     console.log(planTitle, startDate, endDate)
   }
 
@@ -50,7 +54,7 @@ function AddPlanModal() {
           <button className={styles.okBtn} type='submit'>
             만들기
           </button>
-          <button className={styles.cancelBtn} type='button'>
+          <button className={styles.cancelBtn} type='button' onClick={modalClose}>
             취소
           </button>
         </div>
