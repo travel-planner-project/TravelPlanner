@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
 import getCurrentUserPlanner from '../apis/planner'
