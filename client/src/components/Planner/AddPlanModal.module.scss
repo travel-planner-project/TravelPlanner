@@ -1,0 +1,83 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.modalContainer {
+  position: absolute;
+}
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  left: calc(100% / 7);
+  bottom: 0;
+  @include U.size(100%, 100%);
+  // max-width: 640px;
+  background: rgb(80, 80, 80);
+  opacity: 0.2;
+  z-index: 2000;
+  animation-duration: 0.5s;
+  animation-name: fadein;
+}
+
+.modal {
+  position: fixed;
+  top: calc(50% - 232px);
+  left: calc((100% / 7) * 3.5 - 150px);
+  bottom: 0;
+  @include U.size(300px, 464px);
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 36px;
+  // max-width: 640px;
+  padding: 48px 48px 48px 48px;
+  background-color: white;
+  z-index: 2001;
+  border-radius: 12px;
+  border: 1px solid C.$gray200;
+  // animation-duration: 0.3s;
+  // animation-name: slidein;
+}
+
+.title {
+  @include T.blue-bold-20;
+}
+
+.inputBox {
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 24px;
+  width: 200px;
+  input {
+    padding: 6px;
+    width: 200px;
+    border: none;
+    border-bottom: 1px solid black;
+  }
+  input::placeholder {
+    color: C.$gray;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.2;
+  }
+}
+
+button {
+  // width: 48px;
+  padding: 6px;
+  width: 60px;
+}
+
+.okBtn {
+  background-color: C.$blue400;
+  color: C.$white;
+  border-radius: 4px;
+}
+
+.cancelBtn {
+  color: C.$blue400;
+}
