@@ -1,4 +1,4 @@
-import Icon from '../../../Commons/Icon'
+import Icon from '../../../Common/Icon'
 import styles from './MinusBtn.module.scss'
 
 export type MinusBtnProps = {

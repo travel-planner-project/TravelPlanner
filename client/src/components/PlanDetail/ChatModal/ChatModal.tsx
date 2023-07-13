@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import styles from './ChatModal.module.scss'
-import Icon from '../../Commons/Icon'
+import Icon from '../../Common/Icon'
 import { ChatModalProps } from '../../../types/planDetailTypes'
 
 function ChatModal({

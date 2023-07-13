@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import * as StompJs from '@stomp/stompjs'
-import Icon from '../components/Commons/Icon'
+import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
