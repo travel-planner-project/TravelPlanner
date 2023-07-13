@@ -3,10 +3,10 @@ import style from './GeneralLayout.module.scss'
 
 type GeneralLayoutProps = {
   children: React.ReactNode
-  // withAuth: boolean
+  withAuth: boolean
 }
 
-function GeneralLayout({ children }: GeneralLayoutProps) {
+function GeneralLayout({ children, withAuth }: GeneralLayoutProps) {
   return (
     <div className={style.container}>
       <Navbar />
