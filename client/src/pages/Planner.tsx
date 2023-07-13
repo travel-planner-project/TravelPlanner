@@ -1,5 +1,5 @@
-import { SetStateAction, useEffect, useState } from 'react'
-import Icon from '../components/Common/Icon'
+import { useEffect, useState } from 'react'
+import Icon from '../components/Commons/Icon'
 import styles from './Planner.module.scss'
 import getCurrentUserPlanner from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'

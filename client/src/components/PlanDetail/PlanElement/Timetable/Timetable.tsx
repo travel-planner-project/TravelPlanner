@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Icon from '../../../Common/Icon'
+import Icon from '../../../Commons/Icon'
 import Timeline from './Timeline'
 import styles from './Timetable.module.scss'
 

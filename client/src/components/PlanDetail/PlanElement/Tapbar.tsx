@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import styles from './Tapbar.module.scss'
-import Icon from '../../Common/Icon'
+import Icon from '../../Commons/Icon'
 
 type TapbarViewProps = {
   currentTap: string

@@ -1,12 +1,11 @@
-import Navbar from '../components/Common/Navbar'
+import Navbar from '../components/Commons/Navbar'
 import style from './GeneralLayout.module.scss'
 
 type GeneralLayoutProps = {
   children: React.ReactNode
-  withAuth: boolean
 }
 
-function GeneralLayout({ children, withAuth }: GeneralLayoutProps) {
+function GeneralLayout({ children }: GeneralLayoutProps) {
   return (
     <div className={style.container}>
       <Navbar />
