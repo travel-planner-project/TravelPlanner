@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styles from './Tapbar.module.scss'
 import Icon from '../../Common/Icon'
 
