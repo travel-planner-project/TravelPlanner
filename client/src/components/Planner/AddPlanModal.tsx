@@ -22,27 +22,30 @@ function AddPlanModal({ modalClose }: AddPlanModalProps) {
       <div className={styles.modal}>
         <div className={styles.title}>여행 추가하기</div>
         <div className={styles.inputBox}>
-          <label className={styles.label}>
+          <label htmlFor='title' className={styles.label}>
             여행 이름
             <input
+              id='title'
               name='title'
               placeholder='여기에 입력하세요.'
               className={styles.tripTitle}
               type='text'
             />
           </label>
-          <label className={styles.label}>
+          <label htmlFor='start-date' className={styles.label}>
             여행 시작일
             <input
+              id='start-date'
               name='start-date'
               defaultValue={today}
               className={styles.tripStartDate}
               type='date'
             />
           </label>
-          <label className={styles.label}>
+          <label htmlFor='end-date' className={styles.label}>
             여행 종료일
             <input
+              id='end-date'
               name='end-date'
               defaultValue={today}
               className={styles.tripEndDate}
