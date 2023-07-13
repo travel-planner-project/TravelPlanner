@@ -1,4 +1,4 @@
-import Icon from '../Common/Icon'
+import Icon from '../Commons/Icon'
 import styles from './ShowPasswordButton.module.scss'
 
 type ShowPasswordButtonProps = {

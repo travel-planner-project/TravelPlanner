@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Icon from '../../../Common/Icon'
+import Icon from '../../../Commons/Icon'
 import styles from './AccountBook.module.scss'
 import AccountItem from './AccountItem'
 

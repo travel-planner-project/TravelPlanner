@@ -1,4 +1,4 @@
-import Navbar from '../components/Common/Navbar'
+import Navbar from '../components/Commons/Navbar'
 import style from './GeneralLayout.module.scss'
 
 type GeneralLayoutProps = {
