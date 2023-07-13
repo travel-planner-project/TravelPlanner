@@ -1,5 +1,5 @@
 import { ReactHookFormProps } from '../../types/signUpTypes'
-import styles from './form.module.scss'
+import styles from './Form.module.scss'
 
 const specialCharacterReg = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]+$/
 function Nickname({ register, dirtyFields, errors }: ReactHookFormProps) {

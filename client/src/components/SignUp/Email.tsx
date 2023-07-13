@@ -1,5 +1,5 @@
 import { ReactHookFormProps } from '../../types/signUpTypes'
-import styles from './form.module.scss'
+import styles from './Form.module.scss'
 
 const emailReg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
 

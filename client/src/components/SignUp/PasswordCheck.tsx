@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { PasswordCheckProps } from '../../types/signUpTypes'
-import styles from './form.module.scss'
+import styles from './Form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
 function PasswordCheck({ register, dirtyFields, errors, getValues }: PasswordCheckProps) {

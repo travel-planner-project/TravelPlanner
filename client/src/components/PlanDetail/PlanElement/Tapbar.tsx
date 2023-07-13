@@ -1,5 +1,5 @@
 import styles from './Tapbar.module.scss'
-import Icon from '../../Commons/Icon'
+import Icon from '../../Common/Icon'
 
 type TapbarViewProps = {
   currentTap: string
