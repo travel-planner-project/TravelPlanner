@@ -12,40 +12,33 @@
   border-radius: 4px;
 }
 
-.itemBox {
+.inputBox {
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 6px;
   background-color: C.$gray100;
   width: 100%;
-  padding: 24px;
+  padding: 12px;
   border: 1px solid C.$gray200;
   border-radius: 4px;
-}
-
-.header {
-  @include U.flex-c(row, flex-start, center);
-  gap: 12px;
-  margin-bottom: 12px;
-  .title {
-    @include T.black-semibold-20;
+  .textInput {
+    border: 1px solid C.$gray200;
+    border-radius: 4px;
+    width: 100%;
+    padding: 6px 12px 6px 12px;
   }
-  .category {
-    @include T.gray-regular-16;
+  .timeInput {
+    border: 1px solid C.$gray200;
+    border-radius: 4px;
+    width: 100%;
+    padding: 6px 12px 6px 12px;
   }
-}
-
-.itemInfo {
-  @include U.flex-c(row, flex-start, center);
-  gap: 12px;
-  .itemTime {
-    @include T.blue-regular-16;
+  .longTextInput {
+    border: 1px solid C.$gray200;
+    border-radius: 4px;
+    width: 100%;
+    padding: 6px 12px 6px 12px;
+    resize: none;
   }
-  .itemPayment {
-    @include T.black-regular-16;
-  }
-}
-
-.itemAddress {
-  @include T.black-regular-12;
-  margin-bottom: 12px;
 }
 
 .buttons {
@@ -53,7 +46,7 @@
   width: 100%;
   gap: 12px;
   font-size: 1.6rem;
-  .okBtn {
+  .addBtn {
     @include U.flex-c(row);
     background-color: C.$blue400;
     color: white;
@@ -61,7 +54,7 @@
     width: 48px;
     border-radius: 4px;
   }
-  .deleteBtn {
+  .cancelBtn {
     @include U.flex-c(row);
     color: C.$blue400;
     padding: 3px;
