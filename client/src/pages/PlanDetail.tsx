@@ -67,10 +67,15 @@ function PlanDetailView({
           <div className={styles.planList}>
             <div className={styles.plan}>
               <div className={styles.dayTitle}>Day 1</div>
-              <Element />
-              <Element />
-              <div className={styles.addElementBtn}>
-                <Icon name='plus-square' size={24} />
+              <div className={styles.elementBox}>
+                <Element />
+                <Element />
+                <Element />
+                <Element />
+                <Element />
+                <div className={styles.addElementBtn}>
+                  <Icon name='plus-square' size={24} />
+                </div>
               </div>
             </div>
           </div>
