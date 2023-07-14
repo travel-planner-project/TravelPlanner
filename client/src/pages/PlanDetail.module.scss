@@ -87,8 +87,8 @@
 
 .plan {
   @include U.flex-c(column, flex-start, flex-start);
-  width: 276px;
-  gap: 24px;
+  width: 324px;
+  gap: 12px;
 }
 
 .dayTitle {
@@ -102,6 +102,7 @@
 
 .addElementBtn {
   @include U.flex-c();
+  margin-top: 12px;
   width: 100%;
 }
 
