@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { FormValueType } from '../types/SignUp'
+import { FormValueType } from '../types/signUpTypes'
 import { saveTokenToLocalStorage } from '../utils/tokenHandler'
 import { axiosInstance } from './instance'
 
@@ -25,7 +25,7 @@ export const signUp = async ({ email, password, passwordCheck, userNickname }: F
 
 export const signIn = async ({ email, password }: SignInType) => {
   try {
-    const response = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL}/api/user/login`, {
+    const response = await axiosInstance.post(`/api/user/login`, {
       email,
       password,
     })
