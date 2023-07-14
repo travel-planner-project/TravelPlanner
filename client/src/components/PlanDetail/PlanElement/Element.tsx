@@ -16,7 +16,7 @@ function ElementView() {
         <div className={styles.itemDetail}>물놀이 복장으로 갈아입기 ㅎㅎ</div>
       </div>
       <div className={styles.buttons}>
-        <div className={styles.okBtn}>확인</div>
+        <div className={styles.okBtn}>수정</div>
         <div className={styles.deleteBtn}>삭제</div>
       </div>
     </div>
