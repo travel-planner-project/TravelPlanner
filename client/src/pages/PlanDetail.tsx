@@ -79,22 +79,7 @@ function PlanDetailView({
                   <Icon name='plus-square' size={24} />
                 </div>
               </div>
-              <div className={styles.elementBox}>
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <div className={styles.addElementBtn}>
-                  <Icon name='plus-square' size={24} />
-                </div>
-              </div>
             </div>
-          </div>
-          <div className={styles.plan}>
-            <div className={styles.dayTitle}>Day 2</div>
-            <Element />
-            <ElementEditor />
           </div>
           <div className={styles.plan}>
             <div className={styles.dayTitle}>Day 2</div>
