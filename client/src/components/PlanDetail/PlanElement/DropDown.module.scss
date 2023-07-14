@@ -1,0 +1,52 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.listContainer {
+  position: relative;
+  width: 100%;
+}
+
+.listTitle {
+  width: 100%;
+  padding: 6px 12px 6px 12px;
+  border: 1px solid C.$gray200;
+  @include U.flex-c(row, space-between, center);
+  border-radius: 4px;
+  background: C.$white;
+  .initialTitle {
+    color: gray;
+  }
+}
+
+.open {
+  @extend .listTitle;
+  border-radius: 4px 4px 0 0;
+}
+
+.listBox {
+  position: absolute;
+  width: 100%;
+  background-color: C.$white;
+  top: 37px;
+  border: 1px solid C.$gray200;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  animation: slideDown 0.3s ease-in-out forwards;
+  .list {
+    padding: 6px 12px 6px 12px;
+    border-bottom: 1px solid C.$gray200;
+    color: rgb(57, 57, 57);
+  }
+}
