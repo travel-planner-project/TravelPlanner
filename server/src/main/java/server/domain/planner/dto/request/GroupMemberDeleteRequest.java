@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ChatRequest {
+public class GroupMemberDeleteRequest {
 
-    private String message;
+    private Long plannerId;
     private Long userId;
 }

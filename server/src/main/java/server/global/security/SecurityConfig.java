@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
 
-    @Bean // 암호화에 필요한 PasswordEncoder를 Bean 등록
+    @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -34,17 +34,17 @@ public class SecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
+                .httpBasic().disable()
                 .csrf().disable()
                 .cors().configurationSource(configurationSource())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
                 .and()
-                .authorizeRequests() // 요청에 대한 사용권한 체크
+                .authorizeRequests()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/planner/**").hasRole("MEMBER")
                 .antMatchers("/api/**").permitAll()
-                .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);

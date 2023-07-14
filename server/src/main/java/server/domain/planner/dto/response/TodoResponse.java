@@ -1,5 +1,6 @@
 package server.domain.planner.dto.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import server.domain.planner.domain.Todo.*;
@@ -12,46 +13,47 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class TodoResponse {
 
-    // 투두 인덱스
+    @ApiModelProperty(example = "1")
     private Long todoId;
 
-    // 투두 타입
+    @ApiModelProperty(example = "ACCOMMODATION")
     private TodoType todoType;
 
-    // 투두 공개 여부
+    @ApiModelProperty(example = "false")
     private Boolean isPrivate;
 
-    // 투두 제목
+    @ApiModelProperty(example = "투두 제목")
     private String todoTitle;
 
-    // 투두 실행 날짜
     private LocalDateTime todoDate;
 
-    // 투두 내용
+    @ApiModelProperty(example = "투두 내용")
     private String todoContent;
 
 
     // 투두 타입 별 특이 내용
-    // 태그
+    @ApiModelProperty(example = "공지")
     private String tag;
 
-    // 숙소 주소
+    @ApiModelProperty(example = "숙박 주소")
     private String accommodationAddress;
 
-    // 관광지 주소
+    @ApiModelProperty(example = "관광지 주소")
     private String attractionAddress;
 
-    // 예산 타입
+    @ApiModelProperty(example = "SHOPPING")
     private BudgetType budgetType;
 
-    // 예산
+    @ApiModelProperty(example = "10000")
     private Integer budget;
 
-    // 교통 유형
+    @ApiModelProperty(example = "TRAIN")
     private TransportType transportType;
 
-    // 출발 시간과 도착 시간
+    @ApiModelProperty(example = "1시")
     private String departTIme;
+
+    @ApiModelProperty(example = "2시")
     private String arriveTime;
 
 

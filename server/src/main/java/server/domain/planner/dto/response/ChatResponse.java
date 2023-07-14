@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class ChatResponse {
 
     private String message;
+    private String userNickname;
+    private Long userId;
 }

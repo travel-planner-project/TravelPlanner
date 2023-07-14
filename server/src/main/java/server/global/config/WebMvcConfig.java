@@ -16,7 +16,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("*");
+                .allowedMethods("*")
+
+                // 프론트 분들 읽을 수 있게 처리
+                .exposedHeaders("Access_Token")
+                .exposedHeaders("Refresh_Token");
     }
 
     // 인터셉터

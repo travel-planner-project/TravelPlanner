@@ -9,6 +9,7 @@ import server.domain.planner.dto.request.PlannerUpdateRequest;
 import server.domain.planner.domain.travelGroup.TravelGroup;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,12 @@ public class Planner {
     @ColumnDefault("false")
     private Boolean isPrivate;
 
+    // 여행 시작 날짜
+    private LocalDateTime startDate;
+
+    // 여행 끝나는 날짜
+    private LocalDateTime endDate;
+
     // 여행 그룹
     @OneToOne
     @JoinColumn(name = "travelGroupId")
@@ -58,6 +65,8 @@ public class Planner {
                 .userId(request.getUserId())
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .build();
     }
 
@@ -79,5 +88,7 @@ public class Planner {
     public void updatePlanner (PlannerUpdateRequest request) {
         this.planTitle = request.getPlanTitle();
         this.isPrivate = request.getIsPrivate();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
     }
 }
