@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { FormValueType } from '../types/signUpTypes'
-import { saveTokenToLocalStorage } from '../utils/tokenHandler'
+// import { saveTokenToLocalStorage } from '../utils/tokenHandler'
 import { axiosInstance } from './instance'
 
 type SignInType = {
