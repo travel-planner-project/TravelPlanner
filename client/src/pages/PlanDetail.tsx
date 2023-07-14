@@ -68,7 +68,9 @@ function PlanDetailView({
               <div className={styles.dayTitle}>Day 1</div>
               <Element />
               <Element />
-              <div className={styles.addElementBtn}>+</div>
+              <div className={styles.addElementBtn}>
+                <Icon name='plus-square' size={24} />
+              </div>
             </div>
           </div>
           <div className={styles.addDayBtn}>추가하기</div>
