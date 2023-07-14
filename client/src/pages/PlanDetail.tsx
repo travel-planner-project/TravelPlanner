@@ -7,6 +7,8 @@ import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
 import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 
+// 높이 수정중
+
 function PlanDetailView({
   userId,
   chatModal,
