@@ -1,6 +1,12 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
 name: Java CI with Gradle
 
-# BE 브랜치의 push와 pull로 CI가 작동
 on:
   push:
     branches: [ "BE" ]
@@ -10,6 +16,11 @@ on:
 permissions:
   contents: read
 
+env:
+  S3_BUCKET_NAME: travel-planner-buckets
+  CODE_DEPLOY_APP_NAME: travel-planner-app
+  CODE_DEPLOY_GROUP_NAME: travel-planner-deploy-group
+  
 jobs:
   build:
 
@@ -31,8 +42,13 @@ jobs:
       with:
         arguments: build
         gradle-version: 8.1.1
-        
-     # AWS 권한 확인
+    
+    # 프로젝트 압축
+    - name: Make zip file
+      run: zip -r ./$GITHUB_SHA.zip .
+      shell: bash
+    
+    # AWS 권한 확인
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -41,28 +57,15 @@ jobs:
         aws-region: ap-northeast-2
     
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./demo-ROOT.zip s3://$S3_BUCKET_NAME/demo-ROOT.zip
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
 
-    # 빌드를 성공하면 해당 프로젝트를 zip로 만듬
-    # 이름은 run 에서 설정 가능
-    - name: Make zip file
-      run: zip -r ./demo-ROOT.zip .
-      shell: bash
-     
-    # 만들어 놓은 S3에 해당 zip 파일 저장
-    - name: Upload to S3
-      run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./demo-ROOT.zip s3://travel-planner-buckets/demo-ROOT.zip
-    
-    # AWS CodeDeploy에 배포
+    # Deploy
     - name: Deploy
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        aws deploy create-deployment \
-        --application-name travel-planner-app \
-        --deployment-group-name travel-planner-deploy-group \
-        --file-exists-behavior OVERWRITE \
-        --s3-location bucket=travel-planner-buckets,bundleType=zip,key=demo-ROOT.zip \
-        --region ${{ secrets.AWS_REGION }}
-        
+          aws deploy create-deployment \
+          --application-name travel-planner-app \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name travel-planner-deploy-group \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=travel-planner-buckets,bundleType=zip,key=NAME/$GITHUB_SHA.zip \
+          --region ap-northeast-2 \
