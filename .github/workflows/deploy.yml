@@ -67,5 +67,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name travel-planner-deploy-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=travel-planner-buckets,bundleType=zip,key=NAME/$GITHUB_SHA.zip \
+          --s3-location bucket=travel-planner-buckets,bundleType=zip,key=travel-planner/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
