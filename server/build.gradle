@@ -40,14 +40,8 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.23'
 }
 
-tasks.named('demo') {
-	useJUnitPlatform()
-}
 
 jar {
 	enabled = false
 }
 
-tasks.getByName<Jar>("jar") {
-	enabled = false
-}
