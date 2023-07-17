@@ -28,9 +28,12 @@ jobs:
     #1
     # application.properties는 외부에 노출되면 안되므로 Actions가 빌드될때마다 해당 Repository의 Secret 설정을
     # 이용하여서 설정 파일을 생성해줌 (github에 commit 되는게 아님!)
-    - run : touch ./src/main/resources/application.yml
-    - run : echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
-    - run : cat ./src/main/resources/application.yml
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
+        aws-region: ap-northeast-2
     
     # gradlew에 권한 부여
     - name: Grant execute permission for gradlew
