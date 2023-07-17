@@ -22,9 +22,16 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - uses : actions/checkout@v3
+    - name: init with Gradle
+      uses: gradle/gradle-build-action@v2
+    - run: gradle init
     
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      with:
+        arguments: build
+        gradle-version: 8.1.1
+        
     #1
     # application.properties는 외부에 노출되면 안되므로 Actions가 빌드될때마다 해당 Repository의 Secret 설정을
     # 이용하여서 설정 파일을 생성해줌 (github에 commit 되는게 아님!)
@@ -34,16 +41,6 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
         aws-region: ap-northeast-2
-    
-    # gradlew 빌드
-    - name: init with Gradle
-      uses: gradle/gradle-build-action@v2
-    - run: gradle init
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: 8.1.1
-    - run: build
 
     # 빌드를 성공하면 해당 프로젝트를 zip로 만듬
     # 이름은 run 에서 설정 가능
