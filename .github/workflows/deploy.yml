@@ -57,7 +57,7 @@ jobs:
         aws-region: ap-northeast-2
     
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/server/$GITHUB_SHA.zip
 
     # Deploy
     - name: Deploy
@@ -67,5 +67,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name travel-planner-deploy-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=travel-planner-buckets,bundleType=zip,key=./$GITHUB_SHA.zip \
+          --s3-location bucket=travel-planner-buckets,bundleType=zip,key=server/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
