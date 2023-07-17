@@ -32,40 +32,27 @@ jobs:
         arguments: build
         gradle-version: 8.1.1
         
-    #1
-    # application.properties는 외부에 노출되면 안되므로 Actions가 빌드될때마다 해당 Repository의 Secret 설정을
-    # 이용하여서 설정 파일을 생성해줌 (github에 commit 되는게 아님!)
+     # AWS 권한 확인
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # 등록한 Github Secret이 자동으로 불려온다.
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
+    
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
 
     # 빌드를 성공하면 해당 프로젝트를 zip로 만듬
     # 이름은 run 에서 설정 가능
     - name: Make zip file
       run: zip -r ./demo-ROOT.zip .
       shell: bash
-      
-    #2
-    # AWS 계정 설정
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-      # 깃허브 Secret에 넣어둔 Access key
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-      # 깃허브 Secret에 넣어둔 Secret key
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      # 깃허브 Secret에 넣어둔 Region
-        aws-region: ${{ secrets.AWS_REGION }}
      
-    #3
     # 만들어 놓은 S3에 해당 zip 파일 저장
     - name: Upload to S3
       run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./demo-ROOT.zip s3://travel-planner-buckets/demo-ROOT.zip
     
-    #4
     # AWS CodeDeploy에 배포
     - name: Deploy
       env:
