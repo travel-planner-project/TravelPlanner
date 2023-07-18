@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:mysql://travelplanner.c90ycbubgo4h.ap-northeast-2.rds.amazonaws.com:3306/travel
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: qweasdQWEASD
