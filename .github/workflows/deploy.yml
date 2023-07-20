@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "BE" ]
+    branches: [ "74-be-feat-유저-기능-추가" ]
   pull_request:
-    branches: [ "BE" ]
+    branches: [ "74-be-feat-유저-기능-추가" ]
 
 permissions:
   contents: read
