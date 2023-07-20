@@ -1,0 +1,81 @@
+@use '../../styles/color' as C;
+@use '../../styles/typography' as T;
+@use '../../styles/utils' as U;
+
+.background {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  @include U.size(100%);
+  overflow: hidden;
+  background-color: rgb(0, 0, 0, 0.5);
+}
+
+.wrapper {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.content {
+  position: relative;
+  background-color: C.$white;
+  background-clip: padding-box;
+  padding: 35px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 24px;
+  border: 1px solid C.$gray200;
+  border-radius: 20px;
+}
+
+.title {
+  @include T.blue-bold-20;
+}
+
+.subTitle {
+  @include T.black-regular-12;
+}
+
+.inputSearchBox {
+  @include U.flex-c(row, flex-start, center);
+  gap: 8px;
+}
+
+.input {
+  border: 1px solid C.$gray300;
+  border-radius: 4px;
+  @include U.size(315px, 36px);
+  padding-left: 10px;
+  &::placeholder {
+    @include T.gray-regular-12;
+  }
+}
+
+.blueBtn {
+  @include T.white-semibold-16;
+  background-color: C.$blue500;
+  border-radius: 6px;
+}
+
+.searchBtn {
+  @extend .blueBtn;
+  @include U.size(72px, 34px);
+}
+
+.footer {
+  text-align: right;
+}
+
+.submitBtn {
+  @extend .blueBtn;
+  padding: 6px 15px;
+}
+
+.cancelBtn {
+  padding: 6px 15px;
+  @include T.blue-regular-16;
+}
