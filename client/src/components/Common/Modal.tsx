@@ -1,15 +1,75 @@
-import { ReactNode, useEffect, useContext, createContext } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './Modal.module.scss'
+import FriendInfo, { FriendType } from '../PlanDetail/InviteModal/FriendInfo'
 
-type ModalProp = {
-  children: ReactNode
-  isOpen: boolean
-  onClose: () => void
+// 가짜 Friend 데이터
+const Friend = {
+  id: 123,
+  profileImg: 'https://i.ytimg.com/vi/y9bWhYGvBlk/maxresdefault.jpg',
+  userNickname: '닉네임',
+  email: 'test123@naver.com',
 }
 
-const ModalContext = createContext({ onClose: () => {} })
+type ModalContentProp = {
+  onClose: () => void
+  title: string
+  description: string
+  placeholder: string
+  submitButton: string
+  isSearchBtn?: boolean
+}
 
-function Modal({ children, isOpen, onClose }: ModalProp) {
+function ModalContent({
+  onClose,
+  title,
+  description,
+  placeholder,
+  submitButton,
+  isSearchBtn = false,
+}: ModalContentProp) {
+  const [inputValue, setInputValue] = useState('')
+  const [friend, setFriend] = useState<FriendType>({})
+
+  const handleSearch = () => {
+    console.log('input 입력값:', inputValue, '을 서버로 보내고 받은 응답으로 friend 상태 업데이트')
+    setFriend(Friend)
+  }
+
+  return (
+    <>
+      <div className={styles.title}>{title}</div>
+      <div className={styles.description}>{description}</div>
+      <div className={styles.inputSearchBox}>
+        <input
+          className={styles.input}
+          placeholder={placeholder}
+          value={inputValue}
+          onChange={event => setInputValue(event.target.value)}
+        />
+        {isSearchBtn && (
+          <button type='button' className={styles.searchBtn} onClick={handleSearch}>
+            검색
+          </button>
+        )}
+      </div>
+      {isSearchBtn && friend.id && <FriendInfo friend={friend} />}
+      <div className={styles.btnBox}>
+        <button type='button' className={styles.submitBtn}>
+          {submitButton}
+        </button>
+        <button type='button' className={styles.cancelBtn} onClick={onClose}>
+          취소
+        </button>
+      </div>
+    </>
+  )
+}
+
+type ModalProp = ModalContentProp & {
+  isOpen: boolean
+}
+
+function Modal({ isOpen, onClose, ...modal }: ModalProp) {
   const handleEscBtn = (event: KeyboardEvent) => {
     const key = event.key || event.keyCode
     if (key === 'Escape' || key === 27) {
@@ -31,12 +91,7 @@ function Modal({ children, isOpen, onClose }: ModalProp) {
           role='presentation'
         >
           <div className={styles.content}>
-            <ModalContext.Provider
-              // eslint-disable-next-line react/jsx-no-constructed-context-values
-              value={{ onClose }}
-            >
-              {children}
-            </ModalContext.Provider>
+            <ModalContent onClose={onClose} {...modal} />
           </div>
         </div>
       </div>
@@ -45,61 +100,3 @@ function Modal({ children, isOpen, onClose }: ModalProp) {
 }
 
 export default Modal
-
-type ModalChildrenProp = {
-  children: ReactNode
-}
-
-function ModalTitle({ children }: ModalChildrenProp) {
-  return <div className={styles.title}>{children}</div>
-}
-function ModalSubTitle({ children }: ModalChildrenProp) {
-  return <div className={styles.subTitle}>{children}</div>
-}
-
-type BodyProp = {
-  isSearchBtn?: boolean
-  placeholder: string
-}
-
-function ModalBody({ placeholder, isSearchBtn = false }: BodyProp) {
-  return (
-    <div>
-      <div className={styles.inputSearchBox}>
-        <input className={styles.input} placeholder={placeholder} />
-        {isSearchBtn && (
-          <button type='button' className={styles.searchBtn}>
-            검색
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
-function ModalFooter({ children }: ModalChildrenProp) {
-  return <div className={styles.footer}>{children}</div>
-}
-
-function CancelButton() {
-  const { onClose } = useContext(ModalContext)
-
-  return (
-    <button type='button' className={styles.cancelBtn} onClick={onClose}>
-      취소
-    </button>
-  )
-}
-function SubmitButton({ children }: ModalChildrenProp) {
-  return (
-    <button type='button' className={styles.submitBtn}>
-      {children}
-    </button>
-  )
-}
-
-Modal.Title = ModalTitle
-Modal.SubTitle = ModalSubTitle
-Modal.Body = ModalBody
-Modal.Footer = ModalFooter
-Modal.CancelButton = CancelButton
-Modal.SubmitButton = SubmitButton
