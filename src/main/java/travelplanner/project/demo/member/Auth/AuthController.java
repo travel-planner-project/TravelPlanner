@@ -48,7 +48,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
-            @ApiResponse(responseCode = "404", description = "로그인 정보가 일치하지 않는 경우",
+            @ApiResponse(responseCode = "403", description = "로그인 정보가 일치하지 않는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
     @PostMapping("/auth/login")
