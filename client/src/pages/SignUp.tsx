@@ -45,10 +45,13 @@ function SignUp() {
 
   const submitSignUp = (data: FormValueType) => {
     signUp(data).then(res => {
-      if (res === 200) {
+      const { status, data }: { status: number; data: { message: string } } = res!
+      if (status === 200) {
         routeTo('/user/login')
+      } else if (status === 400) {
+        alert(data.message)
       } else {
-        alert('회원가입에 실패했습니다')
+        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해주세요')
       }
     })
   }
