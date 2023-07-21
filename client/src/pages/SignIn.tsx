@@ -7,10 +7,31 @@ import { signIn } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 import styles from './SignIn.module.scss'
 
+// 로그인 후 들어오는 userinfo 가짜 데이터
 const UserInformation = {
   userId: 1,
   userNickname: '설화',
   email: 'test@test.com',
+}
+
+type SignInViewProps = {
+  submitSignIn: (event: React.FormEvent<HTMLFormElement>) => void
+}
+
+function SignInView({ submitSignIn }: SignInViewProps) {
+  return (
+    <form className={styles.signInForm} onSubmit={submitSignIn}>
+      <Email />
+      <Password />
+      <div className={styles.btnBox}>
+        <button type='submit' className={styles.signInBtn}>
+          로그인
+        </button>
+        <Link to='/user/register'>회원가입</Link>
+        {/* <Link to='/findpassword'>비밀번호 찾기</Link> */}
+      </div>
+    </form>
+  )
 }
 
 type responseDataType = {
@@ -43,19 +64,7 @@ function SignIn() {
     }
   }
 
-  return (
-    <form className={styles.signInForm} onSubmit={submitSignIn}>
-      <Email />
-      <Password />
-      <div className={styles.btnBox}>
-        <button type='submit' className={styles.signInBtn}>
-          로그인
-        </button>
-        <Link to='/user/register'>회원가입</Link>
-        {/* <Link to='/findpassword'>비밀번호 찾기</Link> */}
-      </div>
-    </form>
-  )
+  return <SignInView submitSignIn={submitSignIn} />
 }
 
 export default SignIn
