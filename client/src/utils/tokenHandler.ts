@@ -1,26 +1,19 @@
 const isBrowser = () => typeof window !== 'undefined'
 
-export const saveTokenToLocalStorage = (access_token: string, refresh_token: string) => {
+export const saveTokenToSessionStorage = (token: string) => {
   if (isBrowser()) {
     try {
-      localStorage.setItem('accessToken', access_token)
-      localStorage.setItem('refreshToken', refresh_token)
+      sessionStorage.setItem('token', token)
     } catch (error) {
       console.error('Error saving accessToken to local storage:', error)
     }
   }
 }
 
-export const getTokenFromLocalStorage = (type: 'accessToken' | 'refreshToken') => {
+export const getTokenFromSessionStorage = () => {
   if (isBrowser()) {
     try {
-      if (type === 'accessToken') {
-        return localStorage.getItem('accessToken')
-      }
-      if (type === 'refreshToken') {
-        return localStorage.getItem('refreshToken')
-      }
-      return console.error('wrong local storage key')
+      return sessionStorage.getItem('token')
     } catch (error) {
       return console.error('Error getting accessToken to local storage:', error)
     }
@@ -31,8 +24,7 @@ export const getTokenFromLocalStorage = (type: 'accessToken' | 'refreshToken') =
 export const removeTokenFrom = () => {
   if (isBrowser()) {
     try {
-      localStorage.remove('accessToken')
-      localStorage.remove('refreshToken')
+      sessionStorage.remove('token')
     } catch (error) {
       console.error('Error removing accessToken from local storage:', error)
     }

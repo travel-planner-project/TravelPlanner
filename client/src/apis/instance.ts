@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { getTokenFromLocalStorage } from '../utils/tokenHandler'
+import { getTokenFromSessionStorage } from '../utils/tokenHandler'
 
 const instanceOptions = {
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -9,8 +9,7 @@ const instanceOptions = {
 }
 
 const setAccessTokenOnHeader = (config: InternalAxiosRequestConfig) => {
-  // eslint-disable-next-line no-param-reassign
-  config.headers.Authorization = getTokenFromLocalStorage('accessToken') || ''
+  config.headers.Authorization = getTokenFromSessionStorage() || ''
   return config
 }
 

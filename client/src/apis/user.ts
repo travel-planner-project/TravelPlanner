@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-// import { saveTokenToLocalStorage } from '../utils/tokenHandler'
+import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { axiosInstance } from './instance'
 
 type SignUpType = {
@@ -30,16 +30,11 @@ type SignInType = {
 
 export const signIn = async ({ email, password }: SignInType) => {
   try {
-    const response = await axiosInstance.post(`/api/user/login`, {
+    const response = await axiosInstance.post(`/auth/login`, {
       email,
       password,
     })
-    console.log('header', response.headers)
-    // const { Access_token: AccessToken, Refresh_token: RefreshToken } = response.headers
-
-    // saveTokenToLocalStorage(AccessToken, RefreshToken)
-    // console.log('AT', AccessToken)
-    // console.log('RT', RefreshToken)
+    saveTokenToSessionStorage(response.data.token)
     return response.status
   } catch (error: unknown) {
     const axiosError = error as AxiosError
