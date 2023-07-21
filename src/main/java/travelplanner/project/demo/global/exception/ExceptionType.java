@@ -21,7 +21,10 @@ public enum ExceptionType {
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "USER-004", "권한이 부족하여 접근할 수 없습니다."),
 
     // 토큰 유효기간이 끝난 경우
-    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "USER-005", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다.");
+    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "USER-005", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
+
+    // 플래너가 존재하지 않는 경우
+    NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다.");
 
     private final HttpStatus status;
     private final String errorCode;
