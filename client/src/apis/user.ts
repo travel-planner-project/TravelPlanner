@@ -35,9 +35,9 @@ export const signIn = async ({ email, password }: SignInType) => {
       password,
     })
     saveTokenToSessionStorage(response.data.token)
-    return response.status
+    return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
-    return axiosError.response?.status
+    return axiosError.response
   }
 }
