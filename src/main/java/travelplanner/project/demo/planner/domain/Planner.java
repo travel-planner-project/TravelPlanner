@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 
 import java.time.LocalDateTime;
@@ -24,11 +23,11 @@ import java.util.List;
 @Getter
 public class Planner {
 
-    private Long userId;
-
     @Id
     @GeneratedValue
     private Long plannerId;
+
+    private Long userId;
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -40,23 +39,11 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @Builder.Default
     private List<Date> dates = new ArrayList<>();
 
    //추후에 그룹 멤버 작성
-
-
-    //플래너 생성
-    public static Planner createPlanner (PlannerCreateRequest request) {
-        return Planner.builder()
-                .userId(request.getUserId())
-                .planTitle(request.getPlanTitle())
-                .isPrivate(request.getIsPrivate())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .build();
-    }
 
     //플래너 수정
     public void updatePlanner (PlannerUpdateRequest request){

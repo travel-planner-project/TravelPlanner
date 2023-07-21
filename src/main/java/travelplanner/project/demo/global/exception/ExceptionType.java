@@ -26,6 +26,8 @@ public enum ExceptionType {
     // 플래너가 존재하지 않는 경우
     NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다.");
 
+    // 플래너가
+
     private final HttpStatus status;
     private final String errorCode;
     private final String message;
