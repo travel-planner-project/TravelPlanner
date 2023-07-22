@@ -8,7 +8,7 @@ function Nickname({ register, dirtyFields, errors }: ReactHookFormProps) {
     onBlur: nicknameOnBlur,
     name: nicknameName,
     ref: nicknameRef,
-  } = register('nickname', {
+  } = register('userNickname', {
     pattern: {
       value: specialCharacterReg,
       message: '닉네임에는 한글, 영문, 숫자만 가능합니다.',
@@ -34,8 +34,8 @@ function Nickname({ register, dirtyFields, errors }: ReactHookFormProps) {
           placeholder='사용할 닉네임을 입력해주세요'
           required
         />
-        {dirtyFields.nickname && errors.nickname && (
-          <span className={styles.errorMessage}>{errors.nickname.message}</span>
+        {dirtyFields.userNickname && errors.userNickname && (
+          <span className={styles.errorMessage}>{errors.userNickname.message}</span>
         )}
       </div>
     </label>

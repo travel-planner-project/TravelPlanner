@@ -2,6 +2,9 @@ import { NavLink } from 'react-router-dom'
 import { NavBarContent } from '../../router/routerData'
 import styles from './Navbar.module.scss'
 import NavbarProfile from './NavbarProfile'
+import LogoutBtn from './LogoutBtn'
+
+const ISLOGIN = true
 
 function Navbar() {
   return (
@@ -22,6 +25,7 @@ function Navbar() {
           )
         })}
       </ul>
+      {ISLOGIN && <LogoutBtn />}
     </div>
   )
 }
