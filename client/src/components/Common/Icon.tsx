@@ -27,6 +27,7 @@ type IconNameType =
   | 'eye-close'
   | 'minus-square'
   | 'plus-square'
+  | 'x-circle-blue'
 
 type IconProps = {
   name: IconNameType
