@@ -1,15 +1,39 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   datasource:
     url: jdbc:mysql://travelplanner.c90ycbubgo4h.ap-northeast-2.rds.amazonaws.com:3306/travel
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: qweasdQWEASD
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAU3UJ5YDW5N7I7HWK
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: travel-planner-buckets
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
+
+log4j:
+  logger:
+    com:
+      amazonaws=DEBUG:
 
 springdoc:
   version: v1.0.0
