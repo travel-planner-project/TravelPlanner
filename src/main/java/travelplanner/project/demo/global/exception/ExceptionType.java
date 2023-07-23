@@ -1,10 +1,12 @@
 package travelplanner.project.demo.global.exception;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 
+@Schema(description = "Exception Type (Enum)")
 @Getter
 @ToString
 public enum ExceptionType {
@@ -31,14 +33,18 @@ public enum ExceptionType {
     THIS_USER_IS_NOT_SAME_LOGIN_USER(HttpStatus.UNAUTHORIZED, "PROFILE-002", "프로필 유저와 로그인 유저가 같지 않습니다."),
 
     // 회원정보 변경 시 비밀번호가 일치하지 않은 경우
-    CHECK_PASSWORD_AGAIN(HttpStatus.BAD_REQUEST, "PROFILE-002", "비밀번호를 다시한번 확인해주세요"),
+    CHECK_PASSWORD_AGAIN(HttpStatus.BAD_REQUEST, "PROFILE-003", "비밀번호를 다시한번 확인해주세요"),
 
     // 내부 서버 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다.");
 
-
+    @Schema(description = "상태코드")
     private final HttpStatus status;
+
+    @Schema(description = "에러코드")
     private final String errorCode;
+
+    @Schema(description = "상태 메세지")
     private final String message;
 
     ExceptionType(HttpStatus status, String errorCode, String message) {
