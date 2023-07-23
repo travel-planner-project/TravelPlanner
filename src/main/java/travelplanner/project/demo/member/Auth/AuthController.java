@@ -8,14 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.member.MemberRepository;
 
 
@@ -32,14 +29,13 @@ public class AuthController {
 
     @Operation(summary = "회원가입")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원가입 성공",
-                    content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "200", description = "회원가입 성공"),
             @ApiResponse(responseCode = "400", description = "이미 존재하는 유저 / 유효성 검증 실패",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
     @PostMapping("/auth/signup")
-    public ResponseEntity<?> signup(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(service.register(request));
+    public void signup(@RequestBody RegisterRequest request) {
+        service.register(request);
     }
 
 
