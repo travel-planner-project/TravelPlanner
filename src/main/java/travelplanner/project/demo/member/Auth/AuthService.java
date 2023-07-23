@@ -2,9 +2,7 @@ package travelplanner.project.demo.member.Auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -81,6 +79,9 @@ public class AuthService {
 
             var jwtToken = jwtService.generateToken(user);
             AuthResponse response = AuthResponse.builder()
+                    .userId(member.get().getUserId())
+                    .userNickname(member.get().getUserNickname())
+                    .email(member.get().getEmail())
                     .token(jwtToken)
                     .build();
 
