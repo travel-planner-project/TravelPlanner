@@ -1,0 +1,17 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.entireContainer {
+  @include U.flex-c(column, flex-start, flex-start);
+  padding: 96px;
+  gap: 24px;
+}
+
+.confirmButton {
+  margin-top: 36px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: C.$blue400;
+  @include T.white-semibold-16;
+}
