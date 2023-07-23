@@ -34,6 +34,9 @@ public enum ExceptionType {
 
     // 회원정보 변경 시 비밀번호가 일치하지 않은 경우
     CHECK_PASSWORD_AGAIN(HttpStatus.BAD_REQUEST, "PROFILE-003", "비밀번호를 다시한번 확인해주세요"),
+  
+    // 플래너가 존재하지 않는 경우
+    NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다.");
 
     // 내부 서버 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다.");
