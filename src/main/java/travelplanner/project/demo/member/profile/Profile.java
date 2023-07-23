@@ -20,7 +20,7 @@ public class Profile {
     @GeneratedValue
     private Long profileId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     private Member member;
 
