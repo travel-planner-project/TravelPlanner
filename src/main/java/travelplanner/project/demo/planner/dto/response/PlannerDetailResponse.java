@@ -20,8 +20,6 @@ public class PlannerDetailResponse {
         this.plannerId = entity.getPlannerId();
         this.planTitle = entity.getPlanTitle();
         this.isPrivate = entity.getIsPrivate();
-
     }
-
 
 }
