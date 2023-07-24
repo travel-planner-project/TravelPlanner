@@ -72,6 +72,17 @@ public class ProfileController {
     }
 
 
+    @Operation(summary = "회원 수정 : 비밀번호 확인 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/check")
+    public void getCheckPasswordPage() {
+    }
+
+
     @Operation(summary = "회원 수정 : 비밀번호 확인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 일치 확인"),
@@ -82,9 +93,20 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PostMapping("/user")
+    @PostMapping("/user/check")
     public boolean checkUserPassword(@RequestBody PasswordCheckRequest request) throws Exception {
         return userService.checkUserPassword(request);
+    }
+
+
+    @Operation(summary = "회원 수정 : 비밀번호 변경 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/updateInfo")
+    public void getUpdateUserPasswordPage() {
     }
 
 
@@ -96,9 +118,20 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PatchMapping("/user")
+    @PatchMapping("/user/updateInfo")
     public void updateUserPassword(@RequestBody PasswordUpdateRequest request) throws Exception {
         userService.updatePassword(request);
+    }
+
+
+    @Operation(summary = "회원 수정 : 회원 탈퇴 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/delete")
+    public void getDeleteUserPage() {
     }
 
 
@@ -112,7 +145,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @DeleteMapping("/user")
+    @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody PasswordCheckRequest request) throws Exception{
 
         if (userService.checkUserPassword(request)) {
