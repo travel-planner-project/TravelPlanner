@@ -1,11 +1,10 @@
 import { atom, RecoilState, DefaultValue } from 'recoil'
 
 type UserInfoType = {
-  userId?: number
-  userNickname?: string
-  profileImg?: string | null
-  plannerCount?: number
-  friends?: number[] // 닉네임은 중복될 수 있으니 userId
+  userId: number
+  userNickname: string
+  profileImgUrl: string
+  email: string
 }
 
 type AtomEffectParameterType<T> = {

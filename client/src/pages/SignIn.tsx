@@ -7,13 +7,6 @@ import { signIn } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 import styles from './SignIn.module.scss'
 
-// 로그인 후 들어오는 userinfo 가짜 데이터
-const UserInformation = {
-  userId: 1,
-  userNickname: '설화',
-  email: 'test@test.com',
-}
-
 type SignInViewProps = {
   submitSignIn: (event: React.FormEvent<HTMLFormElement>) => void
 }
@@ -35,11 +28,10 @@ function SignInView({ submitSignIn }: SignInViewProps) {
 }
 
 type responseDataType = {
-  userInfo: {
-    userId: number
-    userNickname: string
-    email: string
-  }
+  userId: number
+  userNickname: string
+  email: string
+  profileImgUrl: string
 }
 
 function SignIn() {
@@ -55,7 +47,12 @@ function SignIn() {
     const { status, data }: { status: number; data: responseDataType } = response!
 
     if (status === 200) {
-      setUserInfo(UserInformation) // 응답으로 받은 유저 정보 Recoil & 세션 스토리지 저장
+      setUserInfo({
+        userId: data.userId,
+        userNickname: data.userNickname,
+        email: data.email,
+        profileImgUrl: data.profileImgUrl,
+      })
       routeTo('/')
     } else if (status === 403) {
       alert('이메일 또는 비밀번호를 확인해 주세요')
