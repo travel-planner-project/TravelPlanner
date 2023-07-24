@@ -39,7 +39,11 @@ public enum ExceptionType {
     NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다."),
 
     // 내부 서버 오류
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다."),
+
+    // 페이지 찾을 수 없는 경우
+    PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT-001", "페이지를 찾을 수 없습니다.");
+
 
     @Schema(description = "상태코드")
     private final HttpStatus status;
