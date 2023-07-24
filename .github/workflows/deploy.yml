@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "87-be-fix-프로필-민감정보-예외처리-관련-오류-해결" ]
+    branches: [ "BE" ]
   pull_request:
-    branches: [ "87-be-fix-프로필-민감정보-예외처리-관련-오류-해결" ]
+    branches: [ "BE" ]
 
 permissions:
   contents: read
