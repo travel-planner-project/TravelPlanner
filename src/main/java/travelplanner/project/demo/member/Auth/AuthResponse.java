@@ -24,4 +24,7 @@ public class AuthResponse {
 
     @Schema(description = "토큰")
     private String token;
+
+    @Schema(description = "프로필 이미지 주소")
+    private String profileImgUrl;
 }

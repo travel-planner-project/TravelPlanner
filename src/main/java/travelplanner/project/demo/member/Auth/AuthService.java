@@ -6,11 +6,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.global.security.jwt.JwtService;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.member.profile.Profile;
+import travelplanner.project.demo.member.profile.ProfileRepository;
 
 import java.util.Optional;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final MemberRepository repository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -58,34 +62,47 @@ public class AuthService {
 
 
     // 로그인
+    @Transactional
     public AuthResponse login(LoginRequest request) {
 
         Optional<Member> member = repository.findByEmail(request.getEmail());
 
-        if (!member.isPresent()) {
+        if (member.isEmpty()) {
             throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
 
-        } else {
+        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
+        if (profile == null) { // 특정 유저의 프로필이 없는경우
 
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
+            profile = Profile.builder()
+                    .member(member.get())
+                    .build();
 
-            var jwtToken = jwtService.generateToken(user);
-            AuthResponse response = AuthResponse.builder()
+            profileRepository.save(profile);
+        }
+
+        profile.setProfileImgUrl("");
+        profileRepository.save(profile);
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
+
+        var jwtToken = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
                     .userId(member.get().getUserId())
                     .userNickname(member.get().getUserNickname())
                     .email(member.get().getEmail())
                     .token(jwtToken)
+                    .profileImgUrl(profile.getProfileImgUrl())
                     .build();
-
-            return response;
-        }
     }
 }

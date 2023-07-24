@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 
 
@@ -48,8 +51,8 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login (@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login (@RequestBody LoginRequest request) throws Exception {
 
-        return ResponseEntity.ok(service.login(request));
+         return ResponseEntity.ok(service.login(request));
     }
 }

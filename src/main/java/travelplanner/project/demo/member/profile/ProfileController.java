@@ -1,5 +1,6 @@
 package travelplanner.project.demo.member.profile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import travelplanner.project.demo.member.profile.Service.ProfileService;
 import travelplanner.project.demo.member.profile.Service.UserService;
 import travelplanner.project.demo.member.profile.dto.request.PasswordCheckRequest;
 import travelplanner.project.demo.member.profile.dto.request.PasswordUpdateRequest;
+import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
 
 import java.io.IOException;
@@ -59,16 +62,25 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PutMapping("")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateUserProfile(
-            @Parameter(name = "userId", description = "유저 인덱스", in = ParameterIn.QUERY)
-            @RequestParam Long userId,
-            @Parameter(name = "imgFile", description = "이미지 파일", in = ParameterIn.QUERY)
-            @RequestParam MultipartFile imgFile,
-            @Parameter(name = "userNickname", description = "유저 닉네임", in = ParameterIn.QUERY)
-            @RequestParam String userNickname) throws Exception, IOException {
+            @Parameter(name = "profileUpdateRequest", description = "프로필 수정 요청", in = ParameterIn.QUERY) // swagger
+            @RequestPart ProfileUpdateRequest profileUpdateRequest,
+            @Parameter(name = "profileImg", description = "프로필 이미지", in = ParameterIn.QUERY) // swagger
+            @RequestPart MultipartFile profileImg) throws Exception, IOException {
 
-            profileService.updateUserProfileImg(userId, imgFile, userNickname);
+        profileService.updateUserProfileImg(profileUpdateRequest, profileImg);
+    }
+
+
+    @Operation(summary = "회원 수정 : 비밀번호 확인 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/check")
+    public void getCheckPasswordPage() {
     }
 
 
@@ -82,9 +94,20 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PostMapping("/user")
+    @PostMapping("/user/check")
     public boolean checkUserPassword(@RequestBody PasswordCheckRequest request) throws Exception {
         return userService.checkUserPassword(request);
+    }
+
+
+    @Operation(summary = "회원 수정 : 비밀번호 변경 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/updateInfo")
+    public void getUpdateUserPasswordPage() {
     }
 
 
@@ -96,9 +119,20 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PatchMapping("/user")
+    @PatchMapping("/user/updateInfo")
     public void updateUserPassword(@RequestBody PasswordUpdateRequest request) throws Exception {
         userService.updatePassword(request);
+    }
+
+
+    @Operation(summary = "회원 수정 : 회원 탈퇴 페이지")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 수정 페이지 접근 성공"),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping("/user/delete")
+    public void getDeleteUserPage() {
     }
 
 
@@ -112,7 +146,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @DeleteMapping("/user")
+    @DeleteMapping("/user/delete")
     public void deleteUser(@RequestBody PasswordCheckRequest request) throws Exception{
 
         if (userService.checkUserPassword(request)) {

@@ -10,6 +10,7 @@ import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.MemberService;
+import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.PasswordCheckRequest;
 import travelplanner.project.demo.member.profile.dto.request.PasswordUpdateRequest;
@@ -24,6 +25,7 @@ public class UserService {
     private ProfileRepository profileRepository;
     private MemberService memberService;
     private PasswordEncoder passwordEncoder;
+    private S3Service s3Service;
 
     // 비밀번호 체크
     public boolean checkUserPassword(PasswordCheckRequest request) throws Exception {
@@ -69,6 +71,15 @@ public class UserService {
     public void deleteUser(PasswordCheckRequest request) {
 
         Member member = memberRepository.findByUserId(request.getUserId()).get();
+        Profile profile = profileRepository.findProfileByMemberUserId(member.getUserId());
+
+        // 프로필 이미지 삭제하기
+        s3Service.deleteFile(profile.getKeyName());
+
+        // 프로필 삭제
+        profileRepository.delete(profile);
+
+        // 멤버 삭제
         memberRepository.delete(member);
     }
 }
