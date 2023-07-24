@@ -77,7 +77,7 @@ public class AuthService {
             profileRepository.save(profile);
         }
 
-        profile.setProfileImgUrl("등록된 이미지가 없습니다.");
+        profile.setProfileImgUrl("");
         profileRepository.save(profile);
 
 
