@@ -25,5 +25,6 @@ public class Profile {
     private Member member;
 
     private String profileImgUrl;
+
     private String keyName;
 }

@@ -1,5 +1,6 @@
 package travelplanner.project.demo.member.profile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import travelplanner.project.demo.member.profile.Service.ProfileService;
 import travelplanner.project.demo.member.profile.Service.UserService;
 import travelplanner.project.demo.member.profile.dto.request.PasswordCheckRequest;
 import travelplanner.project.demo.member.profile.dto.request.PasswordUpdateRequest;
+import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
 
 import java.io.IOException;
@@ -59,16 +62,12 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PutMapping("")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateUserProfile(
-            @Parameter(name = "userId", description = "유저 인덱스", in = ParameterIn.QUERY)
-            @RequestParam Long userId,
-            @Parameter(name = "imgFile", description = "이미지 파일", in = ParameterIn.QUERY)
-            @RequestParam MultipartFile imgFile,
-            @Parameter(name = "userNickname", description = "유저 닉네임", in = ParameterIn.QUERY)
-            @RequestParam String userNickname) throws Exception, IOException {
+            @RequestPart ProfileUpdateRequest profileUpdateRequest,
+            @RequestPart MultipartFile profileImg) throws Exception, IOException {
 
-            profileService.updateUserProfileImg(userId, imgFile, userNickname);
+        profileService.updateUserProfileImg(profileUpdateRequest, profileImg);
     }
 
 
