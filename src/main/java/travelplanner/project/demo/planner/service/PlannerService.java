@@ -78,8 +78,6 @@ public class PlannerService {
         PlannerEditor plannerEditor = editorBuilder
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
                 .build();
         planner.edit(plannerEditor, currentMember);
     }

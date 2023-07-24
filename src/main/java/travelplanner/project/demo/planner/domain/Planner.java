@@ -51,16 +51,13 @@ public class Planner {
     public PlannerEditor.PlannerEditorBuilder toEditor() {
         return PlannerEditor.builder()
                 .planTitle(planTitle)
-                .isPrivate(isPrivate)
-                .startDate(startDate)
-                .endDate(endDate);
+                .isPrivate(isPrivate);
     }
+
 
     public void edit(PlannerEditor plannerEditor, Member member){
         planTitle = plannerEditor.getPlanTitle();
         isPrivate = plannerEditor.getIsPrivate();
-        startDate = plannerEditor.getStartDate();
-        endDate = plannerEditor.getEndDate();
     }
 
     //날짜 추가

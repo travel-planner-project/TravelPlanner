@@ -16,8 +16,4 @@ public class PlannerUpdateRequest {
 
     private Boolean isPrivate;
 
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
 }

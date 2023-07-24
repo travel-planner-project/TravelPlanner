@@ -11,16 +11,9 @@ public class PlannerEditor {
 
     private Boolean isPrivate;
 
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
-
-    public PlannerEditor(String planTitle, Boolean isPrivate, LocalDateTime startDate, LocalDateTime endDate) {
+    public PlannerEditor(String planTitle, Boolean isPrivate) {
         this.planTitle = planTitle;
         this.isPrivate = isPrivate;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public static PlannerEditorBuilder builder() {
@@ -30,8 +23,6 @@ public class PlannerEditor {
     public static class PlannerEditorBuilder {
         private String planTitle;
         private Boolean isPrivate;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
 
         PlannerEditorBuilder() {
         }
@@ -50,27 +41,13 @@ public class PlannerEditor {
             return this;
         }
 
-        public PlannerEditorBuilder startDate(final LocalDateTime startDate) {
-            if (startDate != null) {
-                this.startDate = startDate;
-            }
-            return this;
-        }
-
-        public PlannerEditorBuilder endDate(final LocalDateTime endDate) {
-            if (endDate != null) {
-                this.endDate = endDate;
-            }
-            return this;
-        }
 
         public PlannerEditor build() {
-            return new PlannerEditor(planTitle, isPrivate, startDate, endDate);
+            return new PlannerEditor(planTitle, isPrivate);
         }
 
         public String toString() {
-            return "PlannerEditor.PlannerEditorBuilder(planTitle=" + this.planTitle + ", isPrivate=" + this.isPrivate +
-                    ", startDate=" + this.startDate + ", endDate=" + this.endDate + ")";
+            return "PlannerEditor.PlannerEditorBuilder(planTitle=" + this.planTitle + ", isPrivate=" + this.isPrivate + ")";
         }
     }
 }
