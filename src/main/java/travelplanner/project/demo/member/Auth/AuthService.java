@@ -11,6 +11,8 @@ import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.global.security.jwt.JwtService;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.member.profile.Profile;
+import travelplanner.project.demo.member.profile.ProfileRepository;
 
 import java.util.Optional;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final MemberRepository repository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -61,6 +64,7 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         Optional<Member> member = repository.findByEmail(request.getEmail());
+        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
 
         if (!member.isPresent()) {
             throw new Exception(ExceptionType.USER_NOT_FOUND);
@@ -78,11 +82,13 @@ public class AuthService {
                     .orElseThrow();
 
             var jwtToken = jwtService.generateToken(user);
+
             AuthResponse response = AuthResponse.builder()
                     .userId(member.get().getUserId())
                     .userNickname(member.get().getUserNickname())
                     .email(member.get().getEmail())
                     .token(jwtToken)
+                    .profileImgUrl(profile.getProfileImgUrl())
                     .build();
 
             return response;
