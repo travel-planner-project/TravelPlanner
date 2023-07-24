@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ReactHookFormProps } from '../../types/signUpTypes'
+import { PasswordProps } from '../../types/signUpTypes'
 import styles from './Form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
@@ -7,7 +7,7 @@ const passwordReg =
   // eslint-disable-next-line no-useless-escape
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]])[a-zA-Z0-9~!@#$%^&*(),.?`'":{}|<>_+\-=\[\]]+$/
 
-function Password({ register, dirtyFields, errors }: ReactHookFormProps) {
+function Password({ register, dirtyFields, errors, isEdit = '' }: PasswordProps) {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const handleShow = () => {
@@ -37,7 +37,7 @@ function Password({ register, dirtyFields, errors }: ReactHookFormProps) {
 
   return (
     <label className={styles.label} htmlFor='password'>
-      비밀번호
+      {`${isEdit}비밀번호`}
       <div className={styles.inputErrorBox}>
         <input
           id='password'
