@@ -1,0 +1,38 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.entireContainer {
+  @include U.flex-c(column, flex-start, flex-start);
+  padding: 96px;
+  h1 {
+    @include T.black-bold-32;
+    margin-bottom: 36px;
+  }
+  ul {
+    @include T.black-regular-16;
+    margin-bottom: 50px;
+    list-style: inside;
+  }
+}
+
+.label {
+  @include T.black-regular-14;
+  @include U.flex-c(column, flex-start, flex-start);
+  gap: 12px;
+
+  input {
+    padding-left: 16px;
+    border: 1px solid C.$gray300;
+    border-radius: 6px;
+    @include U.size(300px, 40px);
+  }
+}
+
+.confirmButton {
+  margin-top: 36px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: C.$blue400;
+  @include T.white-semibold-16;
+}

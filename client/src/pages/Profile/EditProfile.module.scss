@@ -1,0 +1,71 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.entireContainer {
+  @include U.flex-c(column, flex-start, flex-start);
+  padding: 96px;
+}
+
+.profileContainer {
+  @include U.flex-c(row, flex-start, center);
+  @include U.size(100%, 100px);
+  gap: 24px;
+  position: relative;
+}
+
+.profileBox {
+  @include U.size(100px);
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  background-color: C.$gray;
+  @include U.flex-c(row, center, center);
+}
+
+.deleteImage {
+  position: absolute;
+  top: 0;
+  left: 76px;
+  z-index: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.cameraBox {
+  @include U.size(48px);
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  background-color: C.$gray200;
+  @include U.flex-c(row, center, center);
+}
+
+.nickNameInput {
+  width: 260px;
+  margin: 30px 0 10px 0;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: 1px solid C.$gray300;
+}
+
+.guideText {
+  @include T.gray-regular-12;
+}
+
+.buttonsWrapper {
+  margin-top: 60px;
+}
+
+.blueButton {
+  margin-right: 24px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background-color: C.$blue400;
+  @include T.white-semibold-16;
+}
+
+.button {
+  @include T.blue-bold-16;
+}
