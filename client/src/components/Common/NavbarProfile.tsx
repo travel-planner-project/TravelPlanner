@@ -1,22 +1,25 @@
 import { NavLink } from 'react-router-dom'
 import styles from './NavbarProfile.module.scss'
 import Icon from './Icon'
-
-const 로그인여부 = false
-const profile = 'https://pbs.twimg.com/media/FMKsE-IaAAEFwFk.jpg'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
 
 function NavbarProfile() {
+  const userinfo = useRecoilValue(userInfo)
+
   return (
     <li>
-      <NavLink to={로그인여부 ? '/profile' : '/user/login'}>
+      <NavLink to={userinfo.userId ? '/profile' : '/user/login'}>
         <div className={styles.profileBox}>
-          {profile && 로그인여부 ? (
-            <img src={profile} alt='profile' />
+          {userinfo.userId && userinfo.profileImgUrl ? (
+            <img src={userinfo.profileImgUrl} alt='profile' />
           ) : (
             <Icon name='profile' size={70} />
           )}
         </div>
-        <div className={styles.profileName}>{로그인여부 ? '유저이름' : '로그인/회원가입'}</div>
+        <div className={styles.profileName}>
+          {userinfo.userId ? userinfo.userNickname : '로그인/회원가입'}
+        </div>
       </NavLink>
     </li>
   )
