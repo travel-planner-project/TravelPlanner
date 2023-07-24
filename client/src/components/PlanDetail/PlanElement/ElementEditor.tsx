@@ -7,7 +7,14 @@ interface ElementEditorViewProps extends React.HTMLProps<HTMLTextAreaElement> {
   handleResizeHeight: () => void
 }
 
-const options = ['관광', '숙박', '교통', '카페', '식당']
+const options = [
+  { title: '관광', key: 1 },
+  { title: '숙박', key: 2 },
+  { title: '교통', key: 3 },
+  { title: '카페', key: 4 },
+  { title: '식당', key: 5 },
+  { title: '기타', key: 6 },
+]
 
 function ElementEditorView({ textarea, handleResizeHeight }: ElementEditorViewProps) {
   return (

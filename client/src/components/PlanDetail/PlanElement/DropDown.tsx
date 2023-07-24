@@ -3,7 +3,7 @@ import styles from './DropDown.module.scss'
 import Icon from '../../Common/Icon'
 
 type DropDownProps = {
-  options: string[]
+  options: { title: string; key: number }[]
 }
 
 function DropDown({ options }: DropDownProps) {
@@ -41,9 +41,9 @@ function DropDown({ options }: DropDownProps) {
         <div className={styles.listBox}>
           {options.map(option => {
             return (
-              <li className={styles.list} key={crypto.randomUUID()}>
-                <button type='button' onClick={() => handleChangeCurrentOption(option)}>
-                  {option}
+              <li className={styles.list} key={option.key}>
+                <button type='button' onClick={() => handleChangeCurrentOption(option.title)}>
+                  {option.title}
                 </button>
               </li>
             )
