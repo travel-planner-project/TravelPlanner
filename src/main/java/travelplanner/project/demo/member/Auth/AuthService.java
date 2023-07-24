@@ -65,13 +65,18 @@ public class AuthService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
 
-        Member member = repository.findByEmail(request.getEmail()).get();
-        Profile profile = profileRepository.findProfileByMemberUserId(member.getUserId());
+        Optional<Member> member = repository.findByEmail(request.getEmail());
+
+        if (member.isEmpty()) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
+
+        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
 
         if (profile == null) { // 특정 유저의 프로필이 없는경우
 
             profile = Profile.builder()
-                    .member(member)
+                    .member(member.get())
                     .build();
 
             profileRepository.save(profile);
@@ -80,33 +85,24 @@ public class AuthService {
         profile.setProfileImgUrl("");
         profileRepository.save(profile);
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-        if (member == null) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
 
-        } else {
+        var jwtToken = jwtService.generateToken(user);
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
-
-            var jwtToken = jwtService.generateToken(user);
-
-            AuthResponse response = AuthResponse.builder()
-                    .userId(member.getUserId())
-                    .userNickname(member.getUserNickname())
-                    .email(member.getEmail())
+        return AuthResponse.builder()
+                    .userId(member.get().getUserId())
+                    .userNickname(member.get().getUserNickname())
+                    .email(member.get().getEmail())
                     .token(jwtToken)
                     .profileImgUrl(profile.getProfileImgUrl())
                     .build();
-
-            return response;
-        }
     }
 }
