@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.global.security.jwt.JwtService;
@@ -61,12 +62,26 @@ public class AuthService {
 
 
     // 로그인
+    @Transactional
     public AuthResponse login(LoginRequest request) {
 
-        Optional<Member> member = repository.findByEmail(request.getEmail());
-        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
+        Member member = repository.findByEmail(request.getEmail()).get();
+        Profile profile = profileRepository.findProfileByMemberUserId(member.getUserId());
 
-        if (!member.isPresent()) {
+        if (profile == null) { // 특정 유저의 프로필이 없는경우
+
+            profile = Profile.builder()
+                    .member(member)
+                    .build();
+
+            profileRepository.save(profile);
+        }
+
+        profile.setProfileImgUrl("등록된 이미지가 없습니다.");
+        profileRepository.save(profile);
+
+
+        if (member == null) {
             throw new Exception(ExceptionType.USER_NOT_FOUND);
 
         } else {
@@ -84,9 +99,9 @@ public class AuthService {
             var jwtToken = jwtService.generateToken(user);
 
             AuthResponse response = AuthResponse.builder()
-                    .userId(member.get().getUserId())
-                    .userNickname(member.get().getUserNickname())
-                    .email(member.get().getEmail())
+                    .userId(member.getUserId())
+                    .userNickname(member.getUserNickname())
+                    .email(member.getEmail())
                     .token(jwtToken)
                     .profileImgUrl(profile.getProfileImgUrl())
                     .build();
