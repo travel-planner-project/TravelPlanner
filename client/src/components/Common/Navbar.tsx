@@ -3,10 +3,11 @@ import { NavBarContent } from '../../router/routerData'
 import styles from './Navbar.module.scss'
 import NavbarProfile from './NavbarProfile'
 import LogoutBtn from './LogoutBtn'
-
-const ISLOGIN = true
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
 
 function Navbar() {
+  const { userId: isLogin } = useRecoilValue(userInfo)
   return (
     <div className={styles.container}>
       <ul>
@@ -25,7 +26,7 @@ function Navbar() {
           )
         })}
       </ul>
-      {ISLOGIN && <LogoutBtn />}
+      {isLogin && <LogoutBtn />}
     </div>
   )
 }
