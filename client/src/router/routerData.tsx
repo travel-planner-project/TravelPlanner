@@ -1,14 +1,14 @@
 import { Suspense, lazy } from 'react'
-import PlanDetail from '../pages/PlanDetail'
-import EditProfile from '../pages/Profile/EditProfile'
-import EditPassword from '../pages/Profile/EditPassword'
-import DeleteUser from '../pages/Profile/DeleteUser'
 
 const Home = lazy(() => import('../pages/Home'))
 const Planner = lazy(() => import('../pages/Planner'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
 const SignIn = lazy(() => import('../pages/SignIn'))
 const SignUp = lazy(() => import('../pages/SignUp'))
+const PlanDetail = lazy(() => import('../pages/PlanDetail'))
+const EditProfile = lazy(() => import('../pages/Profile/EditProfile'))
+const EditPassword = lazy(() => import('../pages/Profile/EditPassword'))
+const DeleteUser = lazy(() => import('../pages/Profile/DeleteUser'))
 
 const Feed = lazy(() => import('../pages/Home'))
 const Board = lazy(() => import('../pages/Home'))
