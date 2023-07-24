@@ -9,17 +9,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
-import travelplanner.project.demo.global.security.AuthConfig;
-import travelplanner.project.demo.global.security.jwt.JwtService;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Planner;
+import travelplanner.project.demo.planner.domain.PlannerEditor;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
+import static travelplanner.project.demo.global.exception.ExceptionType.PLANER_NOT_AUTHORIZED;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,9 +28,6 @@ public class PlannerService {
 
     private final MemberRepository memberRepository;
     private final PlannerRepository plannerRepository;
-    private final JwtService jwtService;
-    private final AuthConfig authConfig;
-
 
     //플래너 리스트
     public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
@@ -39,38 +35,60 @@ public class PlannerService {
     }
 
     //플래너 삭제
-    public void deletePlanner(Long plannerId, HttpServletRequest request){
-        Optional<Planner> planner = plannerRepository.findById(plannerId);
+    public void deletePlanner(Long plannerId){
 
-        //현재 사용자 정보
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Member member = memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-
-        //플래너가 존재하지 않을 때 예외처리
-        if (planner.isPresent() == false){
-            throw new Exception(ExceptionType.NOT_EXISTS_PLANNER);
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+        ;
+        // 현재 사용자 id 갖고 오기
+        Member currentMember = getCurrentMember();
+        // if (플래너 작성자의 index != 현재 사용자 index)
+        if (!planner.getMember().getUserId().equals(currentMember.getUserId())) {
+            throw new Exception(PLANER_NOT_AUTHORIZED);
         }
+        plannerRepository.delete(planner);
     }
 
     public void createPlanner(PlannerCreateRequest request) {
         Planner createPlanner = Planner.builder()
-                .userId(request.getUserId())
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
-//                .startDate(request.getStartDate())
-//                .endDate(request.getEndDate())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .build();
 
         plannerRepository.save(createPlanner);
     }
-//  수정과 삭제할 때 이용하면 삭제 코드를 줄일 수 있습니다.
-//    private Member getCurrentMember() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName(); // 현재 사용자의 email 얻기
-//        return memberRepository.findByEmail(username)
-//                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-//    }
+
+    @Transactional
+    public void updatePlanner(Long plannerId, PlannerUpdateRequest request) {
+
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+
+        // 현재 사용자 id 갖고 오기
+        Member currentMember = getCurrentMember();
+        // if (플래너 작성자의 index != 현재 사용자 index)
+        if(!planner.getMember().getUserId().equals(currentMember.getUserId())){
+            throw new Exception(PLANER_NOT_AUTHORIZED);
+        }
+        PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
+        PlannerEditor plannerEditor = editorBuilder
+                .planTitle(request.getPlanTitle())
+                .isPrivate(request.getIsPrivate())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .build();
+        planner.edit(plannerEditor, currentMember);
+    }
+
+    private Member getCurrentMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 현재 사용자의 email 얻기
+        return memberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
+    }
 }
 

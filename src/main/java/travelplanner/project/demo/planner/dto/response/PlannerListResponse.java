@@ -9,25 +9,24 @@ import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class PlannerListResponse {
-    
-    private Long userId;
-    
+
     private Long plannerId;
-    
+    private Long userId;
+
+
     private String planTitle;
     
     private LocalDateTime startDate;
     
     private LocalDateTime endDate;
-    
-    
+
     //플래너 객체
-    public PlannerListResponse(Planner pn){
-        this.plannerId = pn.getPlannerId();
-        this.planTitle = pn.getPlanTitle();
-        this.userId = pn.getUserId();
-        this.startDate = pn.getStartDate();
-        this.endDate = pn.getEndDate();
+    public PlannerListResponse(Planner planner){
+        this.plannerId = planner.getPlannerId();
+        this.planTitle = planner.getPlanTitle();
+        this.userId = planner.getMember().getUserId();
+        this.startDate = planner.getStartDate();
+        this.endDate = planner.getEndDate();
     }
     
     //플래너 리스트

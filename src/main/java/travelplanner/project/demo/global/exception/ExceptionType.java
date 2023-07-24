@@ -24,7 +24,11 @@ public enum ExceptionType {
     TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "USER-005", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
 
     // 플래너가 존재하지 않는 경우
-    NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다.");
+    NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다."),
+
+    // 플래너를 작성한 사람이 아닐 경우
+    PLANER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PLANNER-002", "플래너에 대한 접근 권한이 없습니다.");
+
 
     // 플래너가
 
