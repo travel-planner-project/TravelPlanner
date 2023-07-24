@@ -64,7 +64,9 @@ public class ProfileController {
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateUserProfile(
+            @Parameter(name = "profileUpdateRequest", description = "프로필 수정 요청", in = ParameterIn.QUERY) // swagger
             @RequestPart ProfileUpdateRequest profileUpdateRequest,
+            @Parameter(name = "profileImg", description = "프로필 이미지", in = ParameterIn.QUERY) // swagger
             @RequestPart MultipartFile profileImg) throws Exception, IOException {
 
         profileService.updateUserProfileImg(profileUpdateRequest, profileImg);
