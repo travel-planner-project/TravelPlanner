@@ -1,20 +1,15 @@
-import {
-  FieldErrors,
-  UseFormRegister,
-  UseFormGetValues,
-  UseFormHandleSubmit,
-} from 'react-hook-form'
+import { FieldErrors, UseFormRegister, UseFormGetValues } from 'react-hook-form'
 
 export type FormValueType = {
   email: string
-  nickname: string
+  userNickname: string
   password: string
   passwordCheck: string
 }
 
 type DirtyFields = {
   email: boolean | undefined
-  nickname: boolean | undefined
+  userNickname: boolean | undefined
   password: boolean | undefined
   passwordCheck: boolean | undefined
 }
@@ -30,6 +25,6 @@ export interface PasswordCheckProps extends ReactHookFormProps {
 }
 
 export interface SignUpViewProps extends PasswordCheckProps {
-  handleSubmit: UseFormHandleSubmit<FormValueType, undefined>
+  onSubmit: React.FormEventHandler<HTMLFormElement>
   isSubmitting: boolean
 }

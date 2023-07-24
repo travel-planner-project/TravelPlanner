@@ -6,7 +6,9 @@ import './styles/global.scss'
 const router = createBrowserRouter(
   routerData.map(routerElement => ({
     path: routerElement.path,
-    element: <GeneralLayout>{routerElement.element}</GeneralLayout>,
+    element: (
+      <GeneralLayout withAuth={routerElement.withAuth}>{routerElement.element}</GeneralLayout>
+    ),
   }))
 )
 
