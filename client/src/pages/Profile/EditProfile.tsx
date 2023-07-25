@@ -3,7 +3,7 @@ import styles from './EditProfile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function EditProfile() {
-  const { pathname, routeTo } = useRouter()
+  const { routeTo } = useRouter()
   // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
   // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
   const userInfo = {

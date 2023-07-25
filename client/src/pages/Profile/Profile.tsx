@@ -1,31 +1,26 @@
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
 import useRouter from '../../hooks/useRouter'
 import styles from './Profile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function Profile() {
-  const { pathname, routeTo } = useRouter()
-
-  // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
-  // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
-  const userInfo = {
-    nickName: '시은',
-    email: 'seeeun@gmail.com',
-    image: null,
-  }
+  const { routeTo } = useRouter()
+  const { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
 
   return (
     <div className={styles.entireContainer}>
       <div className={styles.profileContainer}>
         <div className={styles.profileBox}>
-          {userInfo.image ? (
-            <img src={userInfo.image} alt='profile' />
+          {profileImgUrl ? (
+            <img src={profileImgUrl} alt='profile' />
           ) : (
             <Icon name='profile' size={64} />
           )}
         </div>
         <div className={styles.profileInfo}>
-          <div className={styles.profileName}>{userInfo.nickName}</div>
-          <div className={styles.profileEmail}>{userInfo.email}</div>
+          <div className={styles.profileName}>{userNickname}</div>
+          <div className={styles.profileEmail}>{email}</div>
         </div>
         <button type='button' className={styles.blueButton} onClick={() => routeTo('/editprofile')}>
           프로필 수정
