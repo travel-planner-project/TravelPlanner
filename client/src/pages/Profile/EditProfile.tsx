@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router-dom'
+import useRouter from '../../hooks/useRouter'
 import styles from './EditProfile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function EditProfile() {
-  const navigate = useNavigate()
-
+  const { pathname, routeTo } = useRouter()
   // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
   // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
   const userInfo = {
@@ -45,7 +44,7 @@ function EditProfile() {
           <button className={styles.blueButton} type='submit'>
             확인
           </button>
-          <button className={styles.button} type='button' onClick={() => navigate('/profile')}>
+          <button className={styles.button} type='button' onClick={() => routeTo('/profile')}>
             취소
           </button>
         </div>
