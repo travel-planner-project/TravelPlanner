@@ -43,7 +43,7 @@ export const signIn = async ({ email, password }: SignInType) => {
 
 export const getProfile = async (id: number) => {
   try {
-    const response = await axiosInstance.get(`/profile/${id}`)
+    const response = await axiosInstance.get(`/profile?userId=${id}`)
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
