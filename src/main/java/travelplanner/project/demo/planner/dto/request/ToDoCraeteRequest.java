@@ -16,7 +16,7 @@ public class ToDoCraeteRequest {
     // 일정 제목
     private String itemTitle;
     // 일정 시간
-    private LocalDateTime itemDate;
+    private String itemDate;
     // 일정 분류
     private String category;
     // 일정 주소

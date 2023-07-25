@@ -36,4 +36,9 @@ public class Date {
     public void mappingToDo(ToDo toDo) {
         toDoList.add(toDo);
     }
+
+
+
+    // 플래너 연관관계 매핑
+
 }

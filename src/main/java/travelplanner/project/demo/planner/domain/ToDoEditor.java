@@ -15,7 +15,7 @@ public class ToDoEditor {
     // 일정 제목
     private String itemTitle;
     // 일정 시간
-    private LocalDateTime itemDate;
+    private String itemDate;
     // 일정 분류
     private String category;
     // 일정 주소
@@ -37,7 +37,7 @@ public class ToDoEditor {
         // 일정 제목
         private String itemTitle;
         // 일정 시간
-        private LocalDateTime itemDate;
+        private String itemDate;
         // 일정 분류
         private String category;
         // 일정 주소
@@ -57,7 +57,7 @@ public class ToDoEditor {
         }
 
         // TODO 날짜 받는 데이터 확인하기
-        public ToDoEditor.ToDoEditorBuilder itemDate(final LocalDateTime itemDate) {
+        public ToDoEditor.ToDoEditorBuilder itemDate(final String itemDate) {
             if (itemDate != null) {
                 this.itemDate = itemDate;
             }
