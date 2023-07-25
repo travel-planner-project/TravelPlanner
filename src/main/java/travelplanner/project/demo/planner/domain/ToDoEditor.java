@@ -3,6 +3,7 @@ package travelplanner.project.demo.planner.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ public class ToDoEditor {
         return new ToDoEditorBuilder();
     }
 
+    @ToString
     @NoArgsConstructor
     public static class ToDoEditorBuilder{
         // 일정 제목
@@ -47,7 +49,7 @@ public class ToDoEditor {
         // 할 일 내용
         private String content;
 
-        public ToDoEditorBuilder itemTitle(final String itemTitle) {
+        public ToDoEditor.ToDoEditorBuilder itemTitle(final String itemTitle) {
             if (itemTitle != null && !itemTitle.isEmpty()) {
                 this.itemTitle = itemTitle;
             }
@@ -55,46 +57,51 @@ public class ToDoEditor {
         }
 
         // TODO 날짜 받는 데이터 확인하기
-        public ToDoEditorBuilder itemDate(final LocalDateTime itemDate) {
+        public ToDoEditor.ToDoEditorBuilder itemDate(final LocalDateTime itemDate) {
             if (itemDate != null) {
                 this.itemDate = itemDate;
             }
             return this;
         }
 
-        public ToDoEditorBuilder category(final String category) {
+        public ToDoEditor.ToDoEditorBuilder category(final String category) {
             if (category != null && !category.isEmpty()) {
                 this.category = category;
             }
             return this;
         }
 
-        public ToDoEditorBuilder itemAddress(final String itemAddress) {
+        public ToDoEditor.ToDoEditorBuilder itemAddress(final String itemAddress) {
             if (itemAddress != null && !itemAddress.isEmpty()) {
                 this.itemAddress = itemAddress;
             }
             return this;
         }
 
-        public ToDoEditorBuilder budget(final Long budget) {
+        public ToDoEditor.ToDoEditorBuilder budget(final Long budget) {
             if (budget != null) {
                 this.budget = budget;
             }
             return this;
         }
 
-        public ToDoEditorBuilder isPrivate(final Boolean isPrivate) {
+        public ToDoEditor.ToDoEditorBuilder isPrivate(final Boolean isPrivate) {
             if (isPrivate != null) {
                 this.isPrivate = isPrivate;
             }
             return this;
         }
 
-        public ToDoEditorBuilder content(final String content) {
+        public ToDoEditor.ToDoEditorBuilder content(final String content) {
             if (content != null && !content.isEmpty()) {
                 this.content = content;
             }
             return this;
+        }
+
+        public ToDoEditor build() {
+            return new ToDoEditor(itemTitle, itemDate, category, itemAddress,
+                    budget, isPrivate, content);
         }
     }
 

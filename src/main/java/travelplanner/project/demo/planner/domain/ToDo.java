@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import travelplanner.project.demo.member.Member;
 
 import java.time.LocalDateTime;
 
@@ -46,5 +47,27 @@ public class ToDo {
     public void mappingDate(Date date) {
         this.date = date;
         date.mappingToDo(this);
+    }
+
+    public ToDoEditor.ToDoEditorBuilder toEditor() {
+
+        return ToDoEditor.builder()
+                .itemTitle(itemTitle)
+                .itemDate(itemDate)
+                .category(category)
+                .itemAddress(itemAddress)
+                .budget(budget)
+                .isPrivate(isPrivate)
+                .content(content);
+    }
+
+    public void edit(ToDoEditor toDoEditor) {
+        itemTitle = toDoEditor.getItemTitle();
+        itemDate = toDoEditor.getItemDate();
+        category = toDoEditor.getCategory();
+        itemAddress = toDoEditor.getItemAddress();
+        budget = toDoEditor.getBudget();
+        isPrivate = toDoEditor.getIsPrivate();
+        content = toDoEditor.getContent();
     }
 }
