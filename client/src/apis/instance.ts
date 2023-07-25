@@ -9,7 +9,10 @@ const instanceOptions = {
 }
 
 const setAccessTokenOnHeader = (config: InternalAxiosRequestConfig) => {
-  config.headers.Authorization = getTokenFromSessionStorage() || ''
+  const accessToken = getTokenFromSessionStorage()
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
   return config
 }
 
