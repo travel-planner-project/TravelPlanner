@@ -15,7 +15,6 @@ export const signUp = async ({ email, password, userNickname }: SignUpType) => {
       password,
       userNickname,
     })
-
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
@@ -35,6 +34,16 @@ export const signIn = async ({ email, password }: SignInType) => {
       password,
     })
     saveTokenToSessionStorage(response.data.token)
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
+export const getProfile = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(`/profile/${id}`)
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
