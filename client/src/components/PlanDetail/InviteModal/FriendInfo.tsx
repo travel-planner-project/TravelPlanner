@@ -12,7 +12,7 @@ type FriendInfoProps = {
 }
 
 function FriendInfo({ friend }: FriendInfoProps) {
-  return (
+  return friend.id ? (
     <label htmlFor='friend' className={styles.infoContainer}>
       <input
         id='friend'
@@ -20,12 +20,16 @@ function FriendInfo({ friend }: FriendInfoProps) {
         className={styles.checkbox}
         value={friend.email}
         defaultChecked
-        required
+        onClick={e => {
+          e.preventDefault()
+        }}
       />
       <img src={friend.profileImg} alt='profile' className={styles.profile} />
       <div>{friend.userNickname}</div>
       <div>{friend.email}</div>
     </label>
+  ) : (
+    <div className={styles.noInfoMessage}>일치하는 사용자가 없습니다.</div>
   )
 }
 

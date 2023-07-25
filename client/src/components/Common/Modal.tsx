@@ -18,6 +18,7 @@ type ModalContentProp = {
   placeholder: string
   submitButton: string
   isSearchBtn?: boolean
+  onSubmit: (input: string) => void
 }
 
 function ModalContent({
