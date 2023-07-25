@@ -12,13 +12,21 @@ function Profile() {
   const { id } = useParams()
   const { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
   const [profileUser, setProfileUser] = useState({
-    email: email,
-    userNickname: userNickname,
-    profileImgUrl: profileImgUrl,
+    email: '',
+    userNickname: '',
+    profileImgUrl: '',
   })
-  const [isOwner, setIsOwner] = useState(true)
+  const [isOwner, setIsOwner] = useState(false)
 
   useEffect(() => {
+    if (Number(id) === userId) {
+      setIsOwner(true)
+      setProfileUser({
+        email: email,
+        userNickname: userNickname,
+        profileImgUrl: profileImgUrl,
+      })
+    }
     if (Number(id) !== userId) {
       setIsOwner(false)
       getProfile(Number(id)).then(response => {
@@ -35,15 +43,7 @@ function Profile() {
         }
       })
     }
-    if (Number(id) === userId) {
-      setIsOwner(true)
-      setProfileUser({
-        email: email,
-        userNickname: userNickname,
-        profileImgUrl: profileImgUrl,
-      })
-    }
-  }, [id])
+  }, [userInfo, id])
 
   return (
     <div className={styles.entireContainer}>
