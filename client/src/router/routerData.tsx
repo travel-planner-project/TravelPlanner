@@ -25,7 +25,7 @@ type RouterElement = {
 export const routerData: RouterElement[] = [
   {
     id: 0,
-    path: '/profile',
+    path: '/profile/:id',
     label: '프로필',
     element: (
       <Suspense fallback={<div>loading</div>}>
