@@ -3,7 +3,13 @@ import { PasswordCheckProps } from '../../types/signUpTypes'
 import styles from './Form.module.scss'
 import ShowPasswordButton from './ShowPasswordButton'
 
-function PasswordCheck({ register, dirtyFields, errors, getValues }: PasswordCheckProps) {
+function PasswordCheck({
+  register,
+  dirtyFields,
+  errors,
+  getValues,
+  isEdit = '',
+}: PasswordCheckProps) {
   const [showPasswordCheck, setShowPasswordCheck] = useState<boolean>(false)
 
   const handleShow = () => {
@@ -25,7 +31,7 @@ function PasswordCheck({ register, dirtyFields, errors, getValues }: PasswordChe
 
   return (
     <label className={styles.label} htmlFor='passwordCheck'>
-      비밀번호 확인
+      {`${isEdit}비밀번호 확인`}
       <div className={styles.inputErrorBox}>
         <input
           id='passwordCheck'

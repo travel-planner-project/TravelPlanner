@@ -14,12 +14,13 @@ function RenderEdit() {
 
   return (
     <form className={styles.entireContainer}>
-      <Password register={register} dirtyFields={dirtyFields} errors={errors} />
+      <Password register={register} dirtyFields={dirtyFields} errors={errors} isEdit={'새 '} />
       <PasswordCheck
         register={register}
         dirtyFields={dirtyFields}
         errors={errors}
         getValues={getValues}
+        isEdit={'새 '}
       />
       <button type='submit' className={styles.confirmButton}>
         확인

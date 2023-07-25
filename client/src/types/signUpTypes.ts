@@ -20,8 +20,13 @@ export interface ReactHookFormProps {
   errors: FieldErrors<FormValueType>
 }
 
+export interface PasswordProps extends ReactHookFormProps {
+  isEdit?: string
+}
+
 export interface PasswordCheckProps extends ReactHookFormProps {
   getValues: UseFormGetValues<FormValueType>
+  isEdit?: string
 }
 
 export interface SignUpViewProps extends PasswordCheckProps {
