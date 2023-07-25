@@ -2,7 +2,7 @@ import useRouter from '../../hooks/useRouter'
 import styles from './RenderEdit.module.scss'
 
 function RenderScuccess() {
-  const { pathname, routeTo } = useRouter()
+  const { routeTo } = useRouter()
 
   return (
     <div className={styles.entireContainer}>
