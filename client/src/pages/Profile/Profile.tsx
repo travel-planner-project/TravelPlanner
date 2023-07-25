@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom'
+import useRouter from '../../hooks/useRouter'
 import styles from './Profile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function Profile() {
-  const navigate = useNavigate()
+  const { pathname, routeTo } = useRouter()
 
   // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
   // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
@@ -27,17 +27,13 @@ function Profile() {
           <div className={styles.profileName}>{userInfo.nickName}</div>
           <div className={styles.profileEmail}>{userInfo.email}</div>
         </div>
-        <button
-          type='button'
-          className={styles.blueButton}
-          onClick={() => navigate('/editprofile')}
-        >
+        <button type='button' className={styles.blueButton} onClick={() => routeTo('/editprofile')}>
           프로필 수정
         </button>
-        <button type='button' className={styles.button} onClick={() => navigate('/editpassword')}>
+        <button type='button' className={styles.button} onClick={() => routeTo('/editpassword')}>
           비밀번호 변경
         </button>
-        <button type='button' className={styles.button} onClick={() => navigate('/user/delete')}>
+        <button type='button' className={styles.button} onClick={() => routeTo('/user/delete')}>
           회원 탈퇴
         </button>
       </div>
