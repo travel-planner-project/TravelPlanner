@@ -5,6 +5,9 @@ import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
 import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/planDetailTypes'
+import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
+
+// 높이 수정중
 
 function PlanDetailView({
   userId,
@@ -66,10 +69,22 @@ function PlanDetailView({
           <div className={styles.planList}>
             <div className={styles.plan}>
               <div className={styles.dayTitle}>Day 1</div>
-              <Element />
-              <Element />
-              <div className={styles.addElementBtn}>+</div>
+              <div className={styles.elementBox}>
+                <Element />
+                <Element />
+                <Element />
+                <Element />
+                <Element />
+                <div className={styles.addElementBtn}>
+                  <Icon name='plus-square' size={24} />
+                </div>
+              </div>
             </div>
+          </div>
+          <div className={styles.plan}>
+            <div className={styles.dayTitle}>Day 2</div>
+            <Element />
+            <ElementEditor />
           </div>
           <div className={styles.addDayBtn}>추가하기</div>
         </div>
