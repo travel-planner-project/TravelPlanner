@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import useModal from '../../../hooks/useModal'
 import Modal from '../../Common/Modal'
 
 const InviteModalObj = {
@@ -7,18 +7,20 @@ const InviteModalObj = {
   placeholder: '친구의 이메일을 입력하세요',
   submitButton: '초대',
   isSearchBtn: true,
+  onSubmit: (input: string) => {
+    console.log(input, '친구 초대 api request')
+  },
 }
 
 function InviteModal() {
-  const [modalOpen, setModalOpen] = useState(false)
+  const { openModal } = useModal()
 
   return (
     <>
-      <button type='button' onClick={() => setModalOpen(true)}>
+      <button type='button' onClick={() => openModal(InviteModalObj)}>
         openModal
       </button>
-
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} {...InviteModalObj} />
+      <Modal />
     </>
   )
 }
