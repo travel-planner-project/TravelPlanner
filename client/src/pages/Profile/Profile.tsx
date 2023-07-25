@@ -10,32 +10,54 @@ import Icon from '../../components/Common/Icon'
 function Profile() {
   const { routeTo } = useRouter()
   const { id } = useParams()
-  let { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
+  const { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
+  const [profileUser, setProfileUser] = useState({
+    email: email,
+    userNickname: userNickname,
+    profileImgUrl: profileImgUrl,
+  })
   const [isOwner, setIsOwner] = useState(true)
 
   useEffect(() => {
     if (Number(id) !== userId) {
       setIsOwner(false)
-      const response = getProfile(Number(id))
-      console.log(response)
-      // 응답 받아서 유저인포 재설정
-      // 에러 처리
+      getProfile(Number(id)).then(response => {
+        if (response?.status === 200) {
+          setProfileUser({
+            email: response.data.email,
+            userNickname: response.data.userNickname,
+            profileImgUrl: response.data.profileImgUrl,
+          })
+        }
+        if (response?.status !== 200) {
+          alert('유저 정보를 찾을 수 없습니다.')
+          routeTo('/')
+        }
+      })
     }
-  }, [])
+    if (Number(id) === userId) {
+      setIsOwner(true)
+      setProfileUser({
+        email: email,
+        userNickname: userNickname,
+        profileImgUrl: profileImgUrl,
+      })
+    }
+  }, [id])
 
   return (
     <div className={styles.entireContainer}>
       <div className={styles.profileContainer}>
         <div className={styles.profileBox}>
-          {profileImgUrl ? (
-            <img src={profileImgUrl} alt='profile' />
+          {profileUser.profileImgUrl ? (
+            <img src={profileUser.profileImgUrl} alt='profile' />
           ) : (
             <Icon name='profile' size={64} />
           )}
         </div>
         <div className={styles.profileInfo}>
-          <div className={styles.profileName}>{userNickname}</div>
-          <div className={styles.profileEmail}>{email}</div>
+          <div className={styles.profileName}>{profileUser.userNickname}</div>
+          <div className={styles.profileEmail}>{profileUser.email}</div>
         </div>
         {isOwner ? (
           <>
