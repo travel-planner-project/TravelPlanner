@@ -30,7 +30,14 @@ public enum ExceptionType {
     PLANER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PLANNER-002", "플래너에 대한 접근 권한이 없습니다."),
 
     // 데이트가 존재하지 않는 경우
-    NOT_EXISTS_DATE(HttpStatus.BAD_REQUEST, "DATE-OO1", "존재 하지 않는 데이트 입니다.");
+    NOT_EXISTS_DATE(HttpStatus.BAD_REQUEST, "DATE-OO1", "존재 하지 않는 데이트 입니다."),
+
+    // 데이트가 존재하지 않는 경우
+    NOT_EXISTS_TODO(HttpStatus.BAD_REQUEST, "TODO-OO1", "존재 하지 않는 TODO 입니다."),
+
+    // 투두를 작성한 사람이 아닐 경우
+    TODO_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "TODO-002", "투두에 대한 접근 권한이 없습니다.");
+
 
 
     // 플래너가

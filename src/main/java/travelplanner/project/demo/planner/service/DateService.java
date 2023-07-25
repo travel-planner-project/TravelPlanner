@@ -17,25 +17,27 @@ public class DateService {
 
     private final DateRepository dateRepository;
 
-    public void addDate(DateCreateRequest request) {
+    public void addDate(DateCreateRequest createRequest) {
         Date buildRequest = Date.builder()
-                .eachDate(request.getEachDate())
+                .eachDate(createRequest.getEachDate())
                 .build();
         dateRepository.save(buildRequest);
     }
 
-    public void deleteDate(DateDeleteRequest request){
+    public void deleteDate(DateDeleteRequest deleteRequest){
 
         // 검증 로직 필요
-        Date date = dateRepository.findById(request.getDateId())
+        Date date = dateRepository.findById(deleteRequest.getDateId())
                 .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
         dateRepository.delete(date);
     }
 
-    public void updateDate(DateUpdateRequest request) {
+    public void updateDate(DateUpdateRequest updateRequest) {
 
         // 검증 로직 필요
-        Date date = dateRepository.findById(request.getDateId())
+        Date date = dateRepository.findById(updateRequest.getDateId())
                 .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
     }
+
+
 }

@@ -2,8 +2,6 @@ package travelplanner.project.demo.planner.domain;
 
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class PlannerEditor {
 

@@ -55,7 +55,7 @@ public class Planner {
     }
 
 
-    public void edit(PlannerEditor plannerEditor, Member member){
+    public void edit(PlannerEditor plannerEditor){ // Member member
         planTitle = plannerEditor.getPlanTitle();
         isPrivate = plannerEditor.getIsPrivate();
     }

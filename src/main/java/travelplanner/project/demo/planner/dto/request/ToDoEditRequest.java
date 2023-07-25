@@ -19,12 +19,13 @@ public class ToDoEditRequest {
     private LocalDateTime itemDate;
     // 일정 분류
     private String category;
-    // 일정 주소
-    private String itemAddress;
     // 지출 금액
     private Long budget;
     // 투두 내용
     private String content;
     // 여행 비공개 공개 여부
     private Boolean isPrivate;
+
+    // 일정 주소
+    private String itemAddress;
 }

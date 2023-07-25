@@ -68,18 +68,21 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
 
-        // 현재 사용자 id 갖고 오기
-        Member currentMember = getCurrentMember();
-        // if (플래너 작성자의 index != 현재 사용자 index)
-        if(!planner.getMember().getUserId().equals(currentMember.getUserId())){
-            throw new Exception(PLANER_NOT_AUTHORIZED);
-        }
+        // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
+//        Member currentMember = getCurrentMember();
+//        for(Member x: GroupMember){
+//            Member member = GroupMember.getMemberName();
+//            if (!currentMember.equals(member)) {
+//                throw new Exception(TODO_NOT_AUTHORIZED);
+//            }
+//        }
+
         PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
         PlannerEditor plannerEditor = editorBuilder
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
                 .build();
-        planner.edit(plannerEditor, currentMember);
+        planner.edit(plannerEditor);
     }
 
     private Member getCurrentMember() {
