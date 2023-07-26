@@ -1,20 +1,12 @@
-import { useResetRecoilState } from 'recoil'
 import Icon from './Icon'
 import styles from './LogoutBtn.module.scss'
-import { userInfo } from '../../store/store'
-import useRouter from '../../hooks/useRouter'
+import useLogout from '../../hooks/useLogout'
 
 function LogoutBtn() {
-  const resetUserInfo = useResetRecoilState(userInfo)
-  const { routeTo } = useRouter()
-  const handleLogout = () => {
-    resetUserInfo()
-    routeTo(0)
-    // 서버에 로그아웃 요청 후 성공하면 새로고침
-  }
+  const logout = useLogout()
 
   return (
-    <button type='button' className={styles.logout} onClick={handleLogout}>
+    <button type='button' className={styles.logout} onClick={logout}>
       <Icon name='box-arrow-left' size={24} />
       <span>logout</span>
     </button>
