@@ -63,7 +63,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProfileUpdateResponse> updateUserProfile(
             @Parameter(name = "profileUpdateRequest", description = "프로필 수정 요청", in = ParameterIn.QUERY) // swagger
             @RequestPart ProfileUpdateRequest profileUpdateRequest,
