@@ -95,7 +95,7 @@ public class ProfileService {
             String uniqueImgName = generateUniqueImgName(originalImgName, loginUserId);
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
-            String localFilePath = System.getProperty("java.io.tmpdir") + uniqueImgName;
+            String localFilePath = System.getProperty("java.io.tmpdir/") + uniqueImgName;
             profileImg.transferTo(Paths.get(localFilePath));
 
             // S3 에 이미지 업로드
