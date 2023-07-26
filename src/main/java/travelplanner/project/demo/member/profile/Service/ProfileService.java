@@ -86,15 +86,17 @@ public class ProfileService {
 
         if (profileImg.isEmpty()) {
 
-            profile.setProfileImgUrl("");
-            profile.setKeyName("");
-            profileRepository.save(profile);
+            if (!profileUpdateRequest.getChangeProfileImg()) { // 이미지 안바꿈
+                response.setProfileImgUrl(profile.getProfileImgUrl());
 
-        } else if (profileUpdateRequest.getExistProfileImgUrl().equals(profile.getProfileImgUrl())) {
+            } else { // 이미지 바꿈 - 파일 입력 안함
+                profile.setProfileImgUrl("");
+                profile.setKeyName("");
+                profileRepository.save(profile);
+                response.setProfileImgUrl(profile.getProfileImgUrl());
+            }
 
-            response.setProfileImgUrl(profileUpdateRequest.getExistProfileImgUrl());
-
-        } else {
+        } else { // 이미지 바꿈 - 파일 입력
 
             // 프로필 이미지가 있는 경우, 삭제하고 진행
             s3Service.deleteFile(profile.getKeyName());
