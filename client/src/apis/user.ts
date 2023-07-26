@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { saveTokenToSessionStorage } from '../utils/tokenHandler'
-import { axiosInstance } from './instance'
+import { axiosInstance, axiosInstanceFormData } from './instance'
 
 type SignUpType = {
   email: string
@@ -44,6 +44,16 @@ export const signIn = async ({ email, password }: SignInType) => {
 export const getProfile = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/profile?userId=${id}`)
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
+export const editProfile = async (formData: FormData) => {
+  try {
+    const response = await axiosInstanceFormData.patch('/profile', formData)
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
