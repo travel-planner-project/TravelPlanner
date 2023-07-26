@@ -1,5 +1,5 @@
 import useModal from '../../../hooks/useModal'
-import Modal from '../../Common/Modal'
+import Modal from '../../Common/Modal/Modal'
 
 const InviteModalObj = {
   title: '친구초대',

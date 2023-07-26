@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil'
 import { useEffect } from 'react'
-import Navbar from '../components/Common/Navbar'
+import Navbar from '../components/Common/Navbar/Navbar'
 import useRouter from '../hooks/useRouter'
 import { userInfo } from '../store/store'
 import style from './GeneralLayout.module.scss'

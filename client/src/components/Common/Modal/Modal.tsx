@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from './Modal.module.scss'
-import FriendInfo, { FriendType } from '../PlanDetail/InviteModal/FriendInfo'
-import useModal from '../../hooks/useModal'
+import FriendInfo, { FriendType } from './FriendInfo'
+import useModal from '../../../hooks/useModal'
 
 // 가짜 Friend 데이터
 const Friend = {
