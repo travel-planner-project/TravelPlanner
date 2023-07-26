@@ -13,6 +13,7 @@ import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
+import travelplanner.project.demo.member.profile.dto.response.ProfileUpdateResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class ProfileService {
 
     // 프로필 수정 [START] =========================================================================================
     @Transactional
-    public void updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg) throws Exception, IOException {
+    public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg) throws Exception, IOException {
 
         // 해당 멤버 존재하는지 확인
         memberService.findMember(profileUpdateRequest.getUserId());
@@ -108,6 +109,12 @@ public class ProfileService {
             // 로컬 임시 파일 삭제
             deleteLocalFile(localFilePath);
         }
+
+        ProfileUpdateResponse response = new ProfileUpdateResponse();
+        response.setUserNickname(member.getUserNickname());
+        response.setProfileImgUrl(profile.getProfileImgUrl());
+
+        return response;
     }
 
     private String generateUniqueImgName(String originalImgName, Long loginUserId) {
