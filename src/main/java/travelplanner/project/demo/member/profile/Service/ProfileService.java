@@ -100,7 +100,7 @@ public class ProfileService {
 
             // S3 에 이미지 업로드
             s3Service.uploadFile(uniqueImgName, localFilePath);
-            String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile";
+            String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile/";
             profile.setProfileImgUrl(imgUrl + uniqueImgName);
             profile.setKeyName(uniqueImgName);
             profileRepository.save(profile);
