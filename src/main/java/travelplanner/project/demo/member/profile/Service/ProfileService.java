@@ -81,8 +81,8 @@ public class ProfileService {
 
         memberRepository.save(member);
 
-        // 프로필 이미지가 있는 경우, 삭제하고 진행
-        s3Service.deleteFile(profile.getKeyName());
+        ProfileUpdateResponse response = new ProfileUpdateResponse();
+        response.setUserNickname(member.getUserNickname());
 
         if (profileImg.isEmpty()) {
 
@@ -90,7 +90,14 @@ public class ProfileService {
             profile.setKeyName("");
             profileRepository.save(profile);
 
-        } else{
+        } else if (profileUpdateRequest.getExistProfileImgUrl().equals(profile.getProfileImgUrl())) {
+
+            response.setProfileImgUrl(profileUpdateRequest.getExistProfileImgUrl());
+
+        } else {
+
+            // 프로필 이미지가 있는 경우, 삭제하고 진행
+            s3Service.deleteFile(profile.getKeyName());
 
             String originalImgName = profileImg.getOriginalFilename();
             String uniqueImgName = generateUniqueImgName(originalImgName, loginUserId);
@@ -108,11 +115,9 @@ public class ProfileService {
 
             // 로컬 임시 파일 삭제
             deleteLocalFile(localFilePath);
-        }
 
-        ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setUserNickname(member.getUserNickname());
-        response.setProfileImgUrl(profile.getProfileImgUrl());
+            response.setProfileImgUrl(profile.getProfileImgUrl());
+        }
 
         return response;
     }

@@ -16,4 +16,7 @@ public class ProfileUpdateRequest {
 
     @Schema(description = "유저 닉네임", example = "유저1")
     private String userNickname;
+
+    @Schema(description = "현재 프로필 이미지 주소", example = "유저1")
+    private String existProfileImgUrl;
 }
