@@ -4,7 +4,13 @@ import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
-import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/planDetailTypes'
+import {
+  Chat,
+  PlanDetailProps,
+  ChattingProps,
+  PlanDetailViewProps,
+  ScheduleProps,
+} from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 
 // 높이 수정중
@@ -18,7 +24,9 @@ function PlanDetailView({
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
+  scheduleData,
 }: PlanDetailViewProps) {
+  console.log(scheduleData)
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
@@ -66,28 +74,31 @@ function PlanDetailView({
           </div>
         </div>
         <div className={styles.planner}>
-          <div className={styles.planList}>
+          <ul className={styles.planList}>
             {/* map으로 day 별로 묶인 큰 박스 맵핑 */}
-            <div className={styles.plan}>
-              <div className={styles.dayTitle}>Day 1</div>
-              <div className={styles.elementBox}>
-                {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <div className={styles.addElementBtn}>
-                  <Icon name='plus-square' size={24} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className={styles.plan}>
-            <div className={styles.dayTitle}>Day 2</div>
-            <Element />
-            <ElementEditor />
-          </div>
+            {scheduleData?.map((item, idx) => {
+              return (
+                <li className={styles.plan} key={item.dateId}>
+                  <div className={styles.dayTitle}>{item.dateTitle}</div>
+                  <div className={styles.scheduleBox}>
+                    {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
+                    <div className={styles.schedules}>
+                      {item.scheduleItemList?.map((el, idx) => {
+                        return (
+                          <li className={styles.scheduleItem} key={el.itemId}>
+                            <Element data={el} />
+                          </li>
+                        )
+                      })}
+                      <div className={styles.addElementBtn}>
+                        <Icon name='plus-square' size={24} />
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
           <div className={styles.addDayBtn}>추가하기</div>
         </div>
       </div>
@@ -118,11 +129,11 @@ function PlanDetail() {
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
 
-  const dummyData = [
+  const scheduleData = [
     {
       dateId: 1,
       dateTitle: '7/14',
-      scheduleList: [
+      scheduleItemList: [
         {
           dateId: 1,
           itemId: 1,
@@ -145,12 +156,45 @@ function PlanDetail() {
           budget: null,
           itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
         },
+        {
+          dateId: 1,
+          itemId: 3,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 4,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 5,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
       ],
     },
     {
       dateId: 2,
       dateTitle: '7/15',
-      scheduleList: [
+      scheduleItemList: [
         {
           dateId: 1,
           itemId: 1,
@@ -265,7 +309,9 @@ function PlanDetail() {
     onChatSubmit,
   }
 
-  const props = { ...planDetailProps, ...chattingProps }
+  const scheduleProps: ScheduleProps = { scheduleData }
+
+  const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }
 
   return <PlanDetailView {...props} />
 }
