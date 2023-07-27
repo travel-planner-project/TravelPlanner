@@ -53,12 +53,14 @@ function EditProfile() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData()
+
+    const changeProfileImg = selectedImage !== profileImgUrl
     const nickNameBlob = new Blob(
       [
         JSON.stringify({
           userId: userId,
           userNickname: editNickname,
-          existProfileImgUrl: profileImgUrl,
+          changeProfileImg: changeProfileImg,
         }),
       ],
       {
@@ -66,15 +68,16 @@ function EditProfile() {
       }
     )
     formData.append('profileUpdateRequest', nickNameBlob)
+
     if (typeof selectedImage === 'string') {
-      const ImageBlob = new Blob([selectedImage], {
+      const ImageBlob = new Blob([''], {
         type: 'application/json',
       })
       formData.append('profileImg', ImageBlob)
     } else {
       formData.append('profileImg', selectedImage)
     }
-    console.log(selectedImage)
+
     editProfile(formData).then(response => {
       if (response?.status === 200) {
         alert('회원정보가 변경되었습니다.')
@@ -84,7 +87,6 @@ function EditProfile() {
           email: email,
           profileImgUrl: response.data.profileImgUrl,
         })
-        console.log(response.data)
         routeTo(`/profile/${userId}`)
       }
       if (response?.status !== 200) {
