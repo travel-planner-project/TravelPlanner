@@ -60,3 +60,18 @@ export const editProfile = async (formData: FormData) => {
     return axiosError.response
   }
 }
+
+type CheckPasswordType = {
+  userId: number
+  password: string
+}
+
+export const CheckPassword = async ({ userId, password }: CheckPasswordType) => {
+  try {
+    const response = await axiosInstance.post('/profile/user/check', { userId, password })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
