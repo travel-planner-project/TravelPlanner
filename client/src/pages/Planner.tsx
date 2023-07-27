@@ -102,6 +102,7 @@ function Planner() {
     console.log('편집하기')
   }
   const handlePlannerClick = () => {
+    // 해당 element의 id 값을 가진 엔드포인트로 연결
     console.log('플래너 상세 페이지')
   }
 
