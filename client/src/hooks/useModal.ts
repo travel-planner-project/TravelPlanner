@@ -7,21 +7,14 @@ type OpenModalType = {
   description: string
   placeholder: string
   submitButton: string
-  isSearchBtn?: boolean
+
   onSubmit: (input: string) => void
 }
 
 const useModal = () => {
   const [modalData, setModalData] = useRecoilState(modalState)
   const openModal = useCallback(
-    ({
-      title,
-      description,
-      placeholder,
-      submitButton,
-      onSubmit,
-      isSearchBtn = false,
-    }: OpenModalType) => {
+    ({ title, description, placeholder, submitButton, onSubmit }: OpenModalType) => {
       setModalData({
         isOpen: true,
         title,
@@ -29,7 +22,6 @@ const useModal = () => {
         placeholder,
         submitButton,
         onSubmit,
-        isSearchBtn,
       })
     },
     [setModalData]

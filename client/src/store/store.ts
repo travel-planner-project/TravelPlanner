@@ -57,7 +57,6 @@ export const modalState = atom<ModalType>({
     description: '',
     placeholder: '',
     submitButton: '',
-    isSearchBtn: false,
     onSubmit: () => {},
   },
 })

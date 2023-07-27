@@ -1,15 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styles from './Modal.module.scss'
-import FriendInfo, { FriendType } from './FriendInfo'
 import useModal from '../../../hooks/useModal'
-
-// 가짜 Friend 데이터
-const Friend = {
-  id: 123,
-  profileImg: 'https://i.ytimg.com/vi/y9bWhYGvBlk/maxresdefault.jpg',
-  userNickname: '닉네임',
-  email: 'test123@naver.com',
-}
+import InviteModal from './InviteModal'
 
 type ModalContentProp = {
   onClose: () => void
@@ -17,7 +9,6 @@ type ModalContentProp = {
   description: string
   placeholder: string
   submitButton: string
-  isSearchBtn?: boolean
   onSubmit: (input: string) => void
 }
 
@@ -28,35 +19,11 @@ function ModalContent({
   placeholder,
   submitButton,
   onSubmit,
-  isSearchBtn = false,
 }: ModalContentProp) {
   const [inputValue, setInputValue] = useState('')
-  const [friend, setFriend] = useState<FriendType>({})
-  const [isSearchBtnDirty, setIsSearchBtnDirty] = useState(false)
-
-  const handleSearch = async () => {
-    console.log('input 입력값:', inputValue, '을 서버로 보내고 받은 응답으로 friend 상태 업데이트')
-
-    // 친구 검색 api 에 inputValue state 를 넣어서 request 전송하고
-    // api의 응답 데이터를 setFriend(response.data) 로 업데이트
-
-    // const { status, data } = await searchFriend( inputValue )
-    // if(status === 200){
-    setIsSearchBtnDirty(true)
-    //    setFriend( data )
-    setFriend(Friend)
-    // }
-  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    if (isSearchBtn && friend.id) {
-      // 친구 초대 모달인 경우
-      // friend state를 submit 하는 api request 에 넣어서 전송
-      // await onSubmit(friend.email)
-    }
-
-    // 여행 추가 모달인 경우 & 친구 초대 모달이지만 검색된 유저가 없는 경우
     // const { status, data } =  await onSubmit(inputValue)
     // if(status !== 200) { alert(data.message) }
 
@@ -77,13 +44,7 @@ function ModalContent({
           value={inputValue}
           onChange={event => setInputValue(event.target.value)}
         />
-        {isSearchBtn && (
-          <button type='button' className={styles.searchBtn} onClick={handleSearch}>
-            검색
-          </button>
-        )}
       </div>
-      {isSearchBtnDirty && <FriendInfo friend={friend} />}
       <div className={styles.btnBox}>
         <button type='submit' className={styles.submitBtn} onClick={handleSubmit}>
           {submitButton}
@@ -96,7 +57,11 @@ function ModalContent({
   )
 }
 
-function Modal() {
+type ModalProps = {
+  type: 'invite' | 'create-planner'
+}
+
+function Modal({ type }: ModalProps) {
   const { modalData, closeModal } = useModal()
 
   const handleEscBtn = (event: KeyboardEvent) => {
@@ -111,6 +76,18 @@ function Modal() {
     return () => document.removeEventListener('keydown', handleEscBtn)
   }, [])
 
+  const modalContent = useMemo(() => {
+    switch (type) {
+      case 'invite':
+        return <InviteModal onClose={closeModal} {...modalData} />
+      case 'create-planner':
+        return <ModalContent onClose={closeModal} {...modalData} />
+      default: {
+        return <ModalContent onClose={closeModal} {...modalData} />
+      }
+    }
+  }, [type, modalData])
+
   return (
     modalData.isOpen && (
       <div className={styles.background} onClick={closeModal} role='presentation'>
@@ -119,9 +96,7 @@ function Modal() {
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
           role='presentation'
         >
-          <form className={styles.content}>
-            <ModalContent onClose={closeModal} {...modalData} />
-          </form>
+          <form className={styles.content}>{modalContent}</form>
         </div>
       </div>
     )
