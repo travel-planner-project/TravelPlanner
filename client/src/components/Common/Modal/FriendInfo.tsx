@@ -5,24 +5,23 @@ export type FriendType = {
   profileImg?: string
   userNickname?: string
   email?: string
+  isChecked?: boolean
 }
 
 type FriendInfoProps = {
   friend: FriendType
+  onChecked: (isChecked: boolean) => void
+  // setFriend: React.Dispatch<React.SetStateAction<FriendType>>
 }
 
-function FriendInfo({ friend }: FriendInfoProps) {
+function FriendInfo({ friend, onChecked }: FriendInfoProps) {
   return friend.id ? (
     <label htmlFor='friend' className={styles.infoContainer}>
       <input
         id='friend'
         type='checkbox'
         className={styles.checkbox}
-        value={friend.email}
-        defaultChecked
-        onClick={e => {
-          e.preventDefault()
-        }}
+        onChange={event => onChecked(event.target.checked)}
       />
       <img src={friend.profileImg} alt='profile' className={styles.profile} />
       <div>{friend.userNickname}</div>

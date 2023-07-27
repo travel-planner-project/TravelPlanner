@@ -40,19 +40,22 @@ function InviteModal({
     // const { status, data } = await searchFriend( inputValue )
     // if(status === 200){
     setIsSearchBtnDirty(true)
-    //    setFriend( data )
-    setFriend(Friend)
+    //    setFriend( {...data, isChecked: false } )
+    setFriend({ ...Friend, isChecked: false })
     // }
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault()
     if (!isSearchBtnDirty) {
-      // 검색 버튼을 안 누르고 초대버튼을 누른 경우
-      return alert('검색 버튼을 먼저 클릭해주세요')
+      return alert('이메일로 친구 검색을 먼저 해주세요')
     }
 
-    // const { status, data } =  await onSubmit(inputValue)
+    if (!friend.isChecked) {
+      return alert('초대하실 친구를 선택 후 초대 버튼을 눌러주세요')
+    }
+
+    // const { status, data } =  await onSubmit(friend.email)
     // if(status !== 200) { return alert('친구 초대에 실패했습니다. 잠시 후 다시 시도해주세요.') }
 
     onClose()
@@ -76,7 +79,12 @@ function InviteModal({
           검색
         </button>
       </div>
-      {isSearchBtnDirty && <FriendInfo friend={friend} />}
+      {isSearchBtnDirty && (
+        <FriendInfo
+          friend={friend}
+          onChecked={(isChecked: boolean) => setFriend({ ...friend, isChecked })}
+        />
+      )}
       <div className={styles.btnBox}>
         <button type='submit' className={styles.submitBtn} onClick={handleSubmit}>
           {submitButton}
