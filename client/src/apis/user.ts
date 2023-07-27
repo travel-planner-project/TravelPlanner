@@ -66,9 +66,24 @@ type CheckPasswordType = {
   password: string
 }
 
-export const CheckPassword = async ({ userId, password }: CheckPasswordType) => {
+export const checkPassword = async ({ userId, password }: CheckPasswordType) => {
   try {
     const response = await axiosInstance.post('/profile/user/check', { userId, password })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
+type EditPasswordType = {
+  userId: number
+  password: string
+}
+
+export const editPassword = async ({ userId, password }: EditPasswordType) => {
+  try {
+    const response = await axiosInstance.patch('/profile/user/updateInfo', { userId, password })
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
