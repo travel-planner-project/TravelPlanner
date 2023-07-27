@@ -90,3 +90,15 @@ export const editPassword = async ({ userId, password }: EditPasswordType) => {
     return axiosError.response
   }
 }
+
+export const deleteUser = async ({ userId, password }: EditPasswordType) => {
+  try {
+    const response = await axiosInstance.delete('/profile/user/delete', {
+      data: { userId, password },
+    })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}

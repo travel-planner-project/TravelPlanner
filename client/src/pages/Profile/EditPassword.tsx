@@ -22,7 +22,7 @@ function EditPassword() {
     getValues,
   } = useForm<FormValueType>({ mode: 'onChange' })
 
-  const onCheckedSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onCheckSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     checkPassword({ userId: userId, password: currentPassword }).then(response => {
       if (response?.status === 200) {
@@ -42,7 +42,8 @@ function EditPassword() {
     editPassword({ userId: userId, password: data.password }).then(response => {
       if (response?.status === 200) {
         alert('비밀번호가 변경되었습니다.')
-        routeTo(`/profile/${userId}`)
+        // todo: 로그아웃 처리
+        routeTo('/user/login')
       }
       if (response?.status !== 200) {
         alert('비밀번호 변경에 실패했습니다.')
@@ -66,7 +67,7 @@ function EditPassword() {
       ) : (
         <RenderCheck
           onCurrentPasswordChange={onCurrentPasswordChange}
-          onCheckedSubmit={onCheckedSubmit}
+          onCheckedSubmit={onCheckSubmit}
         />
       )}
     </>
