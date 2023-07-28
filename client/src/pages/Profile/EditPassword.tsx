@@ -41,7 +41,7 @@ function EditPassword() {
   const onEditSubmit = (data: FormValueType) => {
     editPassword({ userId: userId, password: data.password }).then(response => {
       if (response?.status === 200) {
-        alert('비밀번호가 변경되었습니다.')
+        alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.')
         // todo: 로그아웃 처리
         routeTo('/user/login')
       }
