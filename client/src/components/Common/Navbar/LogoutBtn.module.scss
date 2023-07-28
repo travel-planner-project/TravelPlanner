@@ -1,5 +1,5 @@
-@use '../../styles/typography' as T;
-@use '../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+@use '../../../styles/utils' as U;
 
 .logout {
   @include U.flex-c(row, center, center);

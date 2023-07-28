@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import styles from './NavbarProfile.module.scss'
-import Icon from './Icon'
+import Icon from '../Icon'
 import { useRecoilValue } from 'recoil'
-import { userInfo } from '../../store/store'
+import { userInfo } from '../../../store/store'
 
 function NavbarProfile() {
   const { userId, userNickname, profileImgUrl } = useRecoilValue(userInfo)

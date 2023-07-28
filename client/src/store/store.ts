@@ -33,9 +33,30 @@ const sessionStorageEffect =
     }
   }
 
-// eslint-disable-next-line import/prefer-default-export
 export const userInfo: RecoilState<UserInfoType> = atom({
   key: 'userInfo',
   default: {},
   effects_UNSTABLE: [sessionStorageEffect('userInfo')],
+})
+
+type ModalType = {
+  isOpen: boolean
+  title: string
+  description: string
+  placeholder: string
+  submitButton: string
+  isSearchBtn?: boolean
+  onSubmit: (input: string) => void
+}
+
+export const modalState = atom<ModalType>({
+  key: 'modalState',
+  default: {
+    isOpen: false,
+    title: '',
+    description: '',
+    placeholder: '',
+    submitButton: '',
+    onSubmit: () => {},
+  },
 })

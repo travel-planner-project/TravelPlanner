@@ -1,6 +1,6 @@
-import Icon from './Icon'
+import Icon from '../Icon'
 import styles from './LogoutBtn.module.scss'
-import useLogout from '../../hooks/useLogout'
+import useLogout from '../../../hooks/useLogout'
 
 function LogoutBtn() {
   const logout = useLogout()

@@ -1,6 +1,6 @@
-@use '../../styles/color' as C;
-@use '../../styles/typography' as T;
-@use '../../styles/utils' as U;
+@use '../../../styles/color' as C;
+@use '../../../styles/typography' as T;
+@use '../../../styles/utils' as U;
 
 .container {
   @include U.flex-c(column, space-between, center);

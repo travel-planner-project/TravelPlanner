@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom'
-import { NavBarContent } from '../../router/routerData'
+import { NavBarContent } from '../../../router/routerData'
 import styles from './Navbar.module.scss'
 import NavbarProfile from './NavbarProfile'
 import LogoutBtn from './LogoutBtn'
 import { useRecoilValue } from 'recoil'
-import { userInfo } from '../../store/store'
+import { userInfo } from '../../../store/store'
 
 function Navbar() {
   const { userId: isLogin } = useRecoilValue(userInfo)
