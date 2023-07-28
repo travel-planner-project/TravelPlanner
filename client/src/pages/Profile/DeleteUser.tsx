@@ -19,6 +19,7 @@ function DeleteUser() {
     deleteUser({ userId: userId, password: currentPassword }).then(response => {
       if (response?.status === 200) {
         alert('회원탈퇴가 완료되었습니다.')
+        // 체크박스 추가
         // todo: 로그아웃 처리
         routeTo('/')
       }
