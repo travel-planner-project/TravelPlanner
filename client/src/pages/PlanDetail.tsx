@@ -25,8 +25,11 @@ function PlanDetailView({
   onChatChange,
   onChatSubmit,
   scheduleData,
+  handleOpenScheduleEditor,
+  handleCloseScheduleEditor,
+  currentDateId,
+  isScheduleEditorOpened,
 }: PlanDetailViewProps) {
-  console.log(scheduleData)
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
@@ -79,6 +82,8 @@ function PlanDetailView({
             {scheduleData?.map((item, idx) => {
               return (
                 <li className={styles.plan} key={item.dateId}>
+                  {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
+                  {/* input type date는 idx가 0일 때만 */}
                   <div className={styles.dayTitle}>{item.dateTitle}</div>
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
@@ -90,9 +95,17 @@ function PlanDetailView({
                           </li>
                         )
                       })}
-                      <div className={styles.addElementBtn}>
-                        <Icon name='plus-square' size={24} />
-                      </div>
+
+                      {currentDateId === item.dateId && isScheduleEditorOpened ? (
+                        <ElementEditor />
+                      ) : (
+                        <button
+                          className={styles.addElementBtn}
+                          onClick={() => handleOpenScheduleEditor(item.dateId)}
+                        >
+                          <Icon name='plus-square' size={24} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </li>
@@ -128,6 +141,9 @@ function PlanDetail() {
   const [chatModal, setChatModal] = useState(false)
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
+
+  const [currentDateId, setCurrentDateId] = useState(-1)
+  const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
 
   const scheduleData = [
     {
@@ -221,6 +237,16 @@ function PlanDetail() {
     },
   ]
 
+  const handleOpenScheduleEditor = (id: number) => {
+    setCurrentDateId(id)
+    setIsScheduleEditorOpened(true)
+  }
+
+  const handleCloseScheduleEditor = () => {
+    setCurrentDateId(-1)
+    setIsScheduleEditorOpened(false)
+  }
+
   useEffect(() => {
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
@@ -252,10 +278,10 @@ function PlanDetail() {
           } else if (body.type === 'todo') {
             // 1. response의 dateId를 newDateId에 할당
             // 2. response를 newData에 할당
-            // 3. 날짜 리스트에서 newDateId와 일치하는 요소를 찾음
+            // 3. 스케줄 리스트에서 newDateId와 일치하는 요소를 찾음
             // 4. 해당 요소에 newData 추가
             //   copyData.map((item) =>
-            //   item.dateId === newDateId ? { ...item, ...newData } : item
+            //   item.dateId === newDateId ? item.scheduleList.push(newData) : item
             //   )
             // 5. setData(copyData)
           }
@@ -309,7 +335,13 @@ function PlanDetail() {
     onChatSubmit,
   }
 
-  const scheduleProps: ScheduleProps = { scheduleData }
+  const scheduleProps: ScheduleProps = {
+    scheduleData,
+    currentDateId,
+    isScheduleEditorOpened,
+    handleOpenScheduleEditor,
+    handleCloseScheduleEditor,
+  }
 
   const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }
 

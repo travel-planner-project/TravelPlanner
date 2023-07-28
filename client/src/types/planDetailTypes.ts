@@ -29,6 +29,10 @@ export interface ScheduleProps {
       itemAddress: string
     }[]
   }[]
+  handleOpenScheduleEditor: (id: number) => void
+  handleCloseScheduleEditor: () => void
+  currentDateId: number
+  isScheduleEditorOpened: boolean
 }
 
 export interface PlanDetailProps {
