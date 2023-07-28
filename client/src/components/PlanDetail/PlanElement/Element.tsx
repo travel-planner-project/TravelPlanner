@@ -1,19 +1,20 @@
 import styles from './Element.module.scss'
 
-function ElementView() {
+type ElementViewProps = ElementProps
+function ElementView({ data }: ElementViewProps) {
   return (
     <div className={styles.container}>
       <div className={styles.itemBox}>
         <div className={styles.header}>
-          <div className={styles.title}>조은호텔 체크인</div>
-          <div className={styles.category}>숙박</div>
+          <div className={styles.title}>{data.itemTitle}</div>
+          <div className={styles.category}>{data.category}</div>
         </div>
         <div className={styles.itemInfo}>
-          <div className={styles.itemTime}>오후 15시 00분</div>
-          <div className={styles.itemPayment}>165,000 원</div>
+          <div className={styles.itemTime}>{data.itemTime}</div>
+          <div className={styles.itemPayment}>{data.budget}</div>
         </div>
-        <div className={styles.itemAddress}>제주시 특별자치도, 한립음 협재리 30</div>
-        <div className={styles.itemDetail}>물놀이 복장으로 갈아입기 ㅎㅎ</div>
+        <div className={styles.itemAddress}>{data.itemAddress}</div>
+        <div className={styles.itemDetail}>{data.itemContent}</div>
       </div>
       <div className={styles.buttons}>
         <div className={styles.okBtn}>수정</div>
@@ -22,8 +23,21 @@ function ElementView() {
     </div>
   )
 }
-function Element() {
-  return <ElementView />
+type ElementProps = {
+  data: {
+    dateId: number
+    itemId: number
+    itemTitle: string
+    itemTime: string
+    category: string
+    itemContent: string
+    isPrivate: boolean
+    budget: number | null
+    itemAddress: string
+  }
+}
+function Element({ data }: ElementProps) {
+  return <ElementView data={data} />
 }
 
 export default Element

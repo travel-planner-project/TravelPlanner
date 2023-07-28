@@ -4,7 +4,13 @@ import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
 import styles from './PlanDetail.module.scss'
 import ChatModal from '../components/PlanDetail/ChatModal/ChatModal'
-import { Chat, PlanDetailProps, ChattingProps, PlanDetailViewProps } from '../types/planDetailTypes'
+import {
+  Chat,
+  PlanDetailProps,
+  ChattingProps,
+  PlanDetailViewProps,
+  ScheduleProps,
+} from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 
 // 높이 수정중
@@ -18,6 +24,11 @@ function PlanDetailView({
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
+  scheduleData,
+  handleOpenScheduleEditor,
+  handleCloseScheduleEditor,
+  currentDateId,
+  isScheduleEditorOpened,
 }: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
@@ -66,26 +77,41 @@ function PlanDetailView({
           </div>
         </div>
         <div className={styles.planner}>
-          <div className={styles.planList}>
-            <div className={styles.plan}>
-              <div className={styles.dayTitle}>Day 1</div>
-              <div className={styles.elementBox}>
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <Element />
-                <div className={styles.addElementBtn}>
-                  <Icon name='plus-square' size={24} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className={styles.plan}>
-            <div className={styles.dayTitle}>Day 2</div>
-            <Element />
-            <ElementEditor />
-          </div>
+          <ul className={styles.planList}>
+            {/* map으로 day 별로 묶인 큰 박스 맵핑 */}
+            {scheduleData?.map((item, idx) => {
+              return (
+                <li className={styles.plan} key={item.dateId}>
+                  {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
+                  {/* input type date는 idx가 0일 때만 */}
+                  <div className={styles.dayTitle}>{item.dateTitle}</div>
+                  <div className={styles.scheduleBox}>
+                    {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
+                    <div className={styles.schedules}>
+                      {item.scheduleItemList?.map((el, idx) => {
+                        return (
+                          <li className={styles.scheduleItem} key={el.itemId}>
+                            <Element data={el} />
+                          </li>
+                        )
+                      })}
+
+                      {currentDateId === item.dateId && isScheduleEditorOpened ? (
+                        <ElementEditor />
+                      ) : (
+                        <button
+                          className={styles.addElementBtn}
+                          onClick={() => handleOpenScheduleEditor(item.dateId)}
+                        >
+                          <Icon name='plus-square' size={24} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
           <div className={styles.addDayBtn}>추가하기</div>
         </div>
       </div>
@@ -116,6 +142,111 @@ function PlanDetail() {
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
 
+  const [currentDateId, setCurrentDateId] = useState(-1)
+  const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
+
+  const scheduleData = [
+    {
+      dateId: 1,
+      dateTitle: '7/14',
+      scheduleItemList: [
+        {
+          dateId: 1,
+          itemId: 1,
+          itemTitle: '조은호텔 체크인',
+          itemTime: '15:00',
+          category: '숙박',
+          itemContent: '물놀이 복장으로 갈아입기 ㅎㅎ',
+          isPrivate: false,
+          budget: 16000,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 2,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 3,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 4,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 5,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+      ],
+    },
+    {
+      dateId: 2,
+      dateTitle: '7/15',
+      scheduleItemList: [
+        {
+          dateId: 1,
+          itemId: 1,
+          itemTitle: '조은호텔 체크인',
+          itemTime: '15:00',
+          category: '숙박',
+          itemContent: '물놀이 복장으로 갈아입기 ㅎㅎ',
+          isPrivate: false,
+          budget: 16000,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+        {
+          dateId: 1,
+          itemId: 2,
+          itemTitle: '협재 해변',
+          itemTime: '17:00',
+          category: '관광',
+          itemContent: '수영, 사진 찍기',
+          isPrivate: false,
+          budget: null,
+          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
+        },
+      ],
+    },
+  ]
+
+  const handleOpenScheduleEditor = (id: number) => {
+    setCurrentDateId(id)
+    setIsScheduleEditorOpened(true)
+  }
+
+  const handleCloseScheduleEditor = () => {
+    setCurrentDateId(-1)
+    setIsScheduleEditorOpened(false)
+  }
+
   useEffect(() => {
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
@@ -144,8 +275,16 @@ function PlanDetail() {
           const body = JSON.parse(message.body)
           if (body.type === 'chat') {
             setChatList(prev => [...prev, body.msg])
+          } else if (body.type === 'todo') {
+            // 1. response의 dateId를 newDateId에 할당
+            // 2. response를 newData에 할당
+            // 3. 스케줄 리스트에서 newDateId와 일치하는 요소를 찾음
+            // 4. 해당 요소에 newData 추가
+            //   copyData.map((item) =>
+            //   item.dateId === newDateId ? item.scheduleList.push(newData) : item
+            //   )
+            // 5. setData(copyData)
           }
-          // todo: type에 따라 처리하면 될 것 같습니다.
         }
       }
       // 구독하기
@@ -196,7 +335,15 @@ function PlanDetail() {
     onChatSubmit,
   }
 
-  const props = { ...planDetailProps, ...chattingProps }
+  const scheduleProps: ScheduleProps = {
+    scheduleData,
+    currentDateId,
+    isScheduleEditorOpened,
+    handleOpenScheduleEditor,
+    handleCloseScheduleEditor,
+  }
+
+  const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }
 
   return <PlanDetailView {...props} />
 }
