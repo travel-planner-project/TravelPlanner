@@ -1,22 +1,77 @@
 import { useState } from 'react'
-import RenderCheckPage from '../../components/Profile/RenderCheck'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
+import useRouter from '../../hooks/useRouter'
+import { useForm } from 'react-hook-form'
+import { FormValueType } from '../../types/signUpTypes'
+import { checkPassword, editPassword } from '../../apis/user'
+import RenderCheck from '../../components/Profile/RenderCheck'
 import RenderEdit from '../../components/Profile/RenderEdit'
-import RenderScuccess from '../../components/Profile/RenderSuccess'
 
 function EditPassword() {
-  const [page, setPage] = useState('check')
+  const { routeTo } = useRouter()
+  const { userId } = useRecoilValue(userInfo)
+  // 현재 패스워드 체크용
+  const [isChecked, SetIsChecked] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  // 새 패스워드 수정용
+  const {
+    register,
+    handleSubmit,
+    formState: { dirtyFields, errors, isSubmitting },
+    getValues,
+  } = useForm<FormValueType>({ mode: 'onChange' })
 
-  // 페이지 상태에 따라 화면 전환
-  switch (page) {
-    case 'check':
-      return <RenderCheckPage />
-    case 'edit':
-      return <RenderEdit />
-    case 'success':
-      return <RenderScuccess />
-    default:
-      return <RenderCheckPage />
+  const onCheckSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    checkPassword({ userId: userId, password: currentPassword }).then(response => {
+      if (response?.status === 200) {
+        SetIsChecked(true)
+      }
+      if (response?.status !== 200) {
+        alert('비밀번호가 일치하지 않습니다.')
+      }
+    })
   }
+
+  const onCurrentPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPassword(event.target.value)
+  }
+
+  const onEditSubmit = (data: FormValueType) => {
+    editPassword({ userId: userId, password: data.password }).then(response => {
+      if (response?.status === 200) {
+        alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.')
+        // todo: 로그아웃 처리
+        routeTo('/user/login')
+      }
+      if (response?.status !== 200) {
+        alert('비밀번호 변경에 실패했습니다.')
+      }
+    })
+  }
+
+  const props = {
+    register,
+    onSubmit: handleSubmit(data => onEditSubmit(data)),
+    dirtyFields,
+    errors,
+    getValues,
+    isSubmitting,
+  }
+
+  return (
+    <>
+      {isChecked ? (
+        <RenderEdit {...props} />
+      ) : (
+        <RenderCheck
+          onCurrentPasswordChange={onCurrentPasswordChange}
+          onCheckedSubmit={onCheckSubmit}
+        />
+      )}
+    </>
+  )
 }
 
 export default EditPassword

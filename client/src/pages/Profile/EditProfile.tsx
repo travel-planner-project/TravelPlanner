@@ -1,56 +1,146 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { userInfo } from '../../store/store'
+import useRouter from '../../hooks/useRouter'
+import { editProfile } from '../../apis/user'
 import styles from './EditProfile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function EditProfile() {
-  const navigate = useNavigate()
+  const { routeTo } = useRouter()
+  const { userId, email, userNickname, profileImgUrl } = useRecoilValue(userInfo)
+  const setUserInfo = useSetRecoilState(userInfo)
+  const [editNickname, setEditNickname] = useState(userNickname)
+  const [selectedImage, setSelectedImage] = useState<File | string>(profileImgUrl)
+  const [previewImage, setPreviewImage] = useState(profileImgUrl)
 
-  // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
-  // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
-  const userInfo = {
-    nickName: '시은',
-    email: 'seeeun@gmail.com',
-    image: null,
+  // 미리보기 이미지 업데이트 함수
+  const updatePreviewImage = (file: File | null) => {
+    if (file) {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string)
+      }
+    } else {
+      setPreviewImage('')
+    }
+  }
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectedImage(event.target.files[0])
+      updatePreviewImage(event.target.files[0])
+    }
+  }
+
+  const handleDeleteImage = () => {
+    setSelectedImage('')
+    updatePreviewImage(null)
+  }
+
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditNickname(event.target.value)
+  }
+
+  const handleKeyDown = (event: { key: string; preventDefault: () => void }) => {
+    // 만약 눌린 키가 스페이스바라면 이벤트를 막는다.
+    if (event.key === ' ') {
+      event.preventDefault()
+    }
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData()
+
+    const changeProfileImg = selectedImage !== profileImgUrl
+    const nickNameBlob = new Blob(
+      [
+        JSON.stringify({
+          userId: userId,
+          userNickname: editNickname,
+          changeProfileImg: changeProfileImg,
+        }),
+      ],
+      {
+        type: 'application/json',
+      }
+    )
+    formData.append('profileUpdateRequest', nickNameBlob)
+
+    if (typeof selectedImage === 'string') {
+      const ImageBlob = new Blob([''], {
+        type: 'application/json',
+      })
+      formData.append('profileImg', ImageBlob)
+    } else {
+      formData.append('profileImg', selectedImage)
+    }
+
+    editProfile(formData).then(response => {
+      if (response?.status === 200) {
+        alert('회원정보가 변경되었습니다.')
+        setUserInfo({
+          userId: userId,
+          userNickname: response.data.userNickname,
+          email: email,
+          profileImgUrl: response.data.profileImgUrl,
+        })
+        routeTo(`/profile/${userId}`)
+      }
+      if (response?.status !== 200) {
+        alert('회원정보 변경에 실패했습니다. 잠시 후 다시 시도해주세요.')
+      }
+    })
   }
 
   return (
-    <div className={styles.entireContainer}>
+    <form className={styles.entireContainer} onSubmit={handleSubmit}>
       <div className={styles.profileContainer}>
         <div className={styles.profileBox}>
-          {userInfo.image ? (
-            <img src={userInfo.image} alt='profile' />
+          {previewImage ? (
+            <>
+              <img src={previewImage} alt='profile' />
+              <button className={styles.deleteImage} type='button' onClick={handleDeleteImage}>
+                <Icon name='x-circle-blue' size={24} />
+              </button>
+            </>
           ) : (
             <Icon name='profile' size={64} />
           )}
         </div>
-        {userInfo.image ? null : (
-          <button className={styles.deleteImage} type='button'>
-            <Icon name='x-circle-blue' size={24} />
-          </button>
-        )}
-        <button className={styles.cameraBox} type='button'>
+        <label className={styles.cameraBox} htmlFor='imageInput'>
           <Icon name='camera' size={24} />
+        </label>
+        <input
+          type='file'
+          id='imageInput'
+          accept='image/*'
+          onChange={handleImageChange}
+          style={{ display: 'none' }}
+        />
+      </div>
+      <input
+        className={styles.nickNameInput}
+        type='text'
+        maxLength={16}
+        placeholder={userNickname}
+        value={editNickname}
+        onChange={handleNicknameChange}
+        onKeyDown={handleKeyDown}
+        required
+      />
+      <p className={styles.guideText}>닉네임은 공백 없이 16자 이하로 입력 가능합니다.</p>
+      <div className={styles.buttonsWrapper}>
+        <button className={styles.blueButton} type='submit'>
+          확인
+        </button>
+        <button className={styles.button} type='button' onClick={() => routeTo(-1)}>
+          취소
         </button>
       </div>
-      <form>
-        <input
-          className={styles.nickNameInput}
-          type='text'
-          placeholder={userInfo.nickName}
-          maxLength={16}
-          required
-        />
-        <p className={styles.guideText}>닉네임은 공백 없이 16자 이하로 입력 가능합니다.</p>
-        <div className={styles.buttonsWrapper}>
-          <button className={styles.blueButton} type='submit'>
-            확인
-          </button>
-          <button className={styles.button} type='button' onClick={() => navigate('/profile')}>
-            취소
-          </button>
-        </div>
-      </form>
-    </div>
+    </form>
   )
 }
 

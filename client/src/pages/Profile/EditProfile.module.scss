@@ -40,6 +40,7 @@
   overflow: hidden;
   background-color: C.$gray200;
   @include U.flex-c(row, center, center);
+  cursor: pointer;
 }
 
 .nickNameInput {

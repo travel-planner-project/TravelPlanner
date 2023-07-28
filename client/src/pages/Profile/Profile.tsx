@@ -1,45 +1,85 @@
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
+import useRouter from '../../hooks/useRouter'
+import { getProfile } from '../../apis/user'
 import styles from './Profile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function Profile() {
-  const navigate = useNavigate()
+  const { routeTo } = useRouter()
+  const { id } = useParams()
+  const { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
+  const [profileUser, setProfileUser] = useState({
+    email: '',
+    userNickname: '',
+    profileImgUrl: '',
+  })
+  const [isOwner, setIsOwner] = useState(false)
 
-  // 리코일에 있는 유저 정보 받아오기 (임의의 더미 데이터로 대체)
-  // -> 실제 데이터 받으면 구조분해할당해서 사용할 예정
-  const userInfo = {
-    nickName: '시은',
-    email: 'seeeun@gmail.com',
-    image: null,
-  }
+  useEffect(() => {
+    if (Number(id) === userId) {
+      setIsOwner(true)
+      setProfileUser({
+        email: email,
+        userNickname: userNickname,
+        profileImgUrl: profileImgUrl,
+      })
+    }
+    if (Number(id) !== userId) {
+      setIsOwner(false)
+      getProfile(Number(id)).then(response => {
+        if (response?.status === 200) {
+          setProfileUser({
+            email: response.data.email,
+            userNickname: response.data.userNickname,
+            profileImgUrl: response.data.profileImgUrl,
+          })
+        }
+        if (response?.status !== 200) {
+          alert('유저 정보를 찾을 수 없습니다.')
+          routeTo('/')
+        }
+      })
+    }
+  }, [userInfo, id])
 
   return (
     <div className={styles.entireContainer}>
       <div className={styles.profileContainer}>
         <div className={styles.profileBox}>
-          {userInfo.image ? (
-            <img src={userInfo.image} alt='profile' />
+          {profileUser.profileImgUrl ? (
+            <img src={profileUser.profileImgUrl} alt='profile' />
           ) : (
             <Icon name='profile' size={64} />
           )}
         </div>
         <div className={styles.profileInfo}>
-          <div className={styles.profileName}>{userInfo.nickName}</div>
-          <div className={styles.profileEmail}>{userInfo.email}</div>
+          <div className={styles.profileName}>{profileUser.userNickname}</div>
+          <div className={styles.profileEmail}>{profileUser.email}</div>
         </div>
-        <button
-          type='button'
-          className={styles.blueButton}
-          onClick={() => navigate('/editprofile')}
-        >
-          프로필 수정
-        </button>
-        <button type='button' className={styles.button} onClick={() => navigate('/editpassword')}>
-          비밀번호 변경
-        </button>
-        <button type='button' className={styles.button} onClick={() => navigate('/user/delete')}>
-          회원 탈퇴
-        </button>
+        {isOwner ? (
+          <>
+            <button
+              type='button'
+              className={styles.blueButton}
+              onClick={() => routeTo('/editprofile')}
+            >
+              프로필 수정
+            </button>
+            <button
+              type='button'
+              className={styles.button}
+              onClick={() => routeTo('/editpassword')}
+            >
+              비밀번호 변경
+            </button>
+            <button type='button' className={styles.button} onClick={() => routeTo('/user/delete')}>
+              회원 탈퇴
+            </button>
+          </>
+        ) : null}
       </div>
     </div>
   )

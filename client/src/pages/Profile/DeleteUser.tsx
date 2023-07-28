@@ -1,6 +1,34 @@
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../../store/store'
+import useRouter from '../../hooks/useRouter'
+import { deleteUser } from '../../apis/user'
 import styles from './DeleteUser.module.scss'
 
 function DeleteUser() {
+  const { routeTo } = useRouter()
+  const { userId } = useRecoilValue(userInfo)
+  const [currentPassword, setCurrentPassword] = useState('')
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPassword(event.target.value)
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    deleteUser({ userId: userId, password: currentPassword }).then(response => {
+      if (response?.status === 200) {
+        alert('회원탈퇴가 완료되었습니다.')
+        // 체크박스 추가
+        // todo: 로그아웃 처리
+        routeTo('/')
+      }
+      if (response?.status !== 200) {
+        alert('비밀번호가 일치하지 않습니다.')
+      }
+    })
+  }
+
   return (
     <div className={styles.entireContainer}>
       <h1>회원탈퇴 관련 안내</h1>
@@ -9,10 +37,10 @@ function DeleteUser() {
         <li>기록하신 모든 내용은 삭제됩니다.</li>
         <li>회원정보는 탈퇴 후 90일간 보관됩니다.</li>
       </ul>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label htmlFor='password' className={styles.label}>
           비밀번호
-          <input id='password' type='password' required />
+          <input id='password' type='password' onChange={handlePasswordChange} required />
         </label>
         <button type='submit' className={styles.confirmButton}>
           탈퇴하기

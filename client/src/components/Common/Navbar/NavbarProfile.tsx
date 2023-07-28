@@ -5,21 +5,19 @@ import { useRecoilValue } from 'recoil'
 import { userInfo } from '../../../store/store'
 
 function NavbarProfile() {
-  const userinfo = useRecoilValue(userInfo)
+  const { userId, userNickname, profileImgUrl } = useRecoilValue(userInfo)
 
   return (
     <li>
-      <NavLink to={userinfo.userId ? '/profile' : '/user/login'}>
+      <NavLink to={userId ? `/profile/${userId}` : '/user/login'}>
         <div className={styles.profileBox}>
-          {userinfo.userId && userinfo.profileImgUrl ? (
-            <img src={userinfo.profileImgUrl} alt='profile' />
+          {userId && profileImgUrl ? (
+            <img src={profileImgUrl} alt='profile' />
           ) : (
             <Icon name='profile' size={70} />
           )}
         </div>
-        <div className={styles.profileName}>
-          {userinfo.userId ? userinfo.userNickname : '로그인/회원가입'}
-        </div>
+        <div className={styles.profileName}>{userId ? userNickname : '로그인/회원가입'}</div>
       </NavLink>
     </li>
   )
