@@ -55,9 +55,4 @@ public class AuthController {
 
          return ResponseEntity.ok(service.login(request));
     }
-
-    @Operation(summary = "구글 로그인")
-    @GetMapping("/oauth2/google")
-    public void getGoogleAuthUrl () throws Exception {
-    }
 }
