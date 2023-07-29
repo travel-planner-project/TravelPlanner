@@ -10,16 +10,16 @@ spring:
         min: 0
         url: redis://3.36.164.80:6379/0
 
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 998357263206-th6e5bs0r1bvul3ofq5l4lmj1u5mcbct.apps.googleusercontent.com
-            client-secret: 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
-            scope:
-              - email
-              - profile
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 998357263206-th6e5bs0r1bvul3ofq5l4lmj1u5mcbct.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - email
+#              - profile
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
