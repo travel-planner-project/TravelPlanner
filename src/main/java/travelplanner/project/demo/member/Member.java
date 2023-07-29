@@ -32,12 +32,4 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    // 구글
-    private String provider;
-
-    // 구글로 로그인한 유저의 고유 Id
-    private String providerId;
-
-    private String loginId;
 }
