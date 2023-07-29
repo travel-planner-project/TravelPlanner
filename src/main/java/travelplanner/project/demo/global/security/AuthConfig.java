@@ -7,11 +7,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.member.MemberRepository;
 
 @Configuration
@@ -23,7 +23,7 @@ public class AuthConfig {
     @Bean
     public UserDetailsService userDetailsService() {
 
-        return username -> respository.findByEmail(username)
+        return username -> (UserDetails) respository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
     }
 

@@ -3,7 +3,7 @@ package travelplanner.project.demo.member.Auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
 
     // 회원가입
     public AuthResponse register(RegisterRequest request) {
@@ -51,7 +50,7 @@ public class AuthService {
 
             repository.save(user);
 
-            var jwtToken = jwtService.generateToken(user);
+            var jwtToken = jwtService.generateToken((UserDetails) user);
             AuthResponse response = AuthResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -75,7 +74,7 @@ public class AuthService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken((UserDetails) user);
 
         Profile profile = profileRepository.findProfileByMemberUserId(user.getUserId());
 

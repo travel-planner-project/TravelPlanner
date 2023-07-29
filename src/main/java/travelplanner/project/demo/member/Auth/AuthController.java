@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 
+import javax.servlet.http.HttpServletResponse;
 
 
 @Tag(name = "User", description = "회원가입 / 로그인 API")
@@ -27,8 +29,6 @@ import travelplanner.project.demo.member.MemberRepository;
 public class AuthController {
 
     private final AuthService service;
-    private final MemberRepository repository;
-
 
     @Operation(summary = "회원가입")
     @ApiResponses(value = {
@@ -54,5 +54,10 @@ public class AuthController {
     public ResponseEntity<?> login (@RequestBody LoginRequest request) throws Exception {
 
          return ResponseEntity.ok(service.login(request));
+    }
+
+    @Operation(summary = "구글 로그인")
+    @GetMapping("/oauth2/google")
+    public void getGoogleAuthUrl () throws Exception {
     }
 }
