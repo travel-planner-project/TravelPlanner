@@ -2,14 +2,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  redis:
-    lettuce:
-      pool:
-        max-size: 10
-        idle: 10
-        min: 0
-        url: redis://3.36.164.80:6379/0
-
 #  security:
 #    oauth2:
 #      client:

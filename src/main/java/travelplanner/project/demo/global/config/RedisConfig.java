@@ -11,7 +11,9 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration("server", 6379));
+        String redisHost = "3.36.164.80";
+        int redisPort = 6379; // Redis 포트 번호
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
     }
 
     @Bean

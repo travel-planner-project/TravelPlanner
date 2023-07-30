@@ -6,20 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
-
-import javax.servlet.http.HttpServletResponse;
 
 
 @Tag(name = "User", description = "회원가입 / 로그인 API")
@@ -41,8 +36,6 @@ public class AuthController {
         service.register(request);
     }
 
-
-
     @Operation(summary = "로그인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
@@ -51,8 +44,8 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login (@RequestBody LoginRequest request) throws Exception {
-
-         return ResponseEntity.ok(service.login(request));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) throws Exception {
+        AuthResponse authResponse = service.login(request, response);
+        return ResponseEntity.ok().body(authResponse);
     }
 }
