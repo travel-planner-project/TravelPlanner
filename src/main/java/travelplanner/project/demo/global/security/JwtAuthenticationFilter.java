@@ -49,6 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 accessToken = tokenUtil.refreshAccessToken(refreshToken);
                 accessTokenCookie = cookieUtil.create("accessToken", accessToken);
+
+                log.info("어세스 토큰 갱신이용 =========================  ******");
+
                 response.addCookie(accessTokenCookie);
 
             } catch (AuthenticationException e) {
