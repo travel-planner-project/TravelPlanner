@@ -12,6 +12,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        cookie.setSecure(true);
 
         return cookie;
     }
