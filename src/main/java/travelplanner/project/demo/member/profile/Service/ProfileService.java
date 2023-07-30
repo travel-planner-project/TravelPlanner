@@ -39,6 +39,9 @@ public class ProfileService {
 
         Profile profile = profileRepository.findProfileByMemberUserId(userId);
 
+        log.info("프로필 리스폰스 ==========================******");
+        log.info(profile.toString());
+
         if (profile == null) { // 특정 유저의 프로필이 없는경우
 
             // 프로필 추가
@@ -60,6 +63,9 @@ public class ProfileService {
         profileResponse.setEmail(profile.getMember().getEmail());
         profileResponse.setUserNickname(profile.getMember().getUserNickname());
         profileResponse.setCheckUser(booleanValue);
+
+        log.info("프로필 리스폰스 ==========================******");
+        log.info(profileResponse.toString());
 
         return profileResponse;
     }

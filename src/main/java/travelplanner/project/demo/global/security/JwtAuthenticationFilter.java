@@ -45,6 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshToken = refreshTokenCookie.getValue();
         String accessToken = accessTokenCookie.getValue();
 
+        log.info("토큰이요 ================================******");
+        log.info(refreshToken);
+        log.info(accessToken);
+
         if (!tokenUtil.isValidToken(accessToken)) {
             try {
                 accessToken = tokenUtil.refreshAccessToken(refreshToken);
