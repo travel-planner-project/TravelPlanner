@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "BE" ]
+    branches: [ "103-be-feat-oauth-2-구글-로그인-구현" ]
   pull_request:
-    branches: [ "BE" ]
+    branches: [ "103-be-feat-oauth-2-구글-로그인-구현" ]
 
 permissions:
   contents: read

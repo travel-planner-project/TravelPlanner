@@ -1,6 +1,18 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 998357263206-th6e5bs0r1bvul3ofq5l4lmj1u5mcbct.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - email
+#              - profile
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
@@ -12,6 +24,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: qweasdQWEASD
+
+  data:
+    redis:
+      port: 6379
+      host: 127.0.0.1
 
 cloud:
   aws:
@@ -29,6 +46,7 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+    org.springframework.security: DEBUG
 
 log4j:
   logger:

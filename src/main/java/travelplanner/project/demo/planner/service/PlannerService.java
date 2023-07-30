@@ -3,14 +3,10 @@ package travelplanner.project.demo.planner.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
-import travelplanner.project.demo.global.security.jwt.JwtService;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
@@ -25,7 +21,6 @@ public class PlannerService {
 
     private final MemberRepository memberRepository;
     private final PlannerRepository plannerRepository;
-    private final JwtService jwtService;
 
 
     //플래너 리스트

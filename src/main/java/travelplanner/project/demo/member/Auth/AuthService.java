@@ -1,15 +1,22 @@
 package travelplanner.project.demo.member.Auth;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
-import travelplanner.project.demo.global.security.jwt.JwtService;
+import travelplanner.project.demo.global.security.CustomUserDetails;
+import travelplanner.project.demo.global.util.CookieUtil;
+import travelplanner.project.demo.global.util.RedisUtil;
+import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -21,69 +28,45 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final MemberRepository repository;
+    private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final TokenUtil tokenUtil;
+    private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
+    private Authentication authentication;
+
 
     // 회원가입
-    public AuthResponse register(RegisterRequest request) {
+    @Transactional
+    public void register(RegisterRequest request) throws Exception {
 
-        Optional<Member> member = repository.findByEmail(request.getEmail());
-
+        // 이메일로 멤버 조회
+        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
         if (member.isPresent()) {
             throw new Exception(ExceptionType.ALREADY_EXIST_EMAIL);
         }
 
         if (request.getEmail() == null || request.getPassword() == null || request.getUserNickname() == null) {
             throw new Exception(ExceptionType.INVALID_INPUT_VALUE);
-
-        } else {
-
-            var user = Member.builder()
-                    .userNickname(request.getUserNickname())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.MEMBER)
-                    .build();
-
-            repository.save(user);
-
-            var jwtToken = jwtService.generateToken(user);
-            AuthResponse response = AuthResponse.builder()
-                    .token(jwtToken)
-                    .build();
-
-            return response;
         }
+
+        // 멤버 생성
+        Member user = Member.builder()
+                .userNickname(request.getUserNickname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.MEMBER)
+                .build();
+
+        memberRepository.save(user);
     }
 
 
     // 로그인
     @Transactional
-    public AuthResponse login(LoginRequest request) {
-
-        Optional<Member> member = repository.findByEmail(request.getEmail());
-
-        if (member.isEmpty()) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
-        }
-
-        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
-
-        if (profile == null) { // 특정 유저의 프로필이 없는경우
-
-            profile = Profile.builder()
-                    .member(member.get())
-                    .build();
-
-            profileRepository.save(profile);
-        }
-
-        profile.setProfileImgUrl("");
-        profileRepository.save(profile);
+    public AuthResponse login(LoginRequest request, HttpServletResponse response) throws Exception {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -92,17 +75,37 @@ public class AuthService {
                 )
         );
 
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
 
-        var jwtToken = jwtService.generateToken(user);
+        // 프로필
+        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
+
+        if (profile == null) {
+
+            profile = Profile.builder()
+                    .member(member.get())
+                    .build();
+
+            profileRepository.save(profile);
+        }
+
+        // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
+        String accessToken = tokenUtil.generateAccessToken(member.get().getEmail());
+        String refreshToken = tokenUtil.generateRefreshToken(member.get().getEmail());
+
+        // 어세스 토큰은 헤더에 담아서 응답으로 보냄
+        response.setHeader("Authorization", accessToken);
+
+        // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
+        Cookie refreshTokenCookie = cookieUtil.create(refreshToken);
+        response.addCookie(refreshTokenCookie);
+
 
         return AuthResponse.builder()
-                    .userId(member.get().getUserId())
-                    .userNickname(member.get().getUserNickname())
-                    .email(member.get().getEmail())
-                    .token(jwtToken)
-                    .profileImgUrl(profile.getProfileImgUrl())
-                    .build();
+                .userId(member.get().getUserId())
+                .email(member.get().getEmail())
+                .userNickname(member.get().getUserNickname())
+                .profileImgUrl(profile.getProfileImgUrl())
+                .build();
     }
 }
