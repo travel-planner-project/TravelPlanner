@@ -1,4 +1,4 @@
-package travelplanner.project.demo.global.security;
+package travelplanner.project.demo.global.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -63,16 +63,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 어세스 토큰이 유효하지 않을 경우, 리프레시 토큰으로 새로운 어세스 토큰 발급
                 accessToken = tokenUtil.refreshAccessToken(refreshToken);
 
+                log.info("새로운 토큰 생성");
+
+                // 헤더에 어세스 토큰 추가
+                response.setHeader("Authorization", accessToken);
+
             } catch (Exception e) {
                 // 리프레시 토큰으로 새로운 어세스 토큰을 발급할 수 없을 경우, 403 Forbidden 오류 반환
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Failed to refresh access token.");
                 return;
             }
         }
-
-        // 헤더에 어세스 토큰 추가
-        response.setHeader("Authorization", accessToken);
-
 
         String principal = tokenUtil.getEmail(accessToken);
 
