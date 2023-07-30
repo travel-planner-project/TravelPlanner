@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "99-be-fix-프로필-화면과-서버-연동하는-부분에서-생기는-오류-해결" ]
+    branches: [ "BE" ]
   pull_request:
-    branches: [ "99-be-fix-프로필-화면과-서버-연동하는-부분에서-생기는-오류-해결" ]
+    branches: [ "BE" ]
 
 permissions:
   contents: read

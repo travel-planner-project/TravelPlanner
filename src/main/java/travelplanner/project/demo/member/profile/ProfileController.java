@@ -23,7 +23,6 @@ import travelplanner.project.demo.member.profile.dto.request.PasswordCheckReques
 import travelplanner.project.demo.member.profile.dto.request.PasswordUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
-import travelplanner.project.demo.member.profile.dto.response.ProfileUpdateResponse;
 
 import java.io.IOException;
 
@@ -63,14 +62,14 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @PatchMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProfileUpdateResponse> updateUserProfile(
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateUserProfile(
             @Parameter(name = "profileUpdateRequest", description = "프로필 수정 요청", in = ParameterIn.QUERY) // swagger
             @RequestPart ProfileUpdateRequest profileUpdateRequest,
             @Parameter(name = "profileImg", description = "프로필 이미지", in = ParameterIn.QUERY) // swagger
             @RequestPart MultipartFile profileImg) throws Exception, IOException {
 
-        return ResponseEntity.ok(profileService.updateUserProfileImg(profileUpdateRequest, profileImg));
+        profileService.updateUserProfileImg(profileUpdateRequest, profileImg);
     }
 
 

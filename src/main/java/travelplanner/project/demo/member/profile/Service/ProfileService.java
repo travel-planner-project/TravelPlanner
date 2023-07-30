@@ -13,7 +13,6 @@ import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
-import travelplanner.project.demo.member.profile.dto.response.ProfileUpdateResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +65,7 @@ public class ProfileService {
 
     // 프로필 수정 [START] =========================================================================================
     @Transactional
-    public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg) throws Exception, IOException {
+    public void updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg) throws Exception, IOException {
 
         // 해당 멤버 존재하는지 확인
         memberService.findMember(profileUpdateRequest.getUserId());
@@ -81,47 +80,34 @@ public class ProfileService {
 
         memberRepository.save(member);
 
-        ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setUserNickname(member.getUserNickname());
+        // 프로필 이미지가 있는 경우, 삭제하고 진행
+        s3Service.deleteFile(profile.getKeyName());
 
         if (profileImg.isEmpty()) {
 
-            if (!profileUpdateRequest.getChangeProfileImg()) { // 이미지 안바꿈
-                response.setProfileImgUrl(profile.getProfileImgUrl());
+            profile.setProfileImgUrl("");
+            profile.setKeyName("");
+            profileRepository.save(profile);
 
-            } else { // 이미지 바꿈 - 파일 입력 안함
-                profile.setProfileImgUrl("");
-                profile.setKeyName("");
-                profileRepository.save(profile);
-                response.setProfileImgUrl(profile.getProfileImgUrl());
-            }
-
-        } else { // 이미지 바꿈 - 파일 입력
-
-            // 프로필 이미지가 있는 경우, 삭제하고 진행
-            s3Service.deleteFile(profile.getKeyName());
+        } else{
 
             String originalImgName = profileImg.getOriginalFilename();
             String uniqueImgName = generateUniqueImgName(originalImgName, loginUserId);
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
-            String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;
+            String localFilePath = System.getProperty("java.io.tmpdir") + uniqueImgName;
             profileImg.transferTo(Paths.get(localFilePath));
 
             // S3 에 이미지 업로드
             s3Service.uploadFile(uniqueImgName, localFilePath);
-            String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile/";
+            String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile";
             profile.setProfileImgUrl(imgUrl + uniqueImgName);
             profile.setKeyName(uniqueImgName);
             profileRepository.save(profile);
 
             // 로컬 임시 파일 삭제
             deleteLocalFile(localFilePath);
-
-            response.setProfileImgUrl(profile.getProfileImgUrl());
         }
-
-        return response;
     }
 
     private String generateUniqueImgName(String originalImgName, Long loginUserId) {

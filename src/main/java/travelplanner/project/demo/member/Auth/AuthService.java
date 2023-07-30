@@ -65,6 +65,26 @@ public class AuthService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
 
+        Optional<Member> member = repository.findByEmail(request.getEmail());
+
+        if (member.isEmpty()) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
+
+        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
+
+        if (profile == null) { // 특정 유저의 프로필이 없는경우
+
+            profile = Profile.builder()
+                    .member(member.get())
+                    .build();
+
+            profileRepository.save(profile);
+        }
+
+        profile.setProfileImgUrl("");
+        profileRepository.save(profile);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -77,21 +97,10 @@ public class AuthService {
 
         var jwtToken = jwtService.generateToken(user);
 
-        Profile profile = profileRepository.findProfileByMemberUserId(user.getUserId());
-
-        if (profile == null) {
-
-            profile = Profile.builder()
-                    .member(user)
-                    .build();
-
-            profileRepository.save(profile);
-        }
-
         return AuthResponse.builder()
-                    .userId(user.getUserId())
-                    .userNickname(user.getUserNickname())
-                    .email(user.getEmail())
+                    .userId(member.get().getUserId())
+                    .userNickname(member.get().getUserNickname())
+                    .email(member.get().getEmail())
                     .token(jwtToken)
                     .profileImgUrl(profile.getProfileImgUrl())
                     .build();
