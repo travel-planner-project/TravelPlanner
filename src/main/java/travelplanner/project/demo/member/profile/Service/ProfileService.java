@@ -1,14 +1,17 @@
 package travelplanner.project.demo.member.profile.Service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.member.MemberService;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
@@ -19,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,62 +30,74 @@ import java.util.Objects;
 @Slf4j
 public class ProfileService {
 
+    private final TokenUtil tokenUtil;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final MemberService memberService;
     private final S3Service s3Service;
-
 
     // 특정 유저의 프로필 찾기
     @Transactional
-    public ProfileResponse findUserProfile (Long userId) throws Exception {
+    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws Exception {
+
+        // 헤더에서 JWT 토큰 추출
+        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
+
+        // JWT 토큰을 이용하여 유저 정보를 추출
+        String email = tokenUtil.getEmail(accessToken);
+
+        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
+        Optional<Member> member = memberRepository.findByEmail(email);
+
+        if (!member.isPresent()) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
 
         Profile profile = profileRepository.findProfileByMemberUserId(userId);
-
-        log.info("프로필 리스폰스 ==========================******");
-        log.info(profile.toString());
-
-        if (profile == null) { // 특정 유저의 프로필이 없는경우
-
-            // 프로필 추가
-            Member member = memberRepository.findByUserId(userId).get();
-
+        if (profile == null) {
             profile = Profile.builder()
-                    .member(member)
+                    .member(member.get())
                     .build();
 
             profileRepository.save(profile);
         }
 
-        // 로그인한 유저 찾기
-        Long loginUserId = memberRepository.findByEmail(memberService.findLoginUser()).get().getUserId();
-        Boolean booleanValue = Objects.equals(loginUserId, userId);
+        // 로그인한 유저와 요청한 유저가 동일한지 확인
+        boolean isCurrentUser = member.get().getUserId().equals(userId);
 
         ProfileResponse profileResponse = new ProfileResponse();
         profileResponse.setProfileImgUrl(profile.getProfileImgUrl());
         profileResponse.setEmail(profile.getMember().getEmail());
         profileResponse.setUserNickname(profile.getMember().getUserNickname());
-        profileResponse.setCheckUser(booleanValue);
-
-        log.info("프로필 리스폰스 ==========================******");
-        log.info(profileResponse.toString());
+        profileResponse.setCheckUser(isCurrentUser);
 
         return profileResponse;
     }
 
     // 프로필 수정 [START] =========================================================================================
     @Transactional
-    public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg) throws Exception, IOException {
+    public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
-        // 해당 멤버 존재하는지 확인
-        memberService.findMember(profileUpdateRequest.getUserId());
+        // 헤더에서 JWT 토큰 추출
+        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
 
-        // 로그인한 사람과 프로필 유저가 사람이 같은지 확인
-        Long loginUserId = memberRepository.findByEmail(memberService.findLoginUser()).get().getUserId();
-        memberService.checkMember(profileUpdateRequest.getUserId(), loginUserId);
+        // JWT 토큰을 이용하여 유저 정보를 추출
+        String email = tokenUtil.getEmail(accessToken);
+
+        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
+        Member member = memberRepository.findByEmail(email).get();
+
+        if (member == null) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
+
+        // 로그인한 유저와 요청한 유저가 동일한지 확인
+        boolean isCurrentUser = member.getUserId().equals(profileUpdateRequest.getUserId());
+
+        if (!isCurrentUser) {
+            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+        }
 
         Profile profile = profileRepository.findProfileByMemberUserId(profileUpdateRequest.getUserId());
-        Member member = memberRepository.findByUserId(profileUpdateRequest.getUserId()).get();
         member.setUserNickname(profileUpdateRequest.getUserNickname());
 
         memberRepository.save(member);
@@ -108,7 +123,7 @@ public class ProfileService {
             s3Service.deleteFile(profile.getKeyName());
 
             String originalImgName = profileImg.getOriginalFilename();
-            String uniqueImgName = generateUniqueImgName(originalImgName, loginUserId);
+            String uniqueImgName = generateUniqueImgName(originalImgName, member.getUserId());
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
             String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;
@@ -149,5 +164,4 @@ public class ProfileService {
     }
 
     // 프로필 수정 [END] =========================================================================================
-
 }

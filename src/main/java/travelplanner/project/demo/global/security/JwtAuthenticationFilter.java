@@ -5,16 +5,20 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException, Exception {
+            throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
 
@@ -34,37 +38,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 헤더에서 JWT 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        String accessToken = null;
+
+        if (authorizationHeader != null) {
+            accessToken = authorizationHeader;
+        }
+
+        // 쿠키에서 리프레시 토큰 추출
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
-        Cookie accessTokenCookie = cookieUtil.getCookie(request, "accessToken");
-
-        if (refreshTokenCookie == null || accessTokenCookie == null) {
-
-            throw new Exception(ExceptionType.TOKEN_NOT_EXISTS);
+        if (refreshTokenCookie == null) {
+            // 리프레시 토큰이 없을 경우, 403 Forbidden 오류 반환
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Refresh token not found.");
+            return;
         }
 
         String refreshToken = refreshTokenCookie.getValue();
-        String accessToken = accessTokenCookie.getValue();
 
-        log.info("토큰이요 ================================******");
-        log.info(refreshToken);
-        log.info(accessToken);
-
+        // JWT 토큰 유효성 검사
         if (!tokenUtil.isValidToken(accessToken)) {
             try {
+
+                // 어세스 토큰이 유효하지 않을 경우, 리프레시 토큰으로 새로운 어세스 토큰 발급
                 accessToken = tokenUtil.refreshAccessToken(refreshToken);
-                accessTokenCookie = cookieUtil.create("accessToken", accessToken);
-
-                log.info("어세스 토큰 갱신이용 =========================  ******");
-
-                response.addCookie(accessTokenCookie);
-
-            } catch (AuthenticationException e) {
-                throw new Exception(ExceptionType.TOKEN_NOT_EXISTS);
 
             } catch (Exception e) {
-                throw new Exception(ExceptionType.INTERNAL_SERVER_ERROR);
+                // 리프레시 토큰으로 새로운 어세스 토큰을 발급할 수 없을 경우, 403 Forbidden 오류 반환
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Failed to refresh access token.");
+                return;
             }
         }
+
+        // 헤더에 어세스 토큰 추가
+        response.setHeader("Authorization", accessToken);
+
+
+        String principal = tokenUtil.getEmail(accessToken);
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
     }

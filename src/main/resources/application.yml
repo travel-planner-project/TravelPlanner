@@ -46,6 +46,7 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+    org.springframework.security: DEBUG
 
 log4j:
   logger:

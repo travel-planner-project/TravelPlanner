@@ -7,18 +7,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieUtil {
 
-    public Cookie create (String cookieName, String value) {
+    public Cookie create(String value) {
 
-        Cookie cookie = new Cookie(cookieName, value);
+        Cookie cookie = new Cookie("refreshToken", value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setSecure(true);
+
+        // 리프레시 토큰은 브라우저를 닫더라도 계속 유지되도록 설정
+        cookie.setMaxAge(Integer.MAX_VALUE);
 
         return cookie;
     }
 
-    public Cookie getCookie (HttpServletRequest request, String cookieName) {
+    public Cookie getRefreshTokenCookie(HttpServletRequest request) {
+        return getCookie(request, "refreshToken");
+    }
 
+    public Cookie getCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) return null;

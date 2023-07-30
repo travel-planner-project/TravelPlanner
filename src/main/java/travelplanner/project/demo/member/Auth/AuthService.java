@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
@@ -29,7 +30,7 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
@@ -39,7 +40,7 @@ public class AuthService {
 
     // 회원가입
     @Transactional
-    public void register(RegisterRequest request) throws Exception{
+    public void register(RegisterRequest request) throws Exception {
 
         // 이메일로 멤버 조회
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
@@ -55,7 +56,7 @@ public class AuthService {
         Member user = Member.builder()
                 .userNickname(request.getUserNickname())
                 .email(request.getEmail())
-                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.MEMBER)
                 .build();
 
@@ -88,24 +89,17 @@ public class AuthService {
             profileRepository.save(profile);
         }
 
-        // 입력한 비밀번호와 사용자의 비밀번호를 비교하여 인증
-        if (!bCryptPasswordEncoder.matches(request.getPassword(), member.get().getPassword())) {
-            throw new Exception(ExceptionType.PASSWORD_IS_NOT_MATCHED);
+        // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
+        String accessToken = tokenUtil.generateAccessToken(member.get().getEmail());
+        String refreshToken = tokenUtil.generateRefreshToken(member.get().getEmail());
 
-        } else {
+        // 어세스 토큰은 헤더에 담아서 응답으로 보냄
+        response.setHeader("Authorization", accessToken);
 
-            // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
-            String accessToken = tokenUtil.generateAccessToken(member.get().getEmail());
-            String refreshToken = tokenUtil.generateRefreshToken(member.get().getEmail());
+        // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
+        Cookie refreshTokenCookie = cookieUtil.create(refreshToken);
+        response.addCookie(refreshTokenCookie);
 
-            // 어세스 토큰과 리프레시 토큰을 쿠키에 담아서 응답으로 보냄
-            Cookie accessTokenCookie = cookieUtil.create("accessToken", accessToken);
-            response.addCookie(accessTokenCookie);
-
-            // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
-            Cookie refreshTokenCookie = cookieUtil.create("refreshToken", refreshToken);
-            response.addCookie(refreshTokenCookie);
-        }
 
         return AuthResponse.builder()
                 .userId(member.get().getUserId())

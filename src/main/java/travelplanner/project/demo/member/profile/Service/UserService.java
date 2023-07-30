@@ -1,15 +1,18 @@
 package travelplanner.project.demo.member.profile.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.member.MemberService;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.PasswordCheckRequest;
@@ -23,22 +26,24 @@ public class UserService {
 
     private MemberRepository memberRepository;
     private ProfileRepository profileRepository;
-    private MemberService memberService;
-    private PasswordEncoder passwordEncoder;
     private S3Service s3Service;
+    private TokenUtil tokenUtil;
+    private PasswordEncoder encoder;
+
 
     // 비밀번호 체크
-    public boolean checkUserPassword(PasswordCheckRequest request) throws Exception {
+    public boolean checkUserPassword(PasswordCheckRequest request, HttpServletRequest httpRequest) throws Exception {
 
-        // 해당 멤버 존재하는지 확인
-        memberService.findMember(request.getUserId());
+        // 헤더에서 JWT 토큰 추출
+        String accessToken = tokenUtil.getJWTTokenFromHeader(httpRequest);
 
-        // 로그인한 사람과 프로필 유저가 사람이 같은지 확인
-        Long loginUserId = memberRepository.findByEmail(memberService.findLoginUser()).get().getUserId();
-        memberService.checkMember(request.getUserId(), loginUserId);
+        // JWT 토큰을 이용하여 유저 정보를 추출
+        String email = tokenUtil.getEmail(accessToken);
 
         Member member = memberRepository.findByUserId(request.getUserId()).get();
-        String encodedPassword = member.getPassword();
+        Member loginUser = memberRepository.findByEmail(email).get();
+
+        String encodedPassword = loginUser.getPassword();
 
         if (encodedPassword.equals(member.getPassword())) {
             return true;
@@ -50,17 +55,29 @@ public class UserService {
 
     // 비밀번호 변경
     @Transactional
-    public void updatePassword(PasswordUpdateRequest request) {
+    public void updatePassword(PasswordUpdateRequest request, HttpServletRequest httpRequest) {
 
-        // 해당 멤버 존재하는지 확인
-        memberService.findMember(request.getUserId());
+        // 헤더에서 JWT 토큰 추출
+        String accessToken = tokenUtil.getJWTTokenFromHeader(httpRequest);
 
-        // 로그인한 사람과 프로필 유저가 사람이 같은지 확인
-        Long loginUserId = memberRepository.findByEmail(memberService.findLoginUser()).get().getUserId();
-        memberService.checkMember(request.getUserId(), loginUserId);
+        // JWT 토큰을 이용하여 유저 정보를 추출
+        String email = tokenUtil.getEmail(accessToken);
 
-        Member member = memberRepository.findByUserId(request.getUserId()).get();
-        String encodedPassword = passwordEncoder.encode(request.getPassword()); // 비밀번호를 암호화
+        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
+        Member member = memberRepository.findByEmail(email).get();
+
+        if (member == null) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
+
+        // 로그인한 유저와 요청한 유저가 동일한지 확인
+        boolean isCurrentUser = member.getUserId().equals(request.getUserId());
+
+        if (!isCurrentUser) {
+            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+        }
+
+        String encodedPassword = encoder.encode(request.getPassword());
         member.setPassword(encodedPassword);
 
         memberRepository.save(member);
@@ -68,9 +85,28 @@ public class UserService {
 
     // 회원탈퇴
     @Transactional
-    public void deleteUser(PasswordCheckRequest request) {
+    public void deleteUser(PasswordCheckRequest request, HttpServletRequest httpRequest) {
 
-        Member member = memberRepository.findByUserId(request.getUserId()).get();
+        // 헤더에서 JWT 토큰 추출
+        String accessToken = tokenUtil.getJWTTokenFromHeader(httpRequest);
+
+        // JWT 토큰을 이용하여 유저 정보를 추출
+        String email = tokenUtil.getEmail(accessToken);
+
+        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
+        Member member = memberRepository.findByEmail(email).get();
+
+        if (member == null) {
+            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        }
+
+        // 로그인한 유저와 요청한 유저가 동일한지 확인
+        boolean isCurrentUser = member.getUserId().equals(request.getUserId());
+
+        if (!isCurrentUser) {
+            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+        }
+
         Profile profile = profileRepository.findProfileByMemberUserId(member.getUserId());
 
         // 프로필 이미지 삭제하기

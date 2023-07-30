@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.Exception;
@@ -22,6 +23,7 @@ public class TokenUtil {
     static final long AccessTokenValidTime = 15 * 60 * 1000L;
 
     public String generateAccessToken(String email) {
+
         Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
 
@@ -34,6 +36,7 @@ public class TokenUtil {
     }
 
     public String generateRefreshToken(String email) {
+
         Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
 
@@ -71,6 +74,7 @@ public class TokenUtil {
     }
 
     public String refreshAccessToken(String refreshToken) throws Exception {
+
         String email = getEmail(refreshToken);
 
         // Redis에서 리프레시 토큰을 가져온다.
@@ -83,5 +87,16 @@ public class TokenUtil {
 
         // 리프레시 토큰의 사용자 정보를 기반으로 새로운 어세스 토큰 발급
         return generateAccessToken(email);
+    }
+
+    // JWT 토큰을 헤더에서 추출하는 메서드
+    public String getJWTTokenFromHeader(HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null) {
+            return authorizationHeader;
+        }
+        return null;
     }
 }
