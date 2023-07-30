@@ -16,4 +16,7 @@ public class ProfileUpdateRequest {
 
     @Schema(description = "유저 닉네임", example = "유저1")
     private String userNickname;
+
+    @Schema(description = "이미지 변경 여부", example = "false")
+    private Boolean changeProfileImg;
 }
