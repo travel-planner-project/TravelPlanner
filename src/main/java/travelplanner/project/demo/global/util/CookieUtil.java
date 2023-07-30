@@ -11,6 +11,7 @@ public class CookieUtil {
 
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
         return cookie;
     }
