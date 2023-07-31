@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DateCreateRequest {
 
-    private LocalDateTime eachDate;
+    // 사용자가 정한 날짜, Formatter 추가해야함.
+    private String eachDate;
 
 }

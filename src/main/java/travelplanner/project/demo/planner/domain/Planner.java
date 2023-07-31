@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
-import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +22,15 @@ import java.util.List;
 @Getter
 public class Planner {
 
-    private Long userId;
-
     @Id
     @GeneratedValue
     private Long plannerId;
+
+//    private Long userId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private Member member;
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -40,39 +42,33 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<Date> dates = new ArrayList<>();
+    @OneToMany(mappedBy = "planner")
+//    @Builder.Default
+    private List<PlannerDate> plannerDates = new ArrayList<>();
 
-   //추후에 그룹 멤버 작성
-
-
-    //플래너 생성
-    public static Planner createPlanner (PlannerCreateRequest request) {
-        return Planner.builder()
-                .userId(request.getUserId())
-                .planTitle(request.getPlanTitle())
-                .isPrivate(request.getIsPrivate())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .build();
+    public void mappingDate(PlannerDate plannerDate) {
+        plannerDates.add(plannerDate);
     }
 
-    //플래너 수정
-    public void updatePlanner (PlannerUpdateRequest request){
-        this.planTitle = request.getPlanTitle();
-        this.isPrivate = request.getIsPrivate();
-        this.startDate = request.getStartDate();
-        this.endDate = request.getEndDate();
+    public PlannerEditor.PlannerEditorBuilder toEditor() {
+        return PlannerEditor.builder()
+                .planTitle(planTitle)
+                .isPrivate(isPrivate);
+    }
+
+
+    public void edit(PlannerEditor plannerEditor){ // Member member
+        planTitle = plannerEditor.getPlanTitle();
+        isPrivate = plannerEditor.getIsPrivate();
     }
 
     //날짜 추가
-    public void createDate(Date date){
-        this.dates.add(date);
+    public void createDate(PlannerDate plannerDate){
+        this.plannerDates.add(plannerDate);
     }
 
     //날짜 삭제
-    public void deleteDate(Date date){
-        this.dates.remove(date);
+    public void deleteDate(PlannerDate plannerDate){
+        this.plannerDates.remove(plannerDate);
     }
 }

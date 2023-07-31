@@ -10,5 +10,5 @@ import java.time.LocalDateTime;
 public class DateUpdateRequest {
 
     private Long dateId;
-    private LocalDateTime eachDate;
+    private String eachDate;
 }

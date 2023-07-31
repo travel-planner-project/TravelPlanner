@@ -1,47 +1,94 @@
 package travelplanner.project.demo.planner.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Planner;
+import travelplanner.project.demo.planner.domain.PlannerEditor;
+import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
-
+import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
 @Service
 @Transactional(readOnly = true)
-@AllArgsConstructor
+//@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlannerService {
 
     private final MemberRepository memberRepository;
     private final PlannerRepository plannerRepository;
 
-
     //플래너 리스트
-    public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
-        return plannerRepository.findByUserId(userId, pageable);
-    }
+//    public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
+//        return plannerRepository.findByUserId(userId, pageable);
+//    }
 
     //플래너 삭제
-    public void deletePlanner(Long plannerId, HttpServletRequest request){
-        Optional<Planner> planner = plannerRepository.findById(plannerId);
+    public void deletePlanner(Long plannerId){
 
-        //플래너가 존재하지 않을 때 예외처리
-        if (planner.isPresent() == false){
-            throw new Exception(ExceptionType.NOT_EXISTS_PLANNER);
-        }
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+        ;
+//        // 현재 사용자 id 갖고 오기
+//        Member currentMember = getCurrentMember();
+//        // if (플래너 작성자의 index != 현재 사용자 index)
+//        if (!planner.getMember().getUserId().equals(currentMember.getUserId())) {
+//            throw new Exception(PLANER_NOT_AUTHORIZED);
+//        }
+//        plannerRepository.delete(planner);
+    }
 
-        //현재 사용자 정보
+    public void createPlanner(PlannerCreateRequest request) {
+        Planner createPlanner = Planner.builder()
+                .planTitle(request.getPlanTitle())
+                .isPrivate(request.getIsPrivate())
 
+                // todo 투두와는 별개로
+                //  date를 웹소켓으로 실시간으로 생성하는 시점에 planner에 startdate, enddate를 설정해주기.
+//                .startDate(request.getStartDate())
+//                .endDate(request.getEndDate())
+                .build();
 
+        plannerRepository.save(createPlanner);
+    }
 
+    @Transactional
+    public void updatePlanner(Long plannerId, PlannerUpdateRequest request) {
 
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+
+        // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
+//        Member currentMember = getCurrentMember();
+//        for(Member x: GroupMember){
+//            Member member = GroupMember.getMemberName();
+//            if (!currentMember.equals(member)) {
+//                throw new Exception(TODO_NOT_AUTHORIZED);
+//            }
+//        }
+
+        PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
+        PlannerEditor plannerEditor = editorBuilder
+                .planTitle(request.getPlanTitle())
+                .isPrivate(request.getIsPrivate())
+                .build();
+        planner.edit(plannerEditor);
+    }
+
+    private Member getCurrentMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 현재 사용자의 email 얻기
+        return memberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
     }
 }
 
