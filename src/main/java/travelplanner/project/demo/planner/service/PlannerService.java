@@ -30,9 +30,9 @@ public class PlannerService {
     private final PlannerRepository plannerRepository;
 
     //플래너 리스트
-    public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
-        return plannerRepository.findByUserId(userId, pageable);
-    }
+//    public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
+//        return plannerRepository.findByUserId(userId, pageable);
+//    }
 
     //플래너 삭제
     public void deletePlanner(Long plannerId){
@@ -41,21 +41,24 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
         ;
-        // 현재 사용자 id 갖고 오기
-        Member currentMember = getCurrentMember();
-        // if (플래너 작성자의 index != 현재 사용자 index)
-        if (!planner.getMember().getUserId().equals(currentMember.getUserId())) {
-            throw new Exception(PLANER_NOT_AUTHORIZED);
-        }
-        plannerRepository.delete(planner);
+//        // 현재 사용자 id 갖고 오기
+//        Member currentMember = getCurrentMember();
+//        // if (플래너 작성자의 index != 현재 사용자 index)
+//        if (!planner.getMember().getUserId().equals(currentMember.getUserId())) {
+//            throw new Exception(PLANER_NOT_AUTHORIZED);
+//        }
+//        plannerRepository.delete(planner);
     }
 
     public void createPlanner(PlannerCreateRequest request) {
         Planner createPlanner = Planner.builder()
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
+
+                // todo 투두와는 별개로
+                //  date를 웹소켓으로 실시간으로 생성하는 시점에 planner에 startdate, enddate를 설정해주기.
+//                .startDate(request.getStartDate())
+//                .endDate(request.getEndDate())
                 .build();
 
         plannerRepository.save(createPlanner);

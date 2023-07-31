@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// 수정과 삭제시에 보여질 Response - WebSocket
 public class ToDoResponse {
 
     private Long id;

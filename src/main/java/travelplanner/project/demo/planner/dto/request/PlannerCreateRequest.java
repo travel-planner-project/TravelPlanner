@@ -17,8 +17,8 @@ public class PlannerCreateRequest {
 
     private Boolean isPrivate;
 
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
+//    private LocalDateTime startDate;
+//
+//    private LocalDateTime endDate;
 
 }

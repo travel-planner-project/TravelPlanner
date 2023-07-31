@@ -24,7 +24,7 @@ public class PlannerListResponse {
     public PlannerListResponse(Planner planner){
         this.plannerId = planner.getPlannerId();
         this.planTitle = planner.getPlanTitle();
-        this.userId = planner.getMember().getUserId();
+//        this.userId = planner.getMember().getUserId();
         this.startDate = planner.getStartDate();
         this.endDate = planner.getEndDate();
     }

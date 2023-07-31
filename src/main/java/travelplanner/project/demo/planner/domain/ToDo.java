@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,12 +36,12 @@ public class ToDo {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date_id")
-    private Date date;
+    @JoinColumn(name = "planner_date_id")
+    private PlannerDate plannerDate;
 
-    public void mappingDate(Date date) {
-        this.date = date;
-        date.mappingToDo(this);
+    public void mappingDate(PlannerDate plannerDate) {
+        this.plannerDate = plannerDate;
+        plannerDate.mappingToDo(this);
     }
 
     public ToDoEditor.ToDoEditorBuilder toEditor() {

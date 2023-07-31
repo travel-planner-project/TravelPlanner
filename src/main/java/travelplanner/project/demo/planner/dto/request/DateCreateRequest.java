@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 public class DateCreateRequest {
 
     // 사용자가 정한 날짜, Formatter 추가해야함.
-    private LocalDateTime eachDate;
+    private String eachDate;
 
 }

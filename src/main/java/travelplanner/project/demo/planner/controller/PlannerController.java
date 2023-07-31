@@ -24,11 +24,11 @@ public class PlannerController {
 
     private final PlannerService plannerService;
 
-    @GetMapping
-    //플래너 리스트 조회
-    public Page<PlannerListResponse> getPlannerList(@RequestParam Long userId, final Pageable pageable) {
-        return plannerService.findPlannerListByUserId(userId, pageable).map(PlannerListResponse::new);
-    }
+//    @GetMapping
+//    //플래너 리스트 조회
+//    public Page<PlannerListResponse> getPlannerList(@RequestParam Long userId, final Pageable pageable) {
+//        return plannerService.findPlannerListByUserId(userId, pageable).map(PlannerListResponse::new);
+//    }
 
 //    플래너 세부 조회
 //    @GetMapping("/{id}")

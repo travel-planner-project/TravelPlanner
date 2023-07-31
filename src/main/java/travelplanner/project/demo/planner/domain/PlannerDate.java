@@ -19,26 +19,32 @@ import java.util.List;
 @Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class Date {
+public class PlannerDate {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    private LocalDateTime eachDate;
+    private String eachDate;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "date")
+    @OneToMany(mappedBy = "plannerDate")
     private List<ToDo> toDoList = new ArrayList<>();
 
     public void mappingToDo(ToDo toDo) {
         toDoList.add(toDo);
     }
 
-
-
     // 플래너 연관관계 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "planner_id")
+    private Planner planner;
+
+    public void mappingPlanner(Planner planner) {
+        this.planner = planner;
+        planner.mappingDate(this);
+    }
 
 }

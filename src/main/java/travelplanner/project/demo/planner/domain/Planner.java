@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,9 +28,9 @@ public class Planner {
 
 //    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Member member;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private Member member;
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -44,9 +42,13 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Date> dates = new ArrayList<>();
+    @OneToMany(mappedBy = "planner")
+//    @Builder.Default
+    private List<PlannerDate> plannerDates = new ArrayList<>();
+
+    public void mappingDate(PlannerDate plannerDate) {
+        plannerDates.add(plannerDate);
+    }
 
     public PlannerEditor.PlannerEditorBuilder toEditor() {
         return PlannerEditor.builder()
@@ -61,12 +63,12 @@ public class Planner {
     }
 
     //날짜 추가
-    public void createDate(Date date){
-        this.dates.add(date);
+    public void createDate(PlannerDate plannerDate){
+        this.plannerDates.add(plannerDate);
     }
 
     //날짜 삭제
-    public void deleteDate(Date date){
-        this.dates.remove(date);
+    public void deleteDate(PlannerDate plannerDate){
+        this.plannerDates.remove(plannerDate);
     }
 }
