@@ -22,9 +22,6 @@ public class AuthResponse {
     @Schema(description = "유저 닉네임", example = "유저1")
     private String userNickname;
 
-    @Schema(description = "토큰")
-    private String token;
-
     @Schema(description = "프로필 이미지 주소")
     private String profileImgUrl;
 }
