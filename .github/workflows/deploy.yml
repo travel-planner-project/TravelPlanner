@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "BE" ]
+    branches: [ "109-be-test-토큰-테스트" ]
   pull_request:
-    branches: [ "BE" ]
+    branches: [ "109-be-test-토큰-테스트" ]
 
 permissions:
   contents: read
