@@ -1,8 +1,6 @@
 package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +16,6 @@ import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
-import static travelplanner.project.demo.global.exception.ExceptionType.PLANER_NOT_AUTHORIZED;
-
 @Service
 @Transactional(readOnly = true)
 //@AllArgsConstructor
