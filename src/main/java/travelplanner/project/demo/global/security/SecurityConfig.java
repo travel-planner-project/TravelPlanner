@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import travelplanner.project.demo.global.security.jwt.JwtAuthenticationEntryPoint;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -29,6 +30,8 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
 
 
     @Bean
@@ -49,16 +52,15 @@ public class SecurityConfig {
                     .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter(), CustomAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthenticationFilter(), JwtAuthenticationFilter.class);
 
-//                // OAuth 로그인
-//                .oauth2Login()
-//                .userInfoEndpoint()
-//                .userService(oAuth2UserService);
         return http.build();
     }
 

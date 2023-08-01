@@ -27,10 +27,10 @@ public enum ExceptionType {
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "USER-005", "권한이 부족하여 접근할 수 없습니다."),
 
     // 토큰이 일치하지 않는 경우
-    TOKEN_IS_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "USER-006", "토큰이 일치하지 않습니다."),
+    TOKEN_IS_NOT_MATCHED(HttpStatus.FORBIDDEN, "USER-006", "토큰이 일치하지 않습니다."),
 
     // 토큰 유효기간이 끝난 경우
-    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "USER-007", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
+    TOKEN_IS_EXPIRED(HttpStatus.UNAUTHORIZED, "USER-007", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
 
     // 특정 유저의 프로필을 찾을 수 없는 경우
     USER_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-001", "해당 유저를 찾을 수 없습니다."),

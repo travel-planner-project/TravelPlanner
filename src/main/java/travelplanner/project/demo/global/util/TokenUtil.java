@@ -1,15 +1,13 @@
 package travelplanner.project.demo.global.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.TokenExpiredException;
 
 import java.util.Date;
 
@@ -21,7 +19,7 @@ public class TokenUtil {
     private static final String SECRET_KEY = "68a4ef27a3f2f0f605a6781e6be34b466b5da3d11db5384218c407e99e6dcecf3361e1f6def13c78f2deb1e6e822bef2ca1c95b1166c97c5278ad81fdba4538";
 
     // Access 토큰 유효시간 15 분
-    static final long AccessTokenValidTime = 1 * 60 * 1000L;
+    static final long AccessTokenValidTime = 5 * 60 * 1000L;
 
     public String generateAccessToken(String email) {
 
@@ -53,7 +51,7 @@ public class TokenUtil {
         return refreshToken;
     }
 
-    public boolean isValidToken(String token) throws Exception{
+    public boolean isValidToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
@@ -63,6 +61,8 @@ public class TokenUtil {
                     .getExpiration()
                     .after(new Date());
 
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (Exception e) {
             throw new Exception(ExceptionType.TOKEN_IS_NOT_MATCHED);
         }
