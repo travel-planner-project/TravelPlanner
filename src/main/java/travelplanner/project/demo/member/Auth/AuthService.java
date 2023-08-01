@@ -78,7 +78,7 @@ public class AuthService {
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
 
         // 프로필
-        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
+        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
         if (profile == null) {
 
@@ -102,7 +102,7 @@ public class AuthService {
 
 
         return AuthResponse.builder()
-                .userId(member.get().getUserId())
+                .userId(member.get().getId())
                 .email(member.get().getEmail())
                 .userNickname(member.get().getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())

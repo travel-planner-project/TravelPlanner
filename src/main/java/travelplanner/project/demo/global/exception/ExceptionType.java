@@ -47,6 +47,18 @@ public enum ExceptionType {
     // 플래너가 존재하지 않는 경우
     NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다."),
 
+    // 플래너를 작성한 사람이 아닐 경우
+    PLANER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PLANNER-002", "플래너에 대한 접근 권한이 없습니다."),
+
+    // 데이트가 존재하지 않는 경우
+    NOT_EXISTS_DATE(HttpStatus.BAD_REQUEST, "DATE-OO1", "존재 하지 않는 데이트 입니다."),
+
+    // 데이트가 존재하지 않는 경우
+    NOT_EXISTS_TODO(HttpStatus.BAD_REQUEST, "TODO-OO1", "존재 하지 않는 TODO 입니다."),
+
+    // 투두를 작성한 사람이 아닐 경우
+    TODO_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "TODO-002", "투두에 대한 접근 권한이 없습니다."),
+
     // 내부 서버 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다."),
 

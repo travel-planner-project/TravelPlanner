@@ -3,12 +3,11 @@ package travelplanner.project.demo.planner.dto.request;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
-public class DateUpdateRequest {
+public class CalendarCreateRequest {
 
-    private Long dateId;
-    private LocalDateTime eachDate;
+    // 사용자가 정한 날짜, Formatter 추가해야함.
+    private String eachDate;
+
 }

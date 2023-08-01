@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DateDeleteRequest {
+public class CalendarUpdateRequest {
+
     private Long dateId;
+    private String eachDate;
 }
