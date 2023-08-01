@@ -46,7 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 쿠키에서 리프레시 토큰 추출
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
+
         if (refreshTokenCookie == null) {
+
+            log.info("쿠키에서 꺼낸 리프레시 토큰: ", refreshTokenCookie.getValue());
+
             // 리프레시 토큰이 없을 경우, 403 Forbidden 오류 반환
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Refresh token not found.");
             return;
@@ -61,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 어세스 토큰이 유효하지 않을 경우, 리프레시 토큰으로 새로운 어세스 토큰 발급
                 accessToken = tokenUtil.refreshAccessToken(refreshToken);
 
-                log.info("새로운 토큰 생성");
+                log.info("새로운 토큰 생성================================");
 
                 // 헤더에 어세스 토큰 추가
                 response.setHeader("Authorization", accessToken);
