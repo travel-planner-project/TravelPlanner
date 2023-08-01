@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../../store/store'
+import useLogout from '../../hooks/useLogout'
 import useRouter from '../../hooks/useRouter'
 import { useForm } from 'react-hook-form'
 import { FormValueType } from '../../types/signUpTypes'
@@ -10,6 +11,7 @@ import RenderEdit from '../../components/Profile/RenderEdit'
 
 function EditPassword() {
   const { routeTo } = useRouter()
+  const logout = useLogout()
   const { userId } = useRecoilValue(userInfo)
   // 현재 패스워드 체크용
   const [isChecked, SetIsChecked] = useState(false)
@@ -42,7 +44,7 @@ function EditPassword() {
     editPassword({ userId: userId, password: data.password }).then(response => {
       if (response?.status === 200) {
         alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.')
-        // todo: 로그아웃 처리
+        logout
         routeTo('/user/login')
       }
       if (response?.status !== 200) {
