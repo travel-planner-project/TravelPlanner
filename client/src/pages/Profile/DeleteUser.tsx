@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../../store/store'
+import useLogout from '../../hooks/useLogout'
 import useRouter from '../../hooks/useRouter'
 import { deleteUser } from '../../apis/user'
 import styles from './DeleteUser.module.scss'
 
 function DeleteUser() {
   const { routeTo } = useRouter()
+  const logout = useLogout()
   const { userId } = useRecoilValue(userInfo)
   const [currentPassword, setCurrentPassword] = useState('')
 
@@ -20,11 +22,12 @@ function DeleteUser() {
       if (response?.status === 200) {
         alert('회원탈퇴가 완료되었습니다.')
         // 체크박스 추가
-        // todo: 로그아웃 처리
+        logout
         routeTo('/')
-      }
-      if (response?.status !== 200) {
+      } else if (response?.status === 400) {
         alert('비밀번호가 일치하지 않습니다.')
+      } else {
+        alert('회원 탈퇴에 실패했습니다. 자세한 내용은 관리자에게 문의해 주시기 바랍니다.')
       }
     })
   }
