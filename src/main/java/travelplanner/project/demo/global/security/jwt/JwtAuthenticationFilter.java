@@ -9,11 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 
