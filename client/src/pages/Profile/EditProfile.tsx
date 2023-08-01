@@ -11,32 +11,33 @@ function EditProfile() {
   const { userId, email, userNickname, profileImgUrl } = useRecoilValue(userInfo)
   const setUserInfo = useSetRecoilState(userInfo)
   const [editNickname, setEditNickname] = useState(userNickname)
+  // 처음 profileImgUrl은 초깃값인 null 또는 "(url)" 이나 "" 이다.
   const [selectedImage, setSelectedImage] = useState<File | string>(profileImgUrl)
   const [previewImage, setPreviewImage] = useState(profileImgUrl)
 
   // 미리보기 이미지 업데이트 함수
-  const updatePreviewImage = (file: File | null) => {
-    if (file) {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-    } else {
-      setPreviewImage('')
+  const updatePreviewImage = (file: File) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = () => {
+      // 미리보기 이미지는 string값이 된다.
+      setPreviewImage(reader.result as string)
     }
   }
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 선택된 파일이 있는 경우
     if (event.target.files) {
       setSelectedImage(event.target.files[0])
+      console.log(typeof event.target.files[0])
       updatePreviewImage(event.target.files[0])
     }
+    // 그냥 취소를 누르면 아무일도 일어나지 않는다.
   }
 
   const handleDeleteImage = () => {
     setSelectedImage('')
-    updatePreviewImage(null)
+    setPreviewImage('')
   }
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
