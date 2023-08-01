@@ -22,7 +22,7 @@ function DeleteUser() {
       if (response?.status === 200) {
         alert('회원탈퇴가 완료되었습니다.')
         // 체크박스 추가
-        logout
+        logout()
         routeTo('/')
       } else if (response?.status === 400) {
         alert('비밀번호가 일치하지 않습니다.')
