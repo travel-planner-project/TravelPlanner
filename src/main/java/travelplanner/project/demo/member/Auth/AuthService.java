@@ -101,9 +101,7 @@ public class AuthService {
         cookieUtil.create(refreshToken, response);
 
         // 리프레시 토큰을 Redis 에 저장
-        redisUtil.setData(member.get().getEmail(), refreshToken);
-
-
+        redisUtil.setDataExpire(member.get().getEmail(), refreshToken, 7*24*60*60); // 1 week expiration
 
         return AuthResponse.builder()
                 .userId(member.get().getId())
