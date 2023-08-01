@@ -3,6 +3,7 @@ package travelplanner.project.demo.member.Auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -97,8 +98,11 @@ public class AuthService {
         response.setHeader("Authorization", accessToken);
 
         // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
-        Cookie refreshTokenCookie = cookieUtil.create(refreshToken);
-        response.addCookie(refreshTokenCookie);
+        cookieUtil.create(refreshToken, response);
+
+        // 리프레시 토큰을 Redis 에 저장
+        redisUtil.setData(member.get().getEmail(), refreshToken);
+
 
 
         return AuthResponse.builder()

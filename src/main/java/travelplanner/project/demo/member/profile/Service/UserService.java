@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
@@ -28,6 +29,7 @@ public class UserService {
     private ProfileRepository profileRepository;
     private S3Service s3Service;
     private TokenUtil tokenUtil;
+    private RedisUtil redisUtil;
     private PasswordEncoder encoder;
 
 
@@ -114,6 +116,9 @@ public class UserService {
 
         // 프로필 삭제
         profileRepository.delete(profile);
+
+        // 레디스 삭제
+        redisUtil.deleteData(member.getEmail());
 
         // 멤버 삭제
         memberRepository.delete(member);
