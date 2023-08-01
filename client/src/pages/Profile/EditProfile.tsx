@@ -69,7 +69,7 @@ function EditProfile() {
     )
     formData.append('profileUpdateRequest', nickNameBlob)
 
-    if (typeof selectedImage === 'string') {
+    if (!selectedImage || typeof selectedImage === 'string') {
       const ImageBlob = new Blob([''], {
         type: 'application/json',
       })
