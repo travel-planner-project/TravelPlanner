@@ -22,7 +22,7 @@ public class PlannerListResponse {
 
     //플래너 객체
     public PlannerListResponse(Planner planner){
-        this.plannerId = planner.getPlannerId();
+        this.plannerId = planner.getId();
         this.planTitle = planner.getPlanTitle();
 //        this.userId = planner.getMember().getUserId();
         this.startDate = planner.getStartDate();

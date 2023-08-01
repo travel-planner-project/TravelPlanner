@@ -7,7 +7,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import travelplanner.project.demo.member.Auth.Role;
+import travelplanner.project.demo.planner.domain.Calendar;
+import travelplanner.project.demo.planner.domain.Planner;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     private String userNickname;
 
@@ -32,4 +35,11 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "member")
+    private List<Planner> planners = new ArrayList<>();
+
+    public void mappingPlanner(Planner planner) {
+        planners.add(planner);
+    }
 }

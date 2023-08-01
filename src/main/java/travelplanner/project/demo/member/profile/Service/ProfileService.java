@@ -52,7 +52,7 @@ public class ProfileService {
             throw new Exception(ExceptionType.USER_NOT_FOUND);
         }
 
-        Profile profile = profileRepository.findProfileByMemberUserId(userId);
+        Profile profile = profileRepository.findProfileByMemberId(userId);
         if (profile == null) {
             profile = Profile.builder()
                     .member(member.get())
@@ -62,7 +62,7 @@ public class ProfileService {
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.get().getUserId().equals(userId);
+        boolean isCurrentUser = member.get().getId().equals(userId);
 
         ProfileResponse profileResponse = new ProfileResponse();
         profileResponse.setProfileImgUrl(profile.getProfileImgUrl());
@@ -91,13 +91,13 @@ public class ProfileService {
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.getUserId().equals(profileUpdateRequest.getUserId());
+        boolean isCurrentUser = member.getId().equals(profileUpdateRequest.getUserId());
 
         if (!isCurrentUser) {
             throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
         }
 
-        Profile profile = profileRepository.findProfileByMemberUserId(profileUpdateRequest.getUserId());
+        Profile profile = profileRepository.findProfileByMemberId(profileUpdateRequest.getUserId());
         member.setUserNickname(profileUpdateRequest.getUserNickname());
 
         memberRepository.save(member);
@@ -123,7 +123,7 @@ public class ProfileService {
             s3Service.deleteFile(profile.getKeyName());
 
             String originalImgName = profileImg.getOriginalFilename();
-            String uniqueImgName = generateUniqueImgName(originalImgName, member.getUserId());
+            String uniqueImgName = generateUniqueImgName(originalImgName, member.getId());
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
             String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;

@@ -36,12 +36,12 @@ public class ToDo {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "planner_date_id")
-    private PlannerDate plannerDate;
+    @JoinColumn(name = "calendar_id")
+    private Calendar calendar;
 
-    public void mappingDate(PlannerDate plannerDate) {
-        this.plannerDate = plannerDate;
-        plannerDate.mappingToDo(this);
+    public void mappingDate(Calendar calendar) {
+        this.calendar = calendar;
+        calendar.mappingToDo(this);
     }
 
     public ToDoEditor.ToDoEditorBuilder toEditor() {

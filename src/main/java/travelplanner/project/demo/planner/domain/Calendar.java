@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class PlannerDate {
+public class Calendar {
 
     @Id
     @GeneratedValue
@@ -30,7 +30,7 @@ public class PlannerDate {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "plannerDate")
+    @OneToMany(mappedBy = "calendar")
     private List<ToDo> toDoList = new ArrayList<>();
 
     public void mappingToDo(ToDo toDo) {
@@ -44,7 +44,7 @@ public class PlannerDate {
 
     public void mappingPlanner(Planner planner) {
         this.planner = planner;
-        planner.mappingDate(this);
+        planner.mappingCalendar(this);
     }
 
 }
