@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   datasource:
     url: jdbc:mysql://travelplanner.c90ycbubgo4h.ap-northeast-2.rds.amazonaws.com:3306/travel

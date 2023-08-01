@@ -105,9 +105,9 @@ public class ProfileService {
         ProfileUpdateResponse response = new ProfileUpdateResponse();
         response.setUserNickname(member.getUserNickname());
 
-        if (profileImg.isEmpty()) {
+        if (profileImg.isEmpty()) { // 프로필 이미지가 비어있다면
 
-            if (!profileUpdateRequest.getChangeProfileImg()) { // 이미지 안바꿈
+            if (!profileUpdateRequest.getChangeProfileImg()) { // 프로필 이미지를 안바꾼다고 하면, 이미지 안바꿈
                 response.setProfileImgUrl(profile.getProfileImgUrl());
 
             } else { // 이미지 바꿈 - 파일 입력 안함
@@ -118,6 +118,10 @@ public class ProfileService {
             }
 
         } else { // 이미지 바꿈 - 파일 입력
+
+            if (!profileUpdateRequest.getChangeProfileImg()) {
+                throw new Exception(ExceptionType.INVALID_INPUT_VALUE);
+            }
 
             // 프로필 이미지가 있는 경우, 삭제하고 진행
             s3Service.deleteFile(profile.getKeyName());

@@ -40,7 +40,10 @@ public enum ExceptionType {
 
     // 회원정보 변경 시 비밀번호가 일치하지 않은 경우
     CHECK_PASSWORD_AGAIN(HttpStatus.BAD_REQUEST, "PROFILE-003", "비밀번호를 다시한번 확인해주세요"),
-  
+
+    // 프로필 사진 값이 false 인데 이미지를 올린 경우
+    PROFILE_IMAGE_CHANGE_VALUE_IS_FALSE(HttpStatus.BAD_REQUEST, "PROFILE-004", "프로필 이미지 수정값이 false 입니다."),
+
     // 플래너가 존재하지 않는 경우
     NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다."),
 
