@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { getTokenFromSessionStorage } from '../utils/tokenHandler'
+import { getTokenFromSessionStorage, saveTokenToSessionStorage } from '../utils/tokenHandler'
 
 type Options = {
   baseURL: string
@@ -25,7 +25,7 @@ const instanceOptionsFormData: Options = {
 const setAccessTokenOnHeader = (config: InternalAxiosRequestConfig) => {
   const accessToken = getTokenFromSessionStorage()
   if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`
+    config.headers.Authorization = accessToken
   }
   return config
 }
@@ -33,6 +33,27 @@ const setAccessTokenOnHeader = (config: InternalAxiosRequestConfig) => {
 function createAxiosInstance(options: Options) {
   const instance = axios.create(options)
   instance.interceptors.request.use(setAccessTokenOnHeader)
+  instance.interceptors.response.use(
+    response => response,
+    async error => {
+      const { config, response } = error
+
+      if (response.status === 401) {
+        try {
+          const refreshRes = await axiosInstance.get('/auth/token')
+          if (refreshRes.status === 200) {
+            const { authorization } = refreshRes.headers
+            saveTokenToSessionStorage(authorization)
+            config.headers.Authorization = authorization
+            return await axios(config)
+          }
+        } catch (error) {
+          return Promise.reject(error)
+        }
+      }
+    }
+  )
+
   return instance
 }
 
