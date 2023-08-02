@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../../store/store'
 import useRouter from '../../hooks/useRouter'
@@ -8,8 +7,8 @@ import styles from './Profile.module.scss'
 import Icon from '../../components/Common/Icon'
 
 function Profile() {
-  const { routeTo } = useRouter()
-  const { id } = useParams()
+  const { params, routeTo } = useRouter()
+  const { id } = params
   const { userId, userNickname, email, profileImgUrl } = useRecoilValue(userInfo)
   const [profileUser, setProfileUser] = useState({
     email: '',
