@@ -42,12 +42,10 @@ public class UserService {
         // JWT 토큰을 이용하여 유저 정보를 추출
         String email = tokenUtil.getEmail(accessToken);
 
-        Member member = memberRepository.findById(request.getUserId()).get();
         Member loginUser = memberRepository.findByEmail(email).get();
-
         String encodedPassword = loginUser.getPassword();
 
-        if (encodedPassword.equals(member.getPassword())) {
+        if (encoder.matches(request.getPassword(), encodedPassword)) {
             return true;
 
         } else {
