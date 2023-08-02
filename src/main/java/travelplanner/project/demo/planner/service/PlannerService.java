@@ -1,6 +1,8 @@
 package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +17,7 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
+import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
@@ -29,10 +32,11 @@ public class PlannerService {
     private final MemberRepository memberRepository;
     private final PlannerRepository plannerRepository;
 
-    //플래너 리스트
-//    public Page<Planner> findPlannerListByUserId (Long userId, Pageable pageable){
-//        return plannerRepository.findByUserId(userId, pageable);
-//    }
+    // 플래너 리스트
+    public Page<PlannerListResponse> getPlannerListByUserId (Pageable pageable){
+        Page<Planner> planners = plannerRepository.findAll(pageable);
+        return planners.map(PlannerListResponse::new);
+    }
 
     public PlannerDetailResponse getDetailPlanner(Long plannerId) {
 
@@ -84,7 +88,9 @@ public class PlannerService {
     }
 
     @Transactional
-    public void updatePlanner(Long plannerId, PlannerUpdateRequest request) {
+    public void updatePlanner(PlannerUpdateRequest request) {
+
+        Long plannerId = request.getPlannerId();
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)

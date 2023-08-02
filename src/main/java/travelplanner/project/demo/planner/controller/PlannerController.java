@@ -34,13 +34,11 @@ public class PlannerController {
 
     private final PlannerService plannerService;
 
-    @Operation(summary = "플래너 상세")
+    @Operation(summary = "플래너 상세 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "특정 플래너 접근 성공",
                     content = @Content(schema = @Schema(implementation = PlannerDetailResponse.class))),
-            @ApiResponse(responseCode = "403", description = "로그인한 유저와 프로필 유저가 같지 않은 경우",
-                    content = @Content(schema = @Schema(implementation = ApiException.class))),
-            @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
+            @ApiResponse(responseCode = "404", description = "특정 플래너를 찾을 수 없는 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
     @GetMapping("/{plannerId}")
@@ -48,6 +46,20 @@ public class PlannerController {
             @Parameter(name = "plannerId", description = "플래너 인덱스", in = ParameterIn.PATH) // swagger
             @PathVariable Long plannerId ) throws Exception{
         return ResponseEntity.ok(plannerService.getDetailPlanner(plannerId));
+    }
+
+    @Operation(summary = "플래너 전체 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "전체 플래너 접근 성공",
+                    content = @Content(schema = @Schema(implementation = PlannerListResponse.class))),
+            @ApiResponse(responseCode = "400", description = "플래너 조회에 실패한 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
+    @GetMapping
+    public ResponseEntity<Page<PlannerListResponse>> findByPlannerList(
+            @Parameter(description = "페이지 정보", in = ParameterIn.QUERY) // swagger
+            Pageable pageable){
+        return ResponseEntity.ok(plannerService.getPlannerListByUserId(pageable));
     }
 
     @Operation(summary = "플래너 삭제")
@@ -81,15 +93,20 @@ public class PlannerController {
 
 
     // 플래너 수정
+
+    @Operation(summary = "플래너 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "플래너가 정상적으로 수정되었습니다."),
+            @ApiResponse(responseCode = "400", description = "플래너 수정에 실패한 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class))),
+            @ApiResponse(responseCode = "403", description = "플래너를 생성한 유저가 아닌 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class))),
+            @ApiResponse(responseCode = "404", description = "수정하려는 플래너가 없을 경우",
+                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+    })
     @PatchMapping
-    public ResponseEntity updatePlanner(
-            @RequestBody @Validated PlannerUpdateRequest request, BindingResult result) {
-
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Planner 업데이트 실패했습니다. Invalid request입니다. ");
-        }
-
-        plannerService.updatePlanner(request.getPlannerId(), request);
-        return ResponseEntity.ok().body("정상적으로 수정되었습니다.");
+    public void updatePlanner(
+            @RequestBody PlannerUpdateRequest request) {
+        plannerService.updatePlanner(request);
     }
 }
