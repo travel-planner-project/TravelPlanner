@@ -18,10 +18,15 @@ function DeleteUser() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    const shouldDelete = window.confirm('정말로 탈퇴하시겠습니까?')
+    if (!shouldDelete) {
+      return
+    }
+
     deleteUser({ userId: userId, password: currentPassword }).then(response => {
       if (response?.status === 200) {
         alert('회원탈퇴가 완료되었습니다.')
-        // 체크박스 추가
         logout()
         routeTo('/')
       } else if (response?.status === 400) {
