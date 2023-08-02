@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class JwtController {
             @ApiResponse(responseCode = "200", description = "accessToken 재발급 성공"),
             @ApiResponse(responseCode = "404", description = "재발급에 문제가 생긴 경우")
     })
-    @PostMapping("/token")
+    @GetMapping("/token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
