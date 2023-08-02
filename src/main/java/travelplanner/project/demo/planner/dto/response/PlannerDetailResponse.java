@@ -1,10 +1,13 @@
 package travelplanner.project.demo.planner.dto.response;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import travelplanner.project.demo.planner.domain.Planner;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class PlannerDetailResponse {
 
@@ -14,12 +17,8 @@ public class PlannerDetailResponse {
 
     private Boolean isPrivate;
 
-    //to - do 추가
+    private LocalDateTime startDate;
 
-    public PlannerDetailResponse(Planner entity){
-        this.plannerId = entity.getId();
-        this.planTitle = entity.getPlanTitle();
-        this.isPrivate = entity.getIsPrivate();
-    }
+    private LocalDateTime endDate;
 
 }

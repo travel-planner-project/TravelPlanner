@@ -12,10 +12,14 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.domain.PlannerEditor;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
+import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
+import static travelplanner.project.demo.global.exception.ExceptionType.PLANER_NOT_AUTHORIZED;
+
 @Service
 @Transactional(readOnly = true)
 //@AllArgsConstructor
@@ -30,31 +34,50 @@ public class PlannerService {
 //        return plannerRepository.findByUserId(userId, pageable);
 //    }
 
-    //플래너 삭제
-    public void deletePlanner(Long plannerId){
+    public PlannerDetailResponse getDetailPlanner(Long plannerId) {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
-        ;
-//        // 현재 사용자 id 갖고 오기
-//        Member currentMember = getCurrentMember();
-//        // if (플래너 작성자의 index != 현재 사용자 index)
-//        if (!planner.getMember().getUserId().equals(currentMember.getUserId())) {
-//            throw new Exception(PLANER_NOT_AUTHORIZED);
-//        }
-//        plannerRepository.delete(planner);
+
+        PlannerDetailResponse plannerDetailResponse = PlannerDetailResponse.builder()
+                .plannerId(planner.getId())
+                .planTitle(planner.getPlanTitle())
+                .isPrivate(planner.getIsPrivate())
+                .startDate(planner.getStartDate())
+                .endDate(planner.getEndDate())
+                .build();
+        return plannerDetailResponse;
     }
+
+    //플래너 삭제
+    public void deletePlanner(PlannerDeleteRequest plannerDeleteRequest) {
+
+
+        Long plannerId = plannerDeleteRequest.getPlannerId();
+
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+
+        Member currentMember = getCurrentMember();
+
+        // 플래너를 생성한 사람이 아닐 경우
+        if (!planner.getMember().getId().equals(currentMember.getId())) {
+
+            throw new Exception(PLANER_NOT_AUTHORIZED);
+        }
+        plannerRepository.delete(planner);
+
+    }
+
 
     public void createPlanner(PlannerCreateRequest request) {
         Planner createPlanner = Planner.builder()
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
 
-                // todo 투두와는 별개로
-                //  date를 웹소켓으로 실시간으로 생성하는 시점에 planner에 startdate, enddate를 설정해주기.
-//                .startDate(request.getStartDate())
-//                .endDate(request.getEndDate())
+                // todo 이곳 말고 캘린더를 생성하는 서비스에서 플래너 sratdate, enddate 업데이트해주기
                 .build();
 
         plannerRepository.save(createPlanner);
@@ -68,13 +91,13 @@ public class PlannerService {
                 .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
 
         // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
-//        Member currentMember = getCurrentMember();
-//        for(Member x: GroupMember){
-//            Member member = GroupMember.getMemberName();
-//            if (!currentMember.equals(member)) {
-//                throw new Exception(TODO_NOT_AUTHORIZED);
-//            }
-//        }
+        Member currentMember = getCurrentMember();
+
+        // 플래너를 생성한 사람이 아닐 경우
+        if (!planner.getMember().getId().equals(currentMember.getId())) {
+
+            throw new Exception(PLANER_NOT_AUTHORIZED);
+        }
 
         PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
         PlannerEditor plannerEditor = editorBuilder

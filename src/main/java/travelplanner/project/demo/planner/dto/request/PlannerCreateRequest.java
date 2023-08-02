@@ -10,15 +10,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PlannerCreateRequest {
 
-//    private Long userId;
-
     @NotEmpty
     private String planTitle;
 
     private Boolean isPrivate;
-
-//    private LocalDateTime startDate;
-//
-//    private LocalDateTime endDate;
 
 }

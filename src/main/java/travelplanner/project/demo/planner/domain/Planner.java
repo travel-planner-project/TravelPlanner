@@ -23,6 +23,7 @@ import java.util.List;
 @Getter
 public class Planner {
 
+
     @Id
     @GeneratedValue
     private Long id;

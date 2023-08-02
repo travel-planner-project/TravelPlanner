@@ -1,6 +1,10 @@
 package travelplanner.project.demo.planner.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import travelplanner.project.demo.planner.domain.Planner;
 
 import java.time.LocalDateTime;
@@ -8,14 +12,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PlannerListResponse {
 
     private Long plannerId;
-    private Long userId;
-
-
     private String planTitle;
-    
+    private Boolean isPrivate;
     private LocalDateTime startDate;
     
     private LocalDateTime endDate;
@@ -24,7 +29,7 @@ public class PlannerListResponse {
     public PlannerListResponse(Planner planner){
         this.plannerId = planner.getId();
         this.planTitle = planner.getPlanTitle();
-//        this.userId = planner.getMember().getUserId();
+        this.isPrivate = planner.getIsPrivate();
         this.startDate = planner.getStartDate();
         this.endDate = planner.getEndDate();
     }
