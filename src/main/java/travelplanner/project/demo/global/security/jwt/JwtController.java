@@ -6,8 +6,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +24,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
 import travelplanner.project.demo.member.Auth.AuthResponse;
 
+import java.util.ArrayList;
+
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -32,7 +40,7 @@ public class JwtController {
             @ApiResponse(responseCode = "200", description = "accessToken 재발급 성공"),
             @ApiResponse(responseCode = "404", description = "재발급에 문제가 생긴 경우")
     })
-    @PostMapping("/token")
+    @GetMapping("/token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
@@ -53,6 +61,14 @@ public class JwtController {
         // 헤더에 추가
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Authorization", newAccessToken);
+
+        String principal = tokenUtil.getEmail(newAccessToken);
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(principal, newAccessToken, new ArrayList<>());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        log.info("SecurityContextHolder: " + principal + " newAccessToken: " + newAccessToken);
 
         return ResponseEntity.ok().headers(responseHeaders).build();
     }

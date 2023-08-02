@@ -18,10 +18,10 @@ public class Profile {
 
     @Id
     @GeneratedValue
-    private Long profileId;
+    private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private Member member;
 
     private String profileImgUrl;

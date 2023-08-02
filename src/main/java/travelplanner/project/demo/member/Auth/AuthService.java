@@ -3,6 +3,7 @@ package travelplanner.project.demo.member.Auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,7 +79,7 @@ public class AuthService {
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
 
         // 프로필
-        Profile profile = profileRepository.findProfileByMemberUserId(member.get().getUserId());
+        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
         if (profile == null) {
 
@@ -97,12 +98,13 @@ public class AuthService {
         response.setHeader("Authorization", accessToken);
 
         // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
-        Cookie refreshTokenCookie = cookieUtil.create(refreshToken);
-        response.addCookie(refreshTokenCookie);
+        cookieUtil.create(refreshToken, response);
 
+        // 리프레시 토큰을 Redis 에 저장
+        redisUtil.setDataExpire(member.get().getEmail(), refreshToken, 7*24*60*60); // 1 week expiration
 
         return AuthResponse.builder()
-                .userId(member.get().getUserId())
+                .userId(member.get().getId())
                 .email(member.get().getEmail())
                 .userNickname(member.get().getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())

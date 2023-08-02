@@ -3,10 +3,10 @@ package travelplanner.project.demo.planner.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.planner.domain.PlannerDate;
-import travelplanner.project.demo.planner.dto.request.DateCreateRequest;
-import travelplanner.project.demo.planner.dto.request.DateDeleteRequest;
-import travelplanner.project.demo.planner.dto.request.DateUpdateRequest;
+import travelplanner.project.demo.planner.domain.Calendar;
+import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
+import travelplanner.project.demo.planner.dto.request.CalendarDeleteRequest;
+import travelplanner.project.demo.planner.dto.request.CalendarUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerDateRepository;
 
 import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_DATE;
@@ -17,25 +17,25 @@ public class PlannerDateService {
 
     private final PlannerDateRepository plannerDateRepository;
 
-    public void addDate(DateCreateRequest createRequest) {
-        PlannerDate buildRequest = PlannerDate.builder()
+    public void addDate(CalendarCreateRequest createRequest) {
+        Calendar buildRequest = Calendar.builder()
                 .eachDate(createRequest.getEachDate())
                 .build();
         plannerDateRepository.save(buildRequest);
     }
 
-    public void deleteDate(DateDeleteRequest deleteRequest){
+    public void deleteDate(CalendarDeleteRequest deleteRequest){
 
         // 검증 로직 필요
-        PlannerDate plannerDate = plannerDateRepository.findById(deleteRequest.getDateId())
+        Calendar calendar = plannerDateRepository.findById(deleteRequest.getDateId())
                 .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
-        plannerDateRepository.delete(plannerDate);
+        plannerDateRepository.delete(calendar);
     }
 
-    public void updateDate(DateUpdateRequest updateRequest) {
+    public void updateDate(CalendarUpdateRequest updateRequest) {
 
         // 검증 로직 필요
-        PlannerDate plannerDate = plannerDateRepository.findById(updateRequest.getDateId())
+        Calendar calendar = plannerDateRepository.findById(updateRequest.getDateId())
                 .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
     }
 

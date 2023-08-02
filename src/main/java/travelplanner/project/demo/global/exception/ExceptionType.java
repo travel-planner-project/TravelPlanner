@@ -27,10 +27,10 @@ public enum ExceptionType {
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "USER-005", "권한이 부족하여 접근할 수 없습니다."),
 
     // 토큰이 일치하지 않는 경우
-    TOKEN_IS_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "USER-006", "토큰이 일치하지 않습니다."),
+    TOKEN_IS_NOT_MATCHED(HttpStatus.FORBIDDEN, "USER-006", "토큰이 일치하지 않습니다."),
 
     // 토큰 유효기간이 끝난 경우
-    TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "USER-007", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
+    TOKEN_IS_EXPIRED(HttpStatus.UNAUTHORIZED, "USER-007", "토큰 유효기간이 만료되었거나, 유효하지 않은 토큰입니다."),
 
     // 특정 유저의 프로필을 찾을 수 없는 경우
     USER_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-001", "해당 유저를 찾을 수 없습니다."),
@@ -40,7 +40,10 @@ public enum ExceptionType {
 
     // 회원정보 변경 시 비밀번호가 일치하지 않은 경우
     CHECK_PASSWORD_AGAIN(HttpStatus.BAD_REQUEST, "PROFILE-003", "비밀번호를 다시한번 확인해주세요"),
-  
+
+    // 프로필 사진 값이 false 인데 이미지를 올린 경우
+    PROFILE_IMAGE_CHANGE_VALUE_IS_FALSE(HttpStatus.BAD_REQUEST, "PROFILE-004", "프로필 이미지 수정값이 false 입니다."),
+
     // 플래너가 존재하지 않는 경우
     NOT_EXISTS_PLANNER(HttpStatus.BAD_REQUEST, "PLANNER-OO1", "존재 하지 않는 플래너 입니다."),
 

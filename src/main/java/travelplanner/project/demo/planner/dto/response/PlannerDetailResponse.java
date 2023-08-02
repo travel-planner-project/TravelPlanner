@@ -17,7 +17,7 @@ public class PlannerDetailResponse {
     //to - do 추가
 
     public PlannerDetailResponse(Planner entity){
-        this.plannerId = entity.getPlannerId();
+        this.plannerId = entity.getId();
         this.planTitle = entity.getPlanTitle();
         this.isPrivate = entity.getIsPrivate();
     }

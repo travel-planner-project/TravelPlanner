@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
@@ -28,6 +29,7 @@ public class UserService {
     private ProfileRepository profileRepository;
     private S3Service s3Service;
     private TokenUtil tokenUtil;
+    private RedisUtil redisUtil;
     private PasswordEncoder encoder;
 
 
@@ -40,7 +42,7 @@ public class UserService {
         // JWT 토큰을 이용하여 유저 정보를 추출
         String email = tokenUtil.getEmail(accessToken);
 
-        Member member = memberRepository.findByUserId(request.getUserId()).get();
+        Member member = memberRepository.findById(request.getUserId()).get();
         Member loginUser = memberRepository.findByEmail(email).get();
 
         String encodedPassword = loginUser.getPassword();
@@ -71,7 +73,7 @@ public class UserService {
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.getUserId().equals(request.getUserId());
+        boolean isCurrentUser = member.getId().equals(request.getUserId());
 
         if (!isCurrentUser) {
             throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
@@ -101,19 +103,22 @@ public class UserService {
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.getUserId().equals(request.getUserId());
+        boolean isCurrentUser = member.getId().equals(request.getUserId());
 
         if (!isCurrentUser) {
             throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
         }
 
-        Profile profile = profileRepository.findProfileByMemberUserId(member.getUserId());
+        Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         // 프로필 이미지 삭제하기
         s3Service.deleteFile(profile.getKeyName());
 
         // 프로필 삭제
         profileRepository.delete(profile);
+
+        // 레디스 삭제
+        redisUtil.deleteData(member.getEmail());
 
         // 멤버 삭제
         memberRepository.delete(member);
