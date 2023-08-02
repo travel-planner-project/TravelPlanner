@@ -16,7 +16,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         if (authException instanceof TokenExpiredException) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token Expired");
         } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized");
         }
     }
 }

@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         } catch (Exception e) {
             // 토큰 검증 과정에서 예외가 발생하면, 401 Unauthorized 오류 반환
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error verifying token.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Error verifying token.");
             return;
         }
 
