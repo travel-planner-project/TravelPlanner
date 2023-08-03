@@ -8,7 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -23,10 +24,9 @@ import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 import travelplanner.project.demo.planner.repository.TravelGroupRepository;
 
+
 import java.util.List;
 
-import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
-import static travelplanner.project.demo.global.exception.ExceptionType.PLANER_NOT_AUTHORIZED;
 
 @Service
 @Transactional(readOnly = true)
@@ -52,7 +52,7 @@ public class PlannerService {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+                .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
         PlannerDetailResponse plannerDetailResponse = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
@@ -72,7 +72,7 @@ public class PlannerService {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+                .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
         Member currentMember = getCurrentMember();
 
@@ -138,7 +138,7 @@ public class PlannerService {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+                .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
         // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
         Member currentMember = getCurrentMember();
@@ -146,7 +146,7 @@ public class PlannerService {
         // 플래너를 생성한 사람이 아닐 경우
         if (!planner.getMember().getId().equals(currentMember.getId())) {
 
-            throw new Exception(PLANER_NOT_AUTHORIZED);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
