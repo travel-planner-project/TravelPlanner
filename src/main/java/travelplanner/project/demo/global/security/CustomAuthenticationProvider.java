@@ -7,7 +7,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import travelplanner.project.demo.global.exception.Exception;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,7 +17,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws Exception {
+    public Authentication authenticate(Authentication authentication) {
 
         final UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
@@ -27,7 +26,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String password = (String) token.getCredentials();
 
         // UserDetailsService 를 통해 DB 에서 아이디로 사용자 조회
-        final CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
+        final CustomUserDetails userDetails;
+        try {
+            userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Password is not matched");
         }

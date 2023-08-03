@@ -2,11 +2,10 @@ package travelplanner.project.demo.global.util;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.exception.TokenExpiredException;
 
 import java.util.Date;
@@ -64,7 +63,7 @@ public class TokenUtil {
         } catch (ExpiredJwtException e) {
             throw new TokenExpiredException();
         } catch (Exception e) {
-            throw new Exception(ExceptionType.TOKEN_IS_NOT_MATCHED);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
     }
 
@@ -74,7 +73,7 @@ public class TokenUtil {
                 .getBody().getSubject();
     }
 
-    public String refreshAccessToken(String refreshToken) throws Exception {
+    public String refreshAccessToken(String refreshToken) throws ApiException {
 
         String email = getEmail(refreshToken);
 
@@ -83,7 +82,7 @@ public class TokenUtil {
 
         // 저장된 리프레시 토큰과 제공된 리프레시 토큰이 동일한지 검사
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
-            throw new Exception(ExceptionType.TOKEN_IS_NOT_MATCHED);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         // 리프레시 토큰의 사용자 정보를 기반으로 새로운 어세스 토큰 발급
