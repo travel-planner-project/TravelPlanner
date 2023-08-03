@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "116-be-fix-유저-프로필-변경-오류-수정" ]
+    branches: [ "120-test-에러분기와-동작-테스트" ]
   pull_request:
-    branches: [ "116-be-fix-유저-프로필-변경-오류-수정" ]
+    branches: [ "120-test-에러분기와-동작-테스트" ]
 
 permissions:
   contents: read
