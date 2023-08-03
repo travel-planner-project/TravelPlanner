@@ -40,11 +40,7 @@ public class ProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로필 조회 성공",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 있습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @GetMapping("")
@@ -63,7 +59,9 @@ public class ProfileController {
             @ApiResponse(responseCode = "403", description = "로그인한 유저와 프로필 유저가 같지 않은 경우",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 있습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @PatchMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProfileUpdateResponse> updateUserProfile(
@@ -81,10 +79,6 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "비밀번호 일치 확인"),
             @ApiResponse(responseCode = "400", description = "비밀번호가 일치하지 않는 경우",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "403", description = "로그인한 유저와 프로필 유저가 같지 않은 경우",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping("/user/check")
     public boolean checkUserPassword(@RequestBody PasswordCheckRequest request) {
@@ -97,8 +91,6 @@ public class ProfileController {
             @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 있습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @PatchMapping("/user/updateInfo")
@@ -115,8 +107,6 @@ public class ProfileController {
             @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 있습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @DeleteMapping("/user/delete")
