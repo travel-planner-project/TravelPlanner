@@ -21,4 +21,6 @@ public class PlannerDetailResponse {
 
     private LocalDateTime endDate;
 
+    // Todo 그룹멤버 정보 전부 추가 List<그룹멤버>
+
 }
