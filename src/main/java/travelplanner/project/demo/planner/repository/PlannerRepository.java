@@ -8,5 +8,5 @@ import travelplanner.project.demo.planner.domain.Planner;
 
 
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
-//    Page<Planner> findByUserId(Long userId, Pageable pageable);
+    Page<Planner> findPlannerByMemberId(Long userId, Pageable pageable);
 }

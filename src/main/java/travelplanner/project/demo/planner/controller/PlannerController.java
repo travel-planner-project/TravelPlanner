@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/planner")
+@RequestMapping("/planner")
 @AllArgsConstructor
 public class PlannerController {
 
@@ -55,11 +56,12 @@ public class PlannerController {
             @ApiResponse(responseCode = "400", description = "플래너 조회에 실패한 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class)))
     })
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<Page<PlannerListResponse>> findByPlannerList(
-            @Parameter(description = "페이지 정보", in = ParameterIn.QUERY) // swagger
+            @Parameter(name = "userId", description = "유저 인덱스", in = ParameterIn.QUERY) // swagger
+            @RequestParam Long userId,
             Pageable pageable){
-        return ResponseEntity.ok(plannerService.getPlannerListByUserId(pageable));
+        return ResponseEntity.ok(plannerService.getPlannerListByUserId(pageable, userId));
     }
 
     @Operation(summary = "플래너 삭제")
@@ -109,4 +111,11 @@ public class PlannerController {
             @RequestBody PlannerUpdateRequest request) {
         plannerService.updatePlanner(request);
     }
+
+
+    // ===================================================
+
+    // 유저 검색
+    // 그룹 멤버 추가
+    // 그룹 멤버 삭제
 }

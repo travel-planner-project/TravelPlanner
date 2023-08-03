@@ -32,6 +32,10 @@ public class Planner {
     @JoinColumn(name = "user_id")
     private Member member;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travelGroup_id")
+    private TravelGroup travelGroup;
+
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
 
