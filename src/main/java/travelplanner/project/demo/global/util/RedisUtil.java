@@ -25,12 +25,6 @@ public class RedisUtil {
         valueOperations.set(key, value);
     }
 
-    public void setDataExpire(String key, String value, long expirationTime) {
-
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key, value, expirationTime, TimeUnit.SECONDS);
-    }
-
     public void deleteData(String key) {
         stringRedisTemplate.delete(key);
     }
