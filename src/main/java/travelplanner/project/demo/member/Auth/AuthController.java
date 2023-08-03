@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 
 
