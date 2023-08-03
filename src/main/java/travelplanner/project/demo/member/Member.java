@@ -7,8 +7,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import travelplanner.project.demo.member.Auth.Role;
+import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.Planner;
+import travelplanner.project.demo.planner.domain.TravelGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,11 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Planner> planners = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
 
     public void mappingPlanner(Planner planner) {
         planners.add(planner);
