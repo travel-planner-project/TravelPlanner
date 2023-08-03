@@ -1,18 +1,15 @@
 package travelplanner.project.demo.member.profile.Service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
@@ -37,7 +34,7 @@ public class UserService {
 
 
     // 비밀번호 체크
-    public boolean checkUserPassword(PasswordCheckRequest request, HttpServletRequest httpRequest) throws Exception {
+    public boolean checkUserPassword(PasswordCheckRequest request) throws ApiException {
 
         Member currentMember = getCurrentMember();
         String encodedPassword = currentMember.getPassword();
@@ -46,25 +43,25 @@ public class UserService {
             return true;
 
         } else {
-            throw new Exception(ExceptionType.CHECK_PASSWORD_AGAIN);
+            throw new ApiException(ErrorType.CHECK_PASSWORD_AGAIN);
         }
     }
 
     // 비밀번호 변경
     @Transactional
-    public void updatePassword(PasswordUpdateRequest request, HttpServletRequest httpRequest) {
+    public void updatePassword(PasswordUpdateRequest request) {
 
         Member currentMember = getCurrentMember();
 
         if (currentMember == null) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
         boolean isCurrentUser = currentMember.getId().equals(request.getUserId());
 
         if (!isCurrentUser) {
-            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         String encodedPassword = encoder.encode(request.getPassword());
@@ -75,19 +72,19 @@ public class UserService {
 
     // 회원탈퇴
     @Transactional
-    public void deleteUser(PasswordCheckRequest request, HttpServletRequest httpRequest) {
+    public void deleteUser(PasswordCheckRequest request) {
 
         Member currentMember = getCurrentMember();
 
         if (currentMember == null) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
         boolean isCurrentUser = currentMember.getId().equals(request.getUserId());
 
         if (!isCurrentUser) {
-            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         Profile profile = profileRepository.findProfileByMemberId(currentMember.getId());

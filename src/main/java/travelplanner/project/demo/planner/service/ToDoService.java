@@ -7,7 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.ToDo;
@@ -17,7 +18,6 @@ import travelplanner.project.demo.planner.dto.request.ToDoDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
 
-import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_TODO;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class ToDoService {
     @Transactional
     public void editTodo(Long id, ToDoEditRequest editRequest) {
         ToDo toDo = toDoRepository.findById(id)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_TODO));
+                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
 
@@ -70,7 +70,7 @@ public class ToDoService {
     public void delete(ToDoDeleteRequest deleteRequest) {
 
         ToDo toDo = toDoRepository.findById(deleteRequest.getDateId())
-                .orElseThrow(() -> new Exception(NOT_EXISTS_TODO));
+                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
 
@@ -92,3 +92,4 @@ public class ToDoService {
                 .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
     }
 }
+
