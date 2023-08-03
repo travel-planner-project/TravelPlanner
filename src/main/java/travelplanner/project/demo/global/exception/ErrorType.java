@@ -44,7 +44,10 @@ public enum ErrorType {
 
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-003", "투두가 존재하지 않습니다."),
 
-    DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-004", "데이트가 존재하지 않습니다.");
+    DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-004", "데이트가 존재하지 않습니다."),
+
+    GROUP_MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "PLANNER-05", "그룹 멤버가 이미 존재합니다.");
+
     // ==================================================================================================================
 
 

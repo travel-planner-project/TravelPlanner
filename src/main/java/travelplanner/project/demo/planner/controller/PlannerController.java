@@ -13,8 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.service.PlannerService;
 
@@ -22,7 +24,7 @@ import travelplanner.project.demo.planner.service.PlannerService;
 @Tag(name = "Planner", description = "플래너 API")
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/planner")
+@RequestMapping("/planner")
 @AllArgsConstructor
 public class PlannerController {
 
@@ -40,17 +42,17 @@ public class PlannerController {
 
     @DeleteMapping
     //플래너 삭제
-    public void deletePlanner(@RequestParam Long plannerId) {
-        plannerService.deletePlanner(plannerId);
+    public void deletePlanner(PlannerDeleteRequest request) {
+        plannerService.deletePlanner(request);
     }
 
 
 
     @Operation(summary = "플래너 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "플래너 생성 성공"),
+            @ApiResponse(responseCode = "200", description = "플래너 생성 성공"),
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
-                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
     public ResponseEntity createPlanner(
@@ -69,7 +71,7 @@ public class PlannerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "플래너 수정 성공"),
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
-                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping
     public ResponseEntity updatePlanner(
@@ -80,7 +82,7 @@ public class PlannerController {
 //            return ResponseEntity.badRequest().body("Planner 업데이트 실패했습니다. Invalid request입니다. ");
         }
 
-        plannerService.updatePlanner(request.getPlannerId(), request);
+        plannerService.updatePlanner (request);
         return ResponseEntity.ok().body("정상적으로 수정되었습니다.");
     }
 }

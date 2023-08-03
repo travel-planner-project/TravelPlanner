@@ -3,8 +3,8 @@ package travelplanner.project.demo.planner.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -40,7 +40,7 @@ public class GroupMemberService {
 
         if (member.isEmpty()) {
 
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         GroupMemberSearchResponse response = new GroupMemberSearchResponse();
@@ -83,7 +83,7 @@ public class GroupMemberService {
             return response;
         }
 
-        throw new Exception(ExceptionType.GROUP_MEMBER_ALREADY_EXIST);
+        throw new ApiException(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
     }
 
 
