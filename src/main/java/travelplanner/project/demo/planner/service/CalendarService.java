@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.exception.Exception;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarUpdateRequest;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
 
-import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_DATE;
 
 @Service
 @RequiredArgsConstructor

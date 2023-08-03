@@ -30,7 +30,7 @@ public enum ErrorType {
     PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT-001", "페이지를 찾을 수 없습니다."),
 
     // 유효하지 않은 요청일 경우
-    INVALID_REQUEST(HttpStatus.UNPROCESSABLE_ENTITY, "CLIENT-001", "페이지를 찾을 수 없습니다."),
+    INVALID_REQUEST(HttpStatus.UNPROCESSABLE_ENTITY, "CLIENT-002", "페이지를 찾을 수 없습니다."),
 
     // ==================================================================================================================
 
