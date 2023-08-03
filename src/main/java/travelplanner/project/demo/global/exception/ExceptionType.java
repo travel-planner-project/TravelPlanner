@@ -59,6 +59,9 @@ public enum ExceptionType {
     // 투두를 작성한 사람이 아닐 경우
     TODO_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "TODO-002", "투두에 대한 접근 권한이 없습니다."),
 
+    // 그룹 멤버가 이미 존재하는 경우
+    GROUP_MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "GROUP-001", "이미 그룹에 존재합니다."),
+
     // 내부 서버 오류
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "내부 서버 오류로 인해 요청을 처리할 수 없습니다."),
 
