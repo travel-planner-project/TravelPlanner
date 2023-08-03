@@ -37,7 +37,7 @@ public class ProfileController {
 
     @Operation(summary = "프로필 상세")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "특정 유저의 프로필 접근 성공",
+            @ApiResponse(responseCode = "200", description = "프로필 조회 성공",
                     content = @Content(schema = @Schema(implementation = ProfileResponse.class))),
             @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다",
                     content = @Content(schema = @Schema(implementation = ApiException.class))),
@@ -58,7 +58,7 @@ public class ProfileController {
 
     @Operation(summary = "프로필 수정")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "특정 유저의 프로필 수정 성공"),
+            @ApiResponse(responseCode = "200", description = "프로필 수정 성공"),
             @ApiResponse(responseCode = "403", description = "로그인한 유저와 프로필 유저가 같지 않은 경우",
                     content = @Content(schema = @Schema(implementation = ApiException.class))),
             @ApiResponse(responseCode = "404", description = "특정 유저를 찾을 수 없는 경우",
