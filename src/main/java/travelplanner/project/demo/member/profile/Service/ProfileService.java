@@ -1,6 +1,5 @@
 package travelplanner.project.demo.member.profile.Service;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
@@ -40,7 +39,7 @@ public class ProfileService {
 
     // 특정 유저의 프로필 찾기
     @Transactional
-    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws Exception {
+    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws ApiException {
 
         // 헤더에서 JWT 토큰 추출
         String accessToken = tokenUtil.getJWTTokenFromHeader(request);
@@ -52,7 +51,7 @@ public class ProfileService {
         Optional<Member> member = memberRepository.findByEmail(email);
 
         if (!member.isPresent()) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         Profile profile = profileRepository.findProfileByMemberId(userId);
@@ -83,14 +82,14 @@ public class ProfileService {
         Member currentMember = getCurrentMember();
 
         if (currentMember == null) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
         boolean isCurrentUser = currentMember.getId().equals(profileUpdateRequest.getUserId());
 
         if (!isCurrentUser) {
-            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         Profile profile = profileRepository.findProfileByMemberId(profileUpdateRequest.getUserId());
@@ -116,7 +115,7 @@ public class ProfileService {
         } else { // 이미지 바꿈 - 파일 입력
 
             if (!profileUpdateRequest.getChangeProfileImg()) {
-                throw new Exception(ExceptionType.INVALID_INPUT_VALUE);
+                throw new ApiException(ErrorType.NULL_VALUE_EXIST);
             }
 
             // 프로필 이미지가 있는 경우, 삭제하고 진행
