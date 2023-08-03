@@ -12,9 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
-import travelplanner.project.demo.global.security.CustomUserDetails;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -41,16 +40,16 @@ public class AuthService {
 
     // 회원가입
     @Transactional
-    public void register(RegisterRequest request) throws Exception {
+    public void register(RegisterRequest request) throws ApiException {
 
         // 이메일로 멤버 조회
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
         if (member.isPresent()) {
-            throw new Exception(ExceptionType.ALREADY_EXIST_EMAIL);
+            throw new ApiException(ErrorType.ALREADY_EXIST_EMAIL);
         }
 
         if (request.getEmail() == null || request.getPassword() == null || request.getUserNickname() == null) {
-            throw new Exception(ExceptionType.INVALID_INPUT_VALUE);
+            throw new ApiException(ErrorType.NULL_VALUE_EXIST);
         }
 
         // 멤버 생성
@@ -67,7 +66,7 @@ public class AuthService {
 
     // 로그인
     @Transactional
-    public AuthResponse login(LoginRequest request, HttpServletResponse response) throws Exception {
+    public AuthResponse login(LoginRequest request, HttpServletResponse response) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

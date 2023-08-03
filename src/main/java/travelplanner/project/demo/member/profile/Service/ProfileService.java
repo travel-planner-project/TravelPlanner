@@ -1,14 +1,16 @@
 package travelplanner.project.demo.member.profile.Service;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import travelplanner.project.demo.global.exception.Exception;
-import travelplanner.project.demo.global.exception.ExceptionType;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
@@ -37,7 +39,7 @@ public class ProfileService {
 
     // 특정 유저의 프로필 찾기
     @Transactional
-    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws Exception {
+    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws ApiException {
 
         // 헤더에서 JWT 토큰 추출
         String accessToken = tokenUtil.getJWTTokenFromHeader(request);
@@ -49,7 +51,7 @@ public class ProfileService {
         Optional<Member> member = memberRepository.findByEmail(email);
 
         if (!member.isPresent()) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         Profile profile = profileRepository.findProfileByMemberId(userId);
@@ -77,33 +79,26 @@ public class ProfileService {
     @Transactional
     public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
-        // 헤더에서 JWT 토큰 추출
-        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
+        Member currentMember = getCurrentMember();
 
-        // JWT 토큰을 이용하여 유저 정보를 추출
-        String email = tokenUtil.getEmail(accessToken);
-
-        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
-        Member member = memberRepository.findByEmail(email).get();
-
-        if (member == null) {
-            throw new Exception(ExceptionType.USER_NOT_FOUND);
+        if (currentMember == null) {
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.getId().equals(profileUpdateRequest.getUserId());
+        boolean isCurrentUser = currentMember.getId().equals(profileUpdateRequest.getUserId());
 
         if (!isCurrentUser) {
-            throw new Exception(ExceptionType.THIS_USER_IS_NOT_SAME_LOGIN_USER);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         Profile profile = profileRepository.findProfileByMemberId(profileUpdateRequest.getUserId());
-        member.setUserNickname(profileUpdateRequest.getUserNickname());
+        currentMember.setUserNickname(profileUpdateRequest.getUserNickname());
 
-        memberRepository.save(member);
+        memberRepository.save(currentMember);
 
         ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setUserNickname(member.getUserNickname());
+        response.setUserNickname(currentMember.getUserNickname());
 
         if (profileImg.isEmpty()) { // 프로필 이미지가 비어있다면
 
@@ -120,14 +115,14 @@ public class ProfileService {
         } else { // 이미지 바꿈 - 파일 입력
 
             if (!profileUpdateRequest.getChangeProfileImg()) {
-                throw new Exception(ExceptionType.INVALID_INPUT_VALUE);
+                throw new ApiException(ErrorType.NULL_VALUE_EXIST);
             }
 
             // 프로필 이미지가 있는 경우, 삭제하고 진행
             s3Service.deleteFile(profile.getKeyName());
 
             String originalImgName = profileImg.getOriginalFilename();
-            String uniqueImgName = generateUniqueImgName(originalImgName, member.getId());
+            String uniqueImgName = generateUniqueImgName(originalImgName, currentMember.getId());
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
             String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;
@@ -168,4 +163,11 @@ public class ProfileService {
     }
 
     // 프로필 수정 [END] =========================================================================================
+
+    private Member getCurrentMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 현재 사용자의 email 얻기
+        return memberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
+    }
 }
