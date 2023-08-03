@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 
 
 @Tag(name = "User", description = "회원가입 / 로그인 API")
@@ -28,9 +29,9 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
             @ApiResponse(responseCode = "400", description = "이미 존재하는 이메일 입니다.",
-                    content = @Content(schema = @Schema(implementation = ApiException.class))),
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
-                    content = @Content(schema = @Schema(implementation = ApiException.class)))
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping("/auth/signup")
     public void signup(@RequestBody RegisterRequest request) {
@@ -39,8 +40,7 @@ public class AuthController {
 
     @Operation(summary = "로그인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "401", description = "로그인 정보가 일치하지 않는 경우")
     })
     @PostMapping("/auth/login")
