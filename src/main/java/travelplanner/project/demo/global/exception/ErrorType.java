@@ -29,14 +29,22 @@ public enum ErrorType {
     // 페이지 찾을 수 없는 경우
     PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT-001", "페이지를 찾을 수 없습니다."),
 
+    // 유효하지 않은 요청일 경우
+    INVALID_REQUEST(HttpStatus.UNPROCESSABLE_ENTITY, "CLIENT-001", "페이지를 찾을 수 없습니다."),
 
     // ==================================================================================================================
 
 
     // 이미 이메일이 존재하는 경우
-    ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "USER-003", "이미 존재하는 이메일 입니다.");
+    ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "USER-003", "이미 존재하는 이메일 입니다."),
 
+    PLANNER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PLANNER-001", "권한이 부족하여 접근할 수 없습니다."),
 
+    PLANNER_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-002", "플래너가 존재하지 않습니다."),
+
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-003", "투두가 존재하지 않습니다."),
+
+    DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-004", "데이트가 존재하지 않습니다.");
     // ==================================================================================================================
 
 

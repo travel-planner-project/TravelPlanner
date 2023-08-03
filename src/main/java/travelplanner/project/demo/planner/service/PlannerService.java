@@ -6,7 +6,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Planner;
@@ -15,7 +16,6 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
-import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_PLANNER;
 @Service
 @Transactional(readOnly = true)
 //@AllArgsConstructor
@@ -31,11 +31,11 @@ public class PlannerService {
 //    }
 
     //플래너 삭제
-    public void deletePlanner(Long plannerId){
+    public void deletePlanner(Long plannerId) {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+                .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
         ;
 //        // 현재 사용자 id 갖고 오기
 //        Member currentMember = getCurrentMember();
@@ -65,7 +65,7 @@ public class PlannerService {
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new Exception(NOT_EXISTS_PLANNER));
+                .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
 
         // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
 //        Member currentMember = getCurrentMember();

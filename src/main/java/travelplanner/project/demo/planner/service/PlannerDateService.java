@@ -2,14 +2,14 @@ package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import travelplanner.project.demo.global.exception.Exception;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarUpdateRequest;
 import travelplanner.project.demo.planner.repository.PlannerDateRepository;
 
-import static travelplanner.project.demo.global.exception.ExceptionType.NOT_EXISTS_DATE;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class PlannerDateService {
 
         // 검증 로직 필요
         Calendar calendar = plannerDateRepository.findById(deleteRequest.getDateId())
-                .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
+                .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
         plannerDateRepository.delete(calendar);
     }
 
@@ -36,7 +36,7 @@ public class PlannerDateService {
 
         // 검증 로직 필요
         Calendar calendar = plannerDateRepository.findById(updateRequest.getDateId())
-                .orElseThrow(() -> new Exception(NOT_EXISTS_DATE));
+                .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
     }
 
 
