@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import travelplanner.project.demo.chat.domain.Chatting;
 import travelplanner.project.demo.member.Member;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,9 @@ public class Planner {
 //    @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="chat_id")
+    private Chatting chatting;
 
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
