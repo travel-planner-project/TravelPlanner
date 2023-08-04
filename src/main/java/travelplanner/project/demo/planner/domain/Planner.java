@@ -30,12 +30,16 @@ public class Planner {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travelGroup_id")
     private TravelGroup travelGroup;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatting_id")
+    private Planner planner;
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -50,10 +54,6 @@ public class Planner {
     @OneToMany(mappedBy = "planner")
 //    @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="chat_id")
-    private Chatting chatting;
 
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);

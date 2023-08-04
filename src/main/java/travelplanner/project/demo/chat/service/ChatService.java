@@ -7,6 +7,8 @@ import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.chat.dto.ChatRequest;
 import travelplanner.project.demo.chat.dto.ChatResponse;
+import travelplanner.project.demo.member.profile.Profile;
+import travelplanner.project.demo.member.profile.ProfileRepository;
 
 import java.util.Optional;
 
@@ -16,16 +18,21 @@ import java.util.Optional;
 public class ChatService {
 
 
-    public final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
-    public Object createChat(ChatRequest request) {
-        ChatResponse response = new ChatResponse();
-        response.setMessage(request.getMessage());
+    public ChatResponse sendChat(ChatRequest request) {
+        
+        // 유저 정보
+        Optional<Member> member = memberRepository.findByEmail(request.getUserId());
+        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
-        //이메일이 일치하는 유저 정보
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
-        response.setUserNickname(member.get().getUserNickname());
-        response.setEmail(member.get().getEmail());
-        return response;
+        ChatResponse chatResponse = new ChatResponse();
+
+        chatResponse.setMessage(request.getMessage());
+        chatResponse.setUserNickname(member.get().getUserNickname());
+        chatResponse.setProfileImgUrl(profile.getProfileImgUrl());
+
+        return chatResponse;
     }
 }
