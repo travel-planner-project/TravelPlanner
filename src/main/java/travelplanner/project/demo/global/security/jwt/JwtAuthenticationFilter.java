@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new TokenExpiredException();
 
         } catch (Exception e) {
-            // 토큰 검증 과정에서 예외가 발생하면, 예외를 던짐
+            e.printStackTrace();
             throw new AuthenticationException("Error verifying token.") {};
         }
 
