@@ -1,4 +1,4 @@
-package travelplanner.project.demo.chat.dto;
+package travelplanner.project.demo.planner.chat.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
