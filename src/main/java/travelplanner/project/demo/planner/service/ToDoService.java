@@ -14,9 +14,12 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.ToDo;
 import travelplanner.project.demo.planner.domain.ToDoEditor;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
-import travelplanner.project.demo.planner.dto.request.ToDoDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
+import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -25,6 +28,26 @@ public class ToDoService {
 
     private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
+
+    public List<ToDoResponse> getToDoList() {
+        List<ToDo> ToDoList = toDoRepository.findAll();
+        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
+        for (int i = 0; i < ToDoList.size(); i++){
+            ToDo toDo = ToDoList.get(i);
+            ToDoResponse toDoResponse = ToDoResponse.builder()
+                    .dateId(toDo.getId())
+                    .itemId(toDo.getCalendar().getId())
+                    .category(toDo.getCategory())
+                    .itemDate(toDo.getItemDate())
+                    .itemContent(toDo.getContent())
+                    .isPrivate(toDo.getIsPrivate())
+                    .budget(toDo.getBudget())
+                    .itemAddress(toDo.getItemAddress())
+                    .build();
+            toDoResponses.add(toDoResponse);
+        }
+        return toDoResponses;
+    }
 
     public void addTodo(ToDoCraeteRequest request) {
         ToDo todo = ToDo.builder()
@@ -67,9 +90,9 @@ public class ToDoService {
         toDo.edit(toDoEditor);
     }
 
-    public void delete(ToDoDeleteRequest deleteRequest) {
+    public void delete(Long deleteId) {
 
-        ToDo toDo = toDoRepository.findById(deleteRequest.getDateId())
+        ToDo toDo = toDoRepository.findById(deleteId)
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함

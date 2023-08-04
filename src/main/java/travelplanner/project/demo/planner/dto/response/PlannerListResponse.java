@@ -38,4 +38,6 @@ public class PlannerListResponse {
     public static List<PlannerListResponse> plannerListResponse (List<Planner> entityList){
         return entityList.stream().map(PlannerListResponse::new).collect(Collectors.toList());
     }
+
+    // 프로필 url 추가
 }
