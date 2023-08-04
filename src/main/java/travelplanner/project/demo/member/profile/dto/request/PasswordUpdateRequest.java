@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Schema(description = "비밀번호 변경 DTO")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
