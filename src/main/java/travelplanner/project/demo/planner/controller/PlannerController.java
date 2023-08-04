@@ -64,12 +64,13 @@ public class PlannerController {
         }
 
         plannerService.createPlanner(request);
-        return ResponseEntity.ok().body("Planner가 정상적으로 생성되었습니다. ");
+        return ResponseEntity.ok().body("플래너 생성 성공");
     }
 
     @Operation(summary = "플래너 수정")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "플래너 수정 성공"),
+            @ApiResponse(responseCode = "200", description = "플래너 수정 성공"),
+            @ApiResponse(responseCode = "422", description = "페이지를 찾을 수 없습니다."),
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
@@ -83,6 +84,6 @@ public class PlannerController {
         }
 
         plannerService.updatePlanner (request);
-        return ResponseEntity.ok().body("정상적으로 수정되었습니다.");
+        return ResponseEntity.ok().body("플래너 수정 성공");
     }
 }
