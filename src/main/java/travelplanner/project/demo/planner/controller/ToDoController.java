@@ -21,8 +21,10 @@ public class ToDoController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/pub/create/{plannerId}/{dateId}")
-    public void create(@DestinationVariable Long plannerId, @DestinationVariable Long dateId, ToDoCraeteRequest request) {
-        toDoService.addTodo(request);
+    public void create(@DestinationVariable Long plannerId, ToDoCraeteRequest request
+//            , @DestinationVariable Long dateId 이것 주석으로 해도 될지,..?
+    ) {
+        toDoService.addTodo(request);   // 시영지기 ㅇ;ㅂ략힌 toDo
         List<ToDoResponse> toDoList = toDoService.getToDoList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }

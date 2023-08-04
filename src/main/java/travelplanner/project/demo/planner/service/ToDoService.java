@@ -11,11 +11,13 @@ import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.ToDo;
 import travelplanner.project.demo.planner.domain.ToDoEditor;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
 
 import java.util.ArrayList;
@@ -28,12 +30,12 @@ public class ToDoService {
 
     private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public List<ToDoResponse> getToDoList() {
         List<ToDo> ToDoList = toDoRepository.findAll();
         ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
-        for (int i = 0; i < ToDoList.size(); i++){
-            ToDo toDo = ToDoList.get(i);
+        for (ToDo toDo : ToDoList){
             ToDoResponse toDoResponse = ToDoResponse.builder()
                     .dateId(toDo.getId())
                     .itemId(toDo.getCalendar().getId())
@@ -67,16 +69,21 @@ public class ToDoService {
         ToDo toDo = toDoRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
-        // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
+        // 현재 로그인한 사람의 id가져오기
+        Member currentMember = getCurrentMember();
 
-//        Member currentMember = getCurrentMember();
-//        for(Member x: GroupMember){
-//            Member member = GroupMember.getMemberName();
-//            if (!currentMember.equals(member)) {
-//                throw new Exception(TODO_NOT_AUTHORIZED);
-//            }
-//        }
+        // 그룹멤버 전체 가져오기
+        List<GroupMember> groupMemberList = groupMemberRepository.findAll();
 
+        // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
+        for(int i=0; i<groupMemberList.size(); i++){
+            GroupMember groupMember = groupMemberList.get(i);
+
+            if (!groupMember.getId().equals(currentMember.getId())) {
+                throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+            }
+        }
+        // 수정 로직 시작
         ToDoEditor.ToDoEditorBuilder editorBuilder = toDo.toEditor();
         ToDoEditor toDoEditor = editorBuilder
                 .itemTitle(editRequest.getItemTitle())
@@ -95,15 +102,20 @@ public class ToDoService {
         ToDo toDo = toDoRepository.findById(deleteId)
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
-        // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
+        // 현재 로그인한 사람의 id가져오기
+        Member currentMember = getCurrentMember();
 
-//        Member currentMember = getCurrentMember();
-//        for(Member x: GroupMember){
-//            Member member = GroupMember.getMemberName();
-//            if (!currentMember.equals(member)) {
-//                throw new Exception(TODO_NOT_AUTHORIZED);
-//            }
-//        }
+        // 그룹멤버 전체 가져오기
+        List<GroupMember> groupMemberList = groupMemberRepository.findAll();
+
+        // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
+        for(int i=0; i<groupMemberList.size(); i++){
+            GroupMember groupMember = groupMemberList.get(i);
+
+            if (!groupMember.getId().equals(currentMember.getId())) {
+                throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+            }
+        }
 
         toDoRepository.delete(toDo);
     }
