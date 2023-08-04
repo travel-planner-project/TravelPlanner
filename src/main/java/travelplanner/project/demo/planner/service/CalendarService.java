@@ -7,7 +7,11 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -39,5 +43,21 @@ public class CalendarService {
                 .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
     }
 
+    // 전체 Calendar 조회해서 response를 리스트로 리턴
+    public List<CalendarResponse> getCalendarList() {
+        List<Calendar> calendarList = calendarRepository.findAll();
+        ArrayList<CalendarResponse> calendarResponses = new ArrayList<>();
+        for(Calendar calendar : calendarList){
 
+            CalendarResponse calendarResponse = CalendarResponse.builder()
+                    .calendarId(calendar.getId())
+                    .eachDate(calendar.getEachDate())
+                    .createAt(calendar.getCreatedAt())
+                    .plannerId(calendar.getPlanner().getId())
+                    .build();
+            calendarResponses.add(calendarResponse);
+        }
+
+        return calendarResponses;
+    }
 }
