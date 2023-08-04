@@ -9,10 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,9 +28,7 @@ public class Chatting {
     @Column(name="chat_id")
     private Long id;
 
-    private String From;
-
-    private String to;
+    private String fromUser;
 
     private String message;
 
