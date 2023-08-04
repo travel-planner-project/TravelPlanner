@@ -20,7 +20,7 @@ public class ToDoController {
     private final ToDoService toDoService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/pub/create/{plannerId}/{dateId}")
+    @MessageMapping("/pub/create-todo/{plannerId}/{dateId}")
     public void create(@DestinationVariable Long plannerId, ToDoCraeteRequest request
 //            , @DestinationVariable Long dateId 이것 주석으로 해도 될지,..?
     ) {
@@ -29,14 +29,14 @@ public class ToDoController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/pub/update/{plannerId}")
+    @MessageMapping("/pub/update-todo/{plannerId}")
     public void edit(@DestinationVariable Long plannerId, ToDoEditRequest request) {
         toDoService.editTodo(plannerId, request);
         List<ToDoResponse> toDoList = toDoService.getToDoList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/pub/delete/{plannerId}")
+    @MessageMapping("/pub/delete-todo/{plannerId}")
     public void delete(@DestinationVariable Long plannerId) {
         toDoService.delete(plannerId);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);
