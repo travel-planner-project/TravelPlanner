@@ -56,7 +56,7 @@ public class ToDoService {
                 .itemTitle(request.getItemTitle())
                 .itemDate(request.getItemDate())
                 .category(request.getCategory())
-                .content(request.getContent())
+                .content(request.getItemContent())
                 .isPrivate(request.getIsPrivate())
                 .budget(request.getBudget())
                 .itemAddress(request.getItemAddress())

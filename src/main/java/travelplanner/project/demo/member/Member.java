@@ -33,6 +33,7 @@ public class Member {
     private Role role;
 
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Planner> planners = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)

@@ -27,7 +27,7 @@ public class TravelGroup {
 
     // 그룹 멤버 매핑
     @OneToMany(mappedBy = "travelGroup")
-//    @Builder.Default
+    @Builder.Default
     private List<GroupMember> groupMembers = new ArrayList<>();
 
 

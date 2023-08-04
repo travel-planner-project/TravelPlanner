@@ -51,7 +51,7 @@ public class Planner {
     private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "planner")
-//    @Builder.Default
+    @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
     public void mappingCalendar(Calendar calendar) {

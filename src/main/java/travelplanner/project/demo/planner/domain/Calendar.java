@@ -31,6 +31,7 @@ public class Calendar {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "calendar")
+    @Builder.Default
     private List<ToDo> toDoList = new ArrayList<>();
 
     public void mappingToDo(ToDo toDo) {

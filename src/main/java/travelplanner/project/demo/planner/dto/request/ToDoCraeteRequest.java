@@ -31,7 +31,7 @@ public class ToDoCraeteRequest {
     private Long budget;
 
     @Schema(description = "일정 내용", example = "감귤 타르트가 유명하다고 했어!")
-    private String content;
+    private String itemContent;
 
     @Schema(description = "공개여부", example = "false")
     private Boolean isPrivate;
