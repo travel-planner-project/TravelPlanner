@@ -76,9 +76,7 @@ public class ToDoService {
         List<GroupMember> groupMemberList = groupMemberRepository.findAll();
 
         // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
-        for(int i=0; i<groupMemberList.size(); i++){
-            GroupMember groupMember = groupMemberList.get(i);
-
+        for (GroupMember groupMember : groupMemberList) {
             if (!groupMember.getId().equals(currentMember.getId())) {
                 throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
             }
@@ -109,9 +107,8 @@ public class ToDoService {
         List<GroupMember> groupMemberList = groupMemberRepository.findAll();
 
         // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
-        for(int i=0; i<groupMemberList.size(); i++){
-            GroupMember groupMember = groupMemberList.get(i);
-
+        // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
+        for (GroupMember groupMember : groupMemberList) {
             if (!groupMember.getId().equals(currentMember.getId())) {
                 throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
             }
