@@ -47,6 +47,7 @@ public class PlannerService {
         return planners.map(PlannerListResponse::new);
     }
 
+
     // ** 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     public PlannerDetailResponse getDetailPlanner(Long plannerId) {
 

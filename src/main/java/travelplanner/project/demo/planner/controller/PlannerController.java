@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,7 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
+import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.service.PlannerService;
 
 
@@ -30,11 +33,12 @@ public class PlannerController {
 
     private final PlannerService plannerService;
 
-//    @GetMapping
-//    //플래너 리스트 조회
-//    public Page<PlannerListResponse> getPlannerList(@RequestParam Long userId, final Pageable pageable) {
-//        return plannerService.findPlannerListByUserId(userId, pageable).map(PlannerListResponse::new);
-//    }
+    @GetMapping
+    public Page<PlannerListResponse> getPlannerList(
+            @RequestParam Long userId, final Pageable pageable) {
+        return plannerService.getPlannerListByUserId(pageable, userId);
+    }
+
 
 //    플래너 세부 조회
 //    @GetMapping("/{id}")
