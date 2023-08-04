@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import travelplanner.project.demo.chat.domain.Chatting;
 import travelplanner.project.demo.member.Member;
 
 import java.time.LocalDateTime;
@@ -29,12 +30,16 @@ public class Planner {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travelGroup_id")
     private TravelGroup travelGroup;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chatting_id")
+    private Planner planner;
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -49,7 +54,6 @@ public class Planner {
     @OneToMany(mappedBy = "planner")
 //    @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
-
 
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);

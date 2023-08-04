@@ -3,17 +3,11 @@ package travelplanner.project.demo.member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import travelplanner.project.demo.member.Auth.Role;
 import travelplanner.project.demo.member.profile.Profile;
-import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.Planner;
-import travelplanner.project.demo.planner.domain.TravelGroup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity

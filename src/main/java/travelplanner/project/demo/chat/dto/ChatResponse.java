@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatResponse {
 
-    private String message;
     private String userNickname;
-    private String email;
+    private String profileImgUrl;
+    private String message;
 }

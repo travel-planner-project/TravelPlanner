@@ -15,14 +15,14 @@ public class ChatController {
     private SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
 
-    @MessageMapping("/chat/{plannerId}")
+    @MessageMapping("pub/chat/{plannerId}")
     public void sendChat(
             @DestinationVariable Long plannerId,
             ChatRequest request
     ) throws Exception{
         messagingTemplate.convertAndSend(
                 "/sub/chat/" + plannerId
-                , chatService.createChat(request)
+                , chatService.sendChat(request)
         );
 
     }
