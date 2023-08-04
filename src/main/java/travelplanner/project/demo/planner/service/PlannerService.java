@@ -17,7 +17,7 @@ import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
-import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
@@ -132,7 +132,7 @@ public class PlannerService {
     }
 
     @Transactional
-    public void updatePlanner(PlannerUpdateRequest request) {
+    public void updatePlanner(PlannerEditRequest request) {
 
         Long plannerId = request.getPlannerId();
 

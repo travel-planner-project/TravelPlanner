@@ -17,7 +17,7 @@ import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
-import travelplanner.project.demo.planner.dto.request.PlannerUpdateRequest;
+import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.service.PlannerService;
 
 
@@ -75,7 +75,7 @@ public class PlannerController {
     })
     @PatchMapping
     public ResponseEntity updatePlanner(
-            @RequestBody @Validated PlannerUpdateRequest request, BindingResult result) {
+            @RequestBody @Validated PlannerEditRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
             throw  new ApiException(ErrorType.INVALID_REQUEST);
