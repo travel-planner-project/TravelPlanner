@@ -28,12 +28,12 @@ public class GroupMember {
 
     // 여행그룹 연관관계 매핑
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "travelGroup_id")
-    private TravelGroup travelGroup;
+    @JoinColumn(name = "planner_id")
+    private Planner planner;
 
 
-    public void mappingTravelGroup(TravelGroup travelGroup) {
-        this.travelGroup = travelGroup;
-        travelGroup.mappingGroupMember(this);
+    public void mappingTravelGroup(Planner planner) {
+        this.planner = planner;
+        planner.mappingGroupMember(this);
     }
 }

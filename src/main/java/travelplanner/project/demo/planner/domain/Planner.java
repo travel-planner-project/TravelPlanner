@@ -32,13 +32,13 @@ public class Planner {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "travelGroup_id")
-    private TravelGroup travelGroup;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "travelGroup_id")
+//    private TravelGroup travelGroup;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatting_id")
-    private Planner planner;
+    @OneToMany(mappedBy = "planner")
+    @Builder.Default
+    private List<GroupMember> groupMembers = new ArrayList<>();
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -85,5 +85,9 @@ public class Planner {
     //날짜 삭제
     public void deleteDate(Calendar calendar){
         this.calendars.remove(calendar);
+    }
+
+    public void mappingGroupMember(GroupMember groupMember) {
+        groupMembers.add(groupMember);
     }
 }
