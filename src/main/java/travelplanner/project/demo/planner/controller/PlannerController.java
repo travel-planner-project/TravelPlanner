@@ -35,19 +35,14 @@ public class PlannerController {
     private final PlannerService plannerService;
 
     @GetMapping
-    public Page<PlannerListResponse> getPlannerList(Pageable pageable) {
-        return plannerService.getPlannerListByUserId(pageable);
+    public Page<PlannerListResponse> getPlannerList(Pageable pageable, @RequestParam(required = false) String email) {
+        return plannerService.getPlannerListByUserIdOrEmail(pageable, email);
     }
 
-    @GetMapping("/{plannerId}")
-    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId) {
-        return plannerService.getPlannerDetailById(plannerId);
+    @GetMapping("/{order}")
+    public PlannerDetailResponse getPlannerDetail(@PathVariable Long order, @RequestParam(required = false) String email) {
+        return plannerService.getPlannerDetailByOrderAndEmail(order, email);
     }
-
-
-//    플래너 세부 조회
-//    @GetMapping("/{id}")
-//    public ResponseEntity<>
 
     @DeleteMapping
     //플래너 삭제

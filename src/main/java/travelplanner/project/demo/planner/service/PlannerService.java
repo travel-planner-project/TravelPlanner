@@ -26,9 +26,8 @@ import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,35 +43,58 @@ public class PlannerService {
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
-    public Page<PlannerListResponse> getPlannerListByUserId (Pageable pageable){
-
-        // 현재 사용자의 이메일을 가져옴
+    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email) {
         String currentEmail = getCurrentMember().getEmail();
+        List<Planner> planners;
 
-        // 그룹 멤버 리포지토리에서 현재 사용자의 이메일과 일치하는 모든 그룹 멤버를 찾음
-        List<GroupMember> groupMembersWithCurrentEmail = groupMemberRepository.findByEmail(currentEmail);
+        /*
+        이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+        특정 유저의 이메일을 담고 요청: 해당 유저의 플래너만 보여주되, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+         */
 
-        // 각 그룹 멤버가 속한 플래너를 가져와 결과 리스트에 담음
-        List<Planner> plannersOfCurrentUser = new ArrayList<>();
-        for (GroupMember groupMember : groupMembersWithCurrentEmail) {
-            Planner planner = groupMember.getPlanner();
-            plannersOfCurrentUser.add(planner);
+        // 현재 사용자가 그룹 멤버인지 확인
+        List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
+
+        if (email == null) {
+            // 이메일 값을 보내지 않았을 때, 모든 유저의 플래너 조회
+            planners = plannerRepository.findAll();
+        } else {
+            // 특정 사용자의 플래너 조회
+            Member member = memberRepository.findByEmail(email)
+                    .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+            planners = plannerRepository.findByMember(member);
         }
 
+        // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
+        planners = planners.stream()
+                .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
+                .collect(Collectors.toList());
+
         int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), plannersOfCurrentUser.size());
-        Page<Planner> plannerPage = new PageImpl<>(plannersOfCurrentUser.subList(start, end), pageable, plannersOfCurrentUser.size());
+        int end = Math.min((start + pageable.getPageSize()), planners.size());
+        Page<Planner> plannerPage = new PageImpl<>(planners.subList(start, end), pageable, planners.size());
 
         return plannerPage.map(PlannerListResponse::new);
     }
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     //
-    public PlannerDetailResponse getPlannerDetailById(Long plannerId) {
-        Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
+    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long order, String email) {
+        Member member;
+        if (email != null) {
+            member = memberRepository.findByEmail(email)
+                    .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+        } else {
+            member = getCurrentMember();
+        }
+        List<Planner> planners = plannerRepository.findByMember(member);
 
-        // DTO에 값을 채워넣기
+        if (order < 0 || order >= planners.size()) {
+            throw new ApiException(ErrorType.PAGE_NOT_FOUND);
+        }
+
+        Planner planner = planners.get(order.intValue());
+
         PlannerDetailResponse response = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
@@ -81,10 +103,9 @@ public class PlannerService {
                 .endDate(planner.getEndDate())
                 .build();
 
-        // TODO: 그룹멤버 정보와 채팅부분을 추가로 채워넣기
-
         return response;
     }
+
 
     @Transactional
     //플래너 삭제
