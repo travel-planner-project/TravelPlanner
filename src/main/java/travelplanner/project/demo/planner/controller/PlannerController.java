@@ -45,11 +45,9 @@ public class PlannerController {
 
     @DeleteMapping
     //플래너 삭제
-    public void deletePlanner(PlannerDeleteRequest request) {
+    public void deletePlanner(@RequestBody PlannerDeleteRequest request) {
         plannerService.deletePlanner(request);
     }
-
-
 
     @Operation(summary = "플래너 생성")
     @ApiResponses(value = {

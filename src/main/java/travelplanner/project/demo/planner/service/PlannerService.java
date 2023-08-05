@@ -1,6 +1,7 @@
 package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 //@AllArgsConstructor
 @RequiredArgsConstructor
+@Slf4j
 public class PlannerService {
 
     private final MemberRepository memberRepository;
@@ -84,11 +86,13 @@ public class PlannerService {
         return plannerDetailResponse;
     }
 
+    @Transactional
     //플래너 삭제
     public void deletePlanner(PlannerDeleteRequest plannerDeleteRequest) {
 
 
         Long plannerId = plannerDeleteRequest.getPlannerId();
+        log.info("Received delete request for plannerId: {}", plannerDeleteRequest.getPlannerId());
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
@@ -113,9 +117,10 @@ public class PlannerService {
             }
 
         } else {
-
             // 플래너를 만든사람 == currentUser : 플래너를 아예 삭제한다.
-            // 이때 관련된 그룹멤버도 전부 삭제가 되어야 하는데.. 어떻게 하는게 좋을까요?
+            // 이때 플래너와 관련된 그룹멤버도 전부 삭제
+
+            groupMemberRepository.deleteAllByPlannerId(plannerId);
             plannerRepository.delete(planner);
         }
     }
@@ -123,9 +128,10 @@ public class PlannerService {
     @Transactional
     public void createPlanner(PlannerCreateRequest request) {
 
-        System.out.println("request.getPlanTitle() = " + request.getPlanTitle());
-        System.out.println("request.getIsPrivate() = " + request.getIsPrivate());
-        System.out.println("request.getPlanTitle().getClass() = " + request.getPlanTitle().getClass());
+        log.info("request.getPlanTitle() = {}", request.getPlanTitle());
+        log.info("request.getIsPrivate() = {}", request.getIsPrivate());
+        log.info("request.getPlanTitle().getClass() = {}", request.getPlanTitle().getClass());
+
         Planner createPlanner = Planner.builder()
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
@@ -145,6 +151,7 @@ public class PlannerService {
                 .groupMemberType(GroupMemberType.HOST)
                 .profileImageUrl(profile.getProfileImgUrl())
                 .userNickname(member.getUserNickname())
+                .planner(createPlanner)
                 .build();
 
         groupMemberRepository.save(groupMember);
