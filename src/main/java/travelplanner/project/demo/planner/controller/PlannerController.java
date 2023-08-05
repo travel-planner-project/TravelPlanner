@@ -34,9 +34,8 @@ public class PlannerController {
     private final PlannerService plannerService;
 
     @GetMapping
-    public Page<PlannerListResponse> getPlannerList(
-            @RequestParam Long userId, final Pageable pageable) {
-        return plannerService.getPlannerListByUserId(pageable, userId);
+    public Page<PlannerListResponse> getPlannerList(Pageable pageable) {
+        return plannerService.getPlannerListByUserId(pageable);
     }
 
 
@@ -63,6 +62,7 @@ public class PlannerController {
             @RequestBody @Validated PlannerCreateRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
+            System.out.println("PlannerController.createPlanner");
                 throw new ApiException(ErrorType.INVALID_REQUEST);
 //            return ResponseEntity.badRequest().body("Planner 생성에 실패했습니다. Invalid request입니다. ");
         }
