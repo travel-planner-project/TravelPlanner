@@ -64,18 +64,16 @@ public class PlannerService {
         Page<Planner> plannerPage = new PageImpl<>(plannersOfCurrentUser.subList(start, end), pageable, plannersOfCurrentUser.size());
 
         return plannerPage.map(PlannerListResponse::new);
-
     }
 
-
-    // ** 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
-    public PlannerDetailResponse getDetailPlanner(Long plannerId) {
-
-        // 조회했을 때 플래너가 존재하지 않을 경우
+    // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
+    //
+    public PlannerDetailResponse getPlannerDetailById(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        PlannerDetailResponse plannerDetailResponse = PlannerDetailResponse.builder()
+        // DTO에 값을 채워넣기
+        PlannerDetailResponse response = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
                 .isPrivate(planner.getIsPrivate())
@@ -83,7 +81,9 @@ public class PlannerService {
                 .endDate(planner.getEndDate())
                 .build();
 
-        return plannerDetailResponse;
+        // TODO: 그룹멤버 정보와 채팅부분을 추가로 채워넣기
+
+        return response;
     }
 
     @Transactional

@@ -20,6 +20,7 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
+import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.service.PlannerService;
 
@@ -36,6 +37,11 @@ public class PlannerController {
     @GetMapping
     public Page<PlannerListResponse> getPlannerList(Pageable pageable) {
         return plannerService.getPlannerListByUserId(pageable);
+    }
+
+    @GetMapping("/{plannerId}")
+    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId) {
+        return plannerService.getPlannerDetailById(plannerId);
     }
 
 
