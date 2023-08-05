@@ -22,7 +22,6 @@ import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
-import travelplanner.project.demo.planner.repository.TravelGroupRepository;
 
 
 import java.util.List;
@@ -36,7 +35,6 @@ public class PlannerService {
 
     private final MemberRepository memberRepository;
     private final PlannerRepository plannerRepository;
-    private final TravelGroupRepository travelGroupRepository;
     private final ProfileRepository profileRepository;
     private final GroupMemberRepository groupMemberRepository;
 
@@ -62,6 +60,7 @@ public class PlannerService {
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
                 .build();
+
         return plannerDetailResponse;
     }
 
@@ -81,18 +80,17 @@ public class PlannerService {
         // 플래너를 만든사람 /= currentUser: 플래너의 그룹에서 currentUser 제거
         if (!planner.getMember().getId().equals(currentMember.getId())) {
 
-            TravelGroup travelGroup = travelGroupRepository.findTravelGroupByPlannerId(plannerId);
-            List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByTravelGroupId(travelGroup.getId());
+            // 플래너 인덱스를 기준으로 그룹 멤버들을 가져옴
+            List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 
+            // 그 그룹멤버들 중에서 현재 유저와 맞는 멤버일 경우 삭제
             for (GroupMember groupMember : groupMembers) {
 
                 if (groupMember.getId().equals(currentMember.getId())) {
-                    travelGroup.deleteGroupMember(groupMember);
+                    groupMemberRepository.delete(groupMember);
                     break;
                 }
             }
-
-            travelGroupRepository.save(travelGroup);
 
         } else {
 
@@ -113,23 +111,19 @@ public class PlannerService {
 
         plannerRepository.save(createPlanner);
 
-        // 플래너 생성시 여행 그룹도 같이 생성
-        TravelGroup travelGroup = new TravelGroup();
-
         // 플래너 만든 사람은 HOST 로 처음에 들어가 있어야 함
         // 플래너 만든 사람은 현재 로그인 한 사람
         Member member = getCurrentMember();
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         GroupMember groupMember = GroupMember.builder()
-                .id(member.getId())
+                .email(member.getEmail())
                 .groupMemberType(GroupMemberType.HOST)
                 .profileImageUrl(profile.getProfileImgUrl())
                 .userNickname(member.getUserNickname())
                 .build();
 
-        travelGroup.createGroupMember(groupMember);
-        travelGroupRepository.saveAndFlush(travelGroup);
+        groupMemberRepository.save(groupMember);
     }
 
     @Transactional

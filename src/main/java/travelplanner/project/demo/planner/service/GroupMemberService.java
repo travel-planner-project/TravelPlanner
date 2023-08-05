@@ -11,15 +11,13 @@ import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.GroupMemberType;
-import travelplanner.project.demo.planner.domain.TravelGroup;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberSearchRequest;
 import travelplanner.project.demo.planner.dto.response.GroupMemberCreateResponse;
 import travelplanner.project.demo.planner.dto.response.GroupMemberSearchResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
-import travelplanner.project.demo.planner.repository.TravelGroupRepository;
+import travelplanner.project.demo.planner.repository.PlannerRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,9 +26,10 @@ import java.util.Optional;
 public class GroupMemberService {
 
     private GroupMemberRepository groupMemberRepository;
-    private TravelGroupRepository travelGroupRepository;
     private MemberRepository memberRepository;
     private ProfileRepository profileRepository;
+    private PlannerRepository plannerRepository;
+
 
     // 그룹 멤버 검색
     public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
@@ -62,17 +61,13 @@ public class GroupMemberService {
         if (groupMemberRepository.findGroupMemberById(member.get().getId()) == null) {
 
             GroupMember groupMember = GroupMember.builder()
-                    .id(member.get().getId())
+                    .email(member.get().getEmail())
                     .userNickname(member.get().getUserNickname())
                     .profileImageUrl(profile.getProfileImgUrl())
                     .groupMemberType(GroupMemberType.MEMBER)
                     .build();
 
             groupMemberRepository.save(groupMember);
-
-            TravelGroup travelGroup = travelGroupRepository.findTravelGroupByPlannerId(plannerId);
-            travelGroup.createGroupMember(groupMember);
-            travelGroupRepository.save(travelGroup);
 
             GroupMemberCreateResponse response = new GroupMemberCreateResponse();
             response.setGroupMemberId(groupMember.getId());
@@ -88,20 +83,9 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 삭제
-    public void deleteGroupMember(Long plannerId, Long groupMemberId) {
+    public void deleteGroupMember(Long groupMemberId) {
 
-        TravelGroup travelGroup = travelGroupRepository.findTravelGroupByPlannerId(plannerId);
-
-        List<GroupMember> groupMembers = travelGroup.getGroupMembers();
-
-        for (GroupMember groupMember : groupMembers) {
-
-            if (groupMember.getId().equals(groupMemberId)) {
-                travelGroup.deleteGroupMember(groupMember);
-                break;
-            }
-        }
-
-        travelGroupRepository.save(travelGroup);
+        GroupMember groupMember = groupMemberRepository.findGroupMemberById(groupMemberId);
+        groupMemberRepository.delete(groupMember);
     }
 }

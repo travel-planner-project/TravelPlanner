@@ -14,7 +14,11 @@ import lombok.NoArgsConstructor;
 public class GroupMember {
 
     @Id
+    @GeneratedValue
     private Long id;
+
+    // 이메일
+    private String email;
 
     // 닉네임
     private String userNickname;

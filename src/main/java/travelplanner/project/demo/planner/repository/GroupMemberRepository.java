@@ -8,5 +8,6 @@ import java.util.List;
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
 
     GroupMember findGroupMemberById(Long groupMemberId);
-    List<GroupMember> findGroupMemberByTravelGroupId(Long travelGroupId);
+
+    List<GroupMember> findGroupMemberByPlannerId(Long PlannerId);
 }
