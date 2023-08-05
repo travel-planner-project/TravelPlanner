@@ -2,6 +2,7 @@ package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,9 +42,27 @@ public class PlannerService {
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
-    public Page<PlannerListResponse> getPlannerListByUserId (Pageable pageable, Long userId){
-        Page<Planner> planners = plannerRepository.findPlannerByMemberId(userId, pageable);
-        return planners.map(PlannerListResponse::new);
+    public Page<PlannerListResponse> getPlannerListByUserId (Pageable pageable){
+
+        // 현재 사용자의 이메일을 가져옴
+        String currentEmail = getCurrentMember().getEmail();
+
+        // 그룹 멤버 리포지토리에서 현재 사용자의 이메일과 일치하는 모든 그룹 멤버를 찾음
+        List<GroupMember> groupMembersWithCurrentEmail = groupMemberRepository.findByEmail(currentEmail);
+
+        // 각 그룹 멤버가 속한 플래너를 가져와 결과 리스트에 담음
+        List<Planner> plannersOfCurrentUser = new ArrayList<>();
+        for (GroupMember groupMember : groupMembersWithCurrentEmail) {
+            Planner planner = groupMember.getPlanner();
+            plannersOfCurrentUser.add(planner);
+        }
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), plannersOfCurrentUser.size());
+        Page<Planner> plannerPage = new PageImpl<>(plannersOfCurrentUser.subList(start, end), pageable, plannersOfCurrentUser.size());
+
+        return plannerPage.map(PlannerListResponse::new);
+
     }
 
 
@@ -100,13 +120,16 @@ public class PlannerService {
         }
     }
 
-
+    @Transactional
     public void createPlanner(PlannerCreateRequest request) {
 
+        System.out.println("request.getPlanTitle() = " + request.getPlanTitle());
+        System.out.println("request.getIsPrivate() = " + request.getIsPrivate());
+        System.out.println("request.getPlanTitle().getClass() = " + request.getPlanTitle().getClass());
         Planner createPlanner = Planner.builder()
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
-
+                .member(getCurrentMember())
                 // todo 이곳 말고 캘린더를 생성하는 서비스에서 플래너 sratdate, enddate 업데이트해주기
                 .build();
 
