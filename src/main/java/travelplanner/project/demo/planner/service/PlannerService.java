@@ -95,6 +95,7 @@ public class PlannerService {
         } else {
 
             // 플래너를 만든사람 == currentUser : 플래너를 아예 삭제한다.
+            // 이때 관련된 그룹멤버도 전부 삭제가 되어야 하는데.. 어떻게 하는게 좋을까요?
             plannerRepository.delete(planner);
         }
     }
