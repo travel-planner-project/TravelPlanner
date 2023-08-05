@@ -20,11 +20,7 @@ public class ChatController {
             @DestinationVariable Long plannerId,
             ChatRequest request
     ) throws Exception{
-        messagingTemplate.convertAndSend(
-                "/sub/chat/" + plannerId
-                , chatService.sendChat(request, plannerId)
-        );
-
+        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, chatService.sendChat(request, plannerId));
     }
 
 }
