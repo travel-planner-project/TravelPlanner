@@ -23,6 +23,7 @@ public class Chatting {
 
     @Id
     @GeneratedValue
+    @Column(name="chat_id")
     private Long id;
 
     private String userNickname;
@@ -33,7 +34,6 @@ public class Chatting {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "planner_id")
+    @OneToOne(mappedBy = "chatting")
     private Planner planner;
 }

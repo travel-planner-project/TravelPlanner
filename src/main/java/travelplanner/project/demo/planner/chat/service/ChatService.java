@@ -35,7 +35,7 @@ public class ChatService {
         
         // 유저 정보
         Member member = memberRepository.findByEmail(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         // 프로필
         Profile profile = profileRepository.findProfileByMemberId(member.getId());

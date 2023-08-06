@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import travelplanner.project.demo.member.Member;
+import travelplanner.project.demo.planner.chat.domain.Chatting;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -54,6 +55,9 @@ public class Planner {
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chatting chatting;
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
     }
