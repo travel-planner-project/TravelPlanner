@@ -34,7 +34,6 @@ public class CalendarService {
     private final GroupMemberRepository groupMemberRepository;
 
     public void createDate(Long plannerId, CalendarCreateRequest createRequest) {
-// TODO 현재 로그인한 사람이 플래너의 그룹멤버에 포함되어있는지 확인해야함.
 
         Planner planner = validatePlannerAndUserAccess(plannerId);
 
@@ -99,7 +98,7 @@ public class CalendarService {
     }
 
     // 플래너와 사용자에 대한 검증
-    private Planner validatePlannerAndUserAccess(Long plannerId) {
+    protected Planner validatePlannerAndUserAccess(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
 
@@ -110,12 +109,11 @@ public class CalendarService {
         if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(currentEmail))) {
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
-
         return planner;
     }
 
     // 캘린더에 대한 검증
-    private Calendar validateCalendarAccess(Planner planner, Long updateId) {
+    protected Calendar validateCalendarAccess(Planner planner, Long updateId) {
 
         Calendar calendar = calendarRepository.findById(updateId)
                 .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));

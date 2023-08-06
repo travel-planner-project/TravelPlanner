@@ -11,9 +11,7 @@ import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.domain.GroupMember;
-import travelplanner.project.demo.planner.domain.ToDo;
-import travelplanner.project.demo.planner.domain.ToDoEditor;
+import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
@@ -31,6 +29,7 @@ public class ToDoService {
     private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final CalendarService calendarService;
 
     public List<ToDoResponse> getToDoList() {
         List<ToDo> ToDoList = toDoRepository.findAll();
@@ -51,8 +50,14 @@ public class ToDoService {
         return toDoResponses;
     }
 
-    public void addTodo(ToDoCraeteRequest request) {
+    public void createTodo(Long plannerId, Long dateId,ToDoCraeteRequest request) {
+        // 플래너와 사용자에 대한 검증
+        Planner planner = calendarService.validatePlannerAndUserAccess(plannerId);
+        // 캘린더에 대한 검증
+        Calendar calendar = calendarService.validateCalendarAccess(planner, dateId);
+
         ToDo todo = ToDo.builder()
+                .calendar(calendar)
                 .itemTitle(request.getItemTitle())
                 .itemDate(request.getItemDate())
                 .category(request.getCategory())
