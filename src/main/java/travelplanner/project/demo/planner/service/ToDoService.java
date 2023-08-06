@@ -3,9 +3,6 @@ package travelplanner.project.demo.planner.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
@@ -26,10 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ToDoService {
 
-    private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
     private final GroupMemberRepository groupMemberRepository;
-    private final CalendarService calendarService;
+    private final ValidatingService validatingService;
 
     public List<ToDoResponse> getToDoList() {
         List<ToDo> ToDoList = toDoRepository.findAll();
@@ -53,9 +49,9 @@ public class ToDoService {
     public void createTodo(Long plannerId, Long dateId,
                            ToDoCraeteRequest request) {
         // 플래너와 사용자에 대한 검증
-        Planner planner = calendarService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
         // 캘린더에 대한 검증
-        Calendar calendar = calendarService.validateCalendarAccess(planner, dateId);
+        Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
 
         ToDo todo = ToDo.builder()
                 .calendar(calendar)
@@ -81,7 +77,7 @@ public class ToDoService {
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // 현재 로그인한 사람의 id가져오기
-        Member currentMember = getCurrentMember();
+        Member currentMember = validatingService.getCurrentMember();
 
         // 그룹멤버 전체 가져오기
         List<GroupMember> groupMemberList = groupMemberRepository.findAll();
@@ -112,7 +108,7 @@ public class ToDoService {
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // 현재 로그인한 사람의 id가져오기
-        Member currentMember = getCurrentMember();
+        Member currentMember = validatingService.getCurrentMember();
 
         // 그룹멤버 전체 가져오기
         List<GroupMember> groupMemberList = groupMemberRepository.findAll();
@@ -128,11 +124,6 @@ public class ToDoService {
         toDoRepository.delete(toDo);
     }
 
-    private Member getCurrentMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-    }
+
 }
 
