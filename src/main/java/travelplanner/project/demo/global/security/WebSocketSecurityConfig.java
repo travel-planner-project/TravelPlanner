@@ -12,7 +12,7 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
         messages
                 .nullDestMatcher().permitAll()
                 .simpDestMatchers("/pub/**").authenticated()
-                .simpSubscribeDestMatchers("/sub/**").permitAll()
+                .simpSubscribeDestMatchers("/sub/**").authenticated()
                 .anyMessage().denyAll();
     }
 
