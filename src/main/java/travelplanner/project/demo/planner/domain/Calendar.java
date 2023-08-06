@@ -48,4 +48,13 @@ public class Calendar {
         planner.mappingCalendar(this);
     }
 
+    public void edit(CalendarEditor calendarEditor){ // Member member
+        eachDate = calendarEditor.getEachDate();
+    }
+
+    public CalendarEditor.CalendarEditorBuilder toEditor() {
+        return CalendarEditor.builder()
+                .eachDate(eachDate);
+    }
+
 }

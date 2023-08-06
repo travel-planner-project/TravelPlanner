@@ -21,10 +21,9 @@ public class CalendarController {
 
     @MessageMapping("/pub/create-date/{plannerId}")
     public void createDate(@DestinationVariable Long plannerId, CalendarCreateRequest request) {
-        calendarService.createDate(request);
+        calendarService.createDate(plannerId, request);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, calendarList);
-
     }
 
     @MessageMapping("/pub/update-date/{plannerId}")
