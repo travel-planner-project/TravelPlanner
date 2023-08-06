@@ -50,7 +50,8 @@ public class ToDoService {
         return toDoResponses;
     }
 
-    public void createTodo(Long plannerId, Long dateId,ToDoCraeteRequest request) {
+    public void createTodo(Long plannerId, Long dateId,
+                           ToDoCraeteRequest request) {
         // 플래너와 사용자에 대한 검증
         Planner planner = calendarService.validatePlannerAndUserAccess(plannerId);
         // 캘린더에 대한 검증
@@ -70,8 +71,13 @@ public class ToDoService {
     }
 
     @Transactional
-    public void editTodo(Long id, ToDoEditRequest editRequest) {
-        ToDo toDo = toDoRepository.findById(id)
+    public void editTodo(
+            Long plannerId, Long dateId, Long toDoId,
+            ToDoEditRequest editRequest
+    ) {
+
+        // todo todo 검증 필요함
+        ToDo toDo = toDoRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
         // 현재 로그인한 사람의 id가져오기

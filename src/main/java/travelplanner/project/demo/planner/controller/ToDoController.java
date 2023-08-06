@@ -30,9 +30,12 @@ public class ToDoController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/pub/update-todo/{plannerId}")
-    public void edit(@DestinationVariable Long plannerId, ToDoEditRequest request) {
-        toDoService.editTodo(plannerId, request);
+    @MessageMapping("/pub/update-todo/{plannerId}/{dateId}/{toDoId}")
+    public void edit(@DestinationVariable Long plannerId,
+                     @DestinationVariable Long dateId,
+                     @DestinationVariable Long toDoId,
+                     ToDoEditRequest request) {
+        toDoService.editTodo(plannerId, dateId, toDoId, request);
         List<ToDoResponse> toDoList = toDoService.getToDoList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }

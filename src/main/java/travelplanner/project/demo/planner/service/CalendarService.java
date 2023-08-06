@@ -98,7 +98,7 @@ public class CalendarService {
     }
 
     // 플래너와 사용자에 대한 검증
-    protected Planner validatePlannerAndUserAccess(Long plannerId) {
+    public Planner validatePlannerAndUserAccess(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
 
@@ -113,7 +113,7 @@ public class CalendarService {
     }
 
     // 캘린더에 대한 검증
-    protected Calendar validateCalendarAccess(Planner planner, Long updateId) {
+    public Calendar validateCalendarAccess(Planner planner, Long updateId) {
 
         Calendar calendar = calendarRepository.findById(updateId)
                 .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
