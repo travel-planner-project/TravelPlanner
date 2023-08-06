@@ -1,16 +1,23 @@
 package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.member.Member;
+import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.CalendarEditor;
+import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
+import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import java.util.ArrayList;
@@ -23,6 +30,8 @@ public class CalendarService {
 
     private final CalendarRepository calendarRepository;
     private final PlannerRepository plannerRepository;
+    private final MemberRepository memberRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public void createDate(Long plannerId, CalendarCreateRequest createRequest) {
 
@@ -50,11 +59,30 @@ public class CalendarService {
         calendarRepository.delete(calendar);
     }
 
-    public void updateDate(Long updateId, CalendarEditRequest updateRequest) {
+    public void updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest) {
 
-        // 검증 로직 필요
+        // 조회했을 때 플래너가 존재하지 않을 경우
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
+
+        // 현재 사용자의 이메일 가져오기
+        String currentEmail = getCurrentMember().getEmail();
+        List<GroupMember> groupMembers =
+                groupMemberRepository.findGroupMemberByPlannerId(plannerId);
+
+        // 현재 사용자가 그룹 멤버에 포함되어 있는지 확인
+        if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(currentEmail))) {
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+        }
+
+        // 조회했을 때 캘린더가 존재하지 않을 경우
         Calendar calendar = calendarRepository.findById(updateId)
                 .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
+
+        // 캘린더가 해당 플래너에 속해 있는지 검증
+        if (!planner.getCalendars().contains(calendar)) {
+            throw new ApiException(ErrorType.DATE_NOT_AUTHORIZED);
+        }
 
         CalendarEditor.CalendarEditorBuilder editorBuilder = calendar.toEditor();
         CalendarEditor calendarEditor = editorBuilder
@@ -79,5 +107,12 @@ public class CalendarService {
         }
 
         return calendarResponses;
+    }
+
+    private Member getCurrentMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 현재 사용자의 email 얻기
+        return memberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
     }
 }

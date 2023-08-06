@@ -178,7 +178,6 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        // TODO 플래너 엔티티를 지울 수 있는지에 대한 자격조건 확인해야함
         Member currentMember = getCurrentMember();
 
         // 플래너를 생성한 사람이 아닐 경우
