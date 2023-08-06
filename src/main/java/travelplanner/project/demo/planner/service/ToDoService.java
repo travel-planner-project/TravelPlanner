@@ -72,22 +72,13 @@ public class ToDoService {
             ToDoEditRequest editRequest
     ) {
 
-        // todo todo 검증 필요함
-        ToDo toDo = toDoRepository.findById(plannerId)
-                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
+        // 플래너와 사용자에 대한 검증
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        // 캘린더에 대한 검증
+        Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
+        // 투두에 대한 검증
+        ToDo toDo = validatingService.validateToDoAccess(calendar, toDoId);
 
-        // 현재 로그인한 사람의 id가져오기
-        Member currentMember = validatingService.getCurrentMember();
-
-        // 그룹멤버 전체 가져오기
-        List<GroupMember> groupMemberList = groupMemberRepository.findAll();
-
-        // 현재 로그인한 사람이 그룹멤버에 포함되지 않는다면
-        for (GroupMember groupMember : groupMemberList) {
-            if (!groupMember.getUserNickname().equals(currentMember.getUserNickname())) {
-                throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
-            }
-        }
         // 수정 로직 시작
         ToDoEditor.ToDoEditorBuilder editorBuilder = toDo.toEditor();
         ToDoEditor toDoEditor = editorBuilder

@@ -46,7 +46,9 @@ public enum ErrorType {
 
     DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANNER-004", "데이트가 존재하지 않습니다."),
 
-    DATE_NOT_AUTHORIZED(HttpStatus.NOT_FOUND, "DATE-001", "플래너에 포함된 데이트가 아니기때문에 접근할 수 없습니다."),
+    DATE_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "DATE-001", "플래너에 포함된 데이트가 아니기때문에 접근할 수 없습니다."),
+
+    TODO_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "TODO-001", "데이트에 포함된 투두가 아니기때문에 접근할 수 없습니다."),
 
     GROUP_MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "PLANNER-05", "그룹 멤버가 이미 존재합니다.");
 
