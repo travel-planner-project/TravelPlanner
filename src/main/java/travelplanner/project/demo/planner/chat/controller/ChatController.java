@@ -17,12 +17,12 @@ public class ChatController {
     private SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
 
-    @MessageMapping("/chat/{plannerId}")
+    @MessageMapping("/pub/chat/{plannerId}")
     public void sendChat(
             @DestinationVariable Long plannerId,
             ChatRequest request
     ) throws Exception{
-        messagingTemplate.convertAndSend("/planner-message/" + plannerId, chatService.sendChat(request, plannerId));
+        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, chatService.sendChat(request, plannerId));
     }
 
 }
