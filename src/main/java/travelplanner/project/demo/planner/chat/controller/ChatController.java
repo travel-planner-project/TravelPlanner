@@ -1,6 +1,7 @@
 package travelplanner.project.demo.planner.chat.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,6 +13,7 @@ import travelplanner.project.demo.planner.chat.service.ChatService;
 @RequiredArgsConstructor
 public class ChatController {
 
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
 
