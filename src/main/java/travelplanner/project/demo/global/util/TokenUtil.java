@@ -100,8 +100,4 @@ public class TokenUtil {
         }
         return null;
     }
-
-    public String getJWTTokenFromWebSocketHeader(final StompHeaderAccessor accessor) {
-        return accessor.getFirstNativeHeader("Authorization");
-    }
 }

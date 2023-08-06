@@ -29,20 +29,29 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        String accessToken = tokenUtil.getJWTTokenFromWebSocketHeader(accessor);
+        String accessToken = accessor.getFirstNativeHeader("Authorization");
+        log.info("Received STOMP Message: " + message);
+        log.info("All headers: " + accessor.toNativeHeaderMap());
+        log.info("Access Token: " + accessToken);
+
 
         // websocket 연결 시 헤더의 JWT 토큰 유효성 검증
-        if (StompCommand.MESSAGE == accessor.getCommand()) {
-            if (tokenUtil.isValidToken(accessToken)) {
-                String principal = tokenUtil.getEmail(accessToken);
-                log.info("어세스토큰: " + accessToken);
-                log.info("유저 이메일: " + principal);
+        if (StompCommand.SEND == accessor.getCommand()) {
 
-                // JWT 토큰이 유효하면, 사용자 정보를 연결 세션에 추가
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            try {
+                if (tokenUtil.isValidToken(accessToken)) {
+                    String principal = tokenUtil.getEmail(accessToken);
+                    log.info("어세스토큰: " + accessToken);
+                    log.info("유저 이메일: " + principal);
 
+                    // JWT 토큰이 유효하면, 사용자 정보를 연결 세션에 추가
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
