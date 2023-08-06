@@ -35,8 +35,8 @@ public class CalendarService {
 
     public void createDate(Long plannerId, CalendarCreateRequest createRequest) {
 // TODO 현재 로그인한 사람이 플래너의 그룹멤버에 포함되어있는지 확인해야함.
-        Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND)); // 플래너를 찾을 수 없는 경우 예외 발생
+
+        Planner planner = validatePlannerAndUserAccess(plannerId);
 
         Calendar buildRequest = Calendar.builder()
                 .eachDate(createRequest.getEachDate())
@@ -48,10 +48,14 @@ public class CalendarService {
 
     public void deleteDate(Long plannerId, Long deleteId){
 
-        Calendar calendar = validateUserAccess(plannerId, deleteId);
+        // 반환값 무시하고 검증만 함
+        Planner planner = validatePlannerAndUserAccess(plannerId);
+        Calendar calendar = validateCalendarAccess(planner, deleteId);
 
-        // Planner 객체에서 Calendar 객체를 제거
-        Planner planner = calendar.getPlanner();
+        // 캘린더에서 플래너를 갖고 옴
+        planner = calendar.getPlanner();
+
+        // 플래너의 calendar 리스트에서 캘린더 제거
         planner.getCalendars().remove(calendar);
 
         calendarRepository.delete(calendar);
@@ -59,7 +63,8 @@ public class CalendarService {
 
     public void updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest) {
 
-        Calendar calendar = validateUserAccess(plannerId, updateId);
+        Planner planner = validatePlannerAndUserAccess(plannerId);
+        Calendar calendar = validateCalendarAccess(planner, updateId);
 
         CalendarEditor.CalendarEditorBuilder editorBuilder = calendar.toEditor();
         CalendarEditor calendarEditor = editorBuilder
@@ -93,26 +98,28 @@ public class CalendarService {
                 .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
     }
 
-    private Calendar validateUserAccess(Long plannerId, Long updateId) {
-        // 조회했을 때 플래너가 존재하지 않을 경우
+    // 플래너와 사용자에 대한 검증
+    private Planner validatePlannerAndUserAccess(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
 
-        // 현재 사용자의 이메일 가져오기
         String currentEmail = getCurrentMember().getEmail();
         List<GroupMember> groupMembers =
                 groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 
-        // 현재 사용자가 그룹 멤버에 포함되어 있는지 확인
         if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(currentEmail))) {
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
-        // 조회했을 때 캘린더가 존재하지 않을 경우
+        return planner;
+    }
+
+    // 캘린더에 대한 검증
+    private Calendar validateCalendarAccess(Planner planner, Long updateId) {
+
         Calendar calendar = calendarRepository.findById(updateId)
                 .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
 
-        // 캘린더가 해당 플래너에 속해 있는지 검증
         if (!planner.getCalendars().contains(calendar)) {
             throw new ApiException(ErrorType.DATE_NOT_AUTHORIZED);
         }
