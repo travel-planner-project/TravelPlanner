@@ -31,5 +31,4 @@ public class PlannerDetailResponse {
     // Todo 그룹멤버 정보 전부 추가 List<그룹멤버>
     // Todo 채팅부분 추가해야함
 
-
 }

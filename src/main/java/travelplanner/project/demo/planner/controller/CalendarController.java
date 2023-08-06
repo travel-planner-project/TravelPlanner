@@ -27,17 +27,16 @@ public class CalendarController {
     }
 
     @MessageMapping("/pub/update-date/{plannerId}")
-    public void updateDate(@DestinationVariable Long plannerId, CalendarEditRequest request) {
-        calendarService.updateDate(plannerId, request);
+    public void updateDate(@DestinationVariable Long plannerId, Long dateId, CalendarEditRequest request) {
+        calendarService.updateDate(plannerId, dateId, request);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 calendarList);
-
     }
 
     @MessageMapping("/pub/delete-date/{plannerId}")
     public void deleteDate(@DestinationVariable Long plannerId, Long dateId) {
-        calendarService.deleteDate(plannerId);
+        calendarService.deleteDate(plannerId, dateId);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 calendarList);
