@@ -26,16 +26,19 @@ public class CalendarController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, calendarList);
     }
 
-    @MessageMapping("/pub/update-date/{plannerId}")
-    public void updateDate(@DestinationVariable Long plannerId, Long dateId, CalendarEditRequest request) {
+    @MessageMapping("/pub/update-date/{plannerId}/{dateId}")
+    public void updateDate(@DestinationVariable Long plannerId,
+                           @DestinationVariable Long dateId,
+                           CalendarEditRequest request) {
         calendarService.updateDate(plannerId, dateId, request);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 calendarList);
     }
 
-    @MessageMapping("/pub/delete-date/{plannerId}")
-    public void deleteDate(@DestinationVariable Long plannerId, Long dateId) {
+    @MessageMapping("/pub/delete-date/{plannerId}/{dateId}")
+    public void deleteDate(@DestinationVariable Long plannerId,
+                           @DestinationVariable Long dateId) {
         calendarService.deleteDate(plannerId, dateId);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
