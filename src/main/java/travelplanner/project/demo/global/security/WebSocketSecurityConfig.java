@@ -11,8 +11,8 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
                 .nullDestMatcher().permitAll()
-                .simpDestMatchers("/pub/**").permitAll()
-                .simpSubscribeDestMatchers("/sub/**").permitAll()
+                .simpDestMatchers("/pub/**").authenticated()
+                .simpSubscribeDestMatchers("/sub/**").authenticated()
                 .anyMessage().denyAll();
     }
 
