@@ -121,28 +121,19 @@ public class PlannerService {
 
         Member currentMember = getCurrentMember();
 
-        // 플래너를 생성한 사람이 아닐 경우
-        // 플래너를 만든사람 /= currentUser: 플래너의 그룹에서 currentUser 제거
-        if (!planner.getMember().getId().equals(currentMember.getId())) {
 
-            // 플래너 인덱스를 기준으로 그룹 멤버들을 가져옴
-            List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
+        // 플래너를 생성한 사람일 경우
+        // 플래너를 만든사람 == currentUser : 플래너를 아예 삭제한다.
+        if (planner.getMember().getId().equals(currentMember.getId())) {
 
-            // 그 그룹멤버들 중에서 현재 유저와 맞는 멤버일 경우 삭제
-            for (GroupMember groupMember : groupMembers) {
-
-                if (groupMember.getId().equals(currentMember.getId())) {
-                    groupMemberRepository.delete(groupMember);
-                    break;
-                }
-            }
-
-        } else {
-            // 플래너를 만든사람 == currentUser : 플래너를 아예 삭제한다.
             // 이때 플래너와 관련된 그룹멤버도 전부 삭제
-
             groupMemberRepository.deleteAllByPlannerId(plannerId);
             plannerRepository.delete(planner);
+
+        } else {
+            // 플래너를 생성한 사람이 아닐 경우
+            // 플래너를 만든사람 /= currentUser: 삭제 권한 없음
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
     }
 
@@ -193,7 +184,7 @@ public class PlannerService {
         // 플래너를 생성한 사람이 아닐 경우
         if (!planner.getMember().getId().equals(currentMember.getId())) {
 
-            throw new ApiException(ErrorType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
 
         PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
