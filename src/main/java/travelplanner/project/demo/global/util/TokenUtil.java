@@ -3,6 +3,7 @@ package travelplanner.project.demo.global.util;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
@@ -98,5 +99,9 @@ public class TokenUtil {
             return authorizationHeader;
         }
         return null;
+    }
+
+    public String getJWTTokenFromWebSocketHeader(final StompHeaderAccessor accessor) {
+        return accessor.getFirstNativeHeader("Authorization");
     }
 }

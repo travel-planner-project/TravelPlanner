@@ -50,7 +50,6 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/ws").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
