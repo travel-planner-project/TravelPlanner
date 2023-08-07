@@ -34,6 +34,7 @@ public class ToDoService {
             ToDoResponse toDoResponse = ToDoResponse.builder()
                     .dateId(toDo.getId())
                     .itemId(toDo.getCalendar().getId())
+                    .itemTitle(toDo.getItemTitle())
                     .category(toDo.getCategory())
                     .itemDate(toDo.getItemDate())
                     .itemContent(toDo.getContent())
