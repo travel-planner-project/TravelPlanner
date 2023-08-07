@@ -31,7 +31,7 @@ public class Calendar {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "calendar")
+    @OneToMany(mappedBy = "calendar", fetch = FetchType.EAGER)
     @Builder.Default
     private List<ToDo> toDoList = new ArrayList<>();
 
@@ -40,7 +40,7 @@ public class Calendar {
     }
 
     // 플래너 연관관계 매핑
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
