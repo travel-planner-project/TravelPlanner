@@ -34,7 +34,7 @@ public class ChatService {
     public ChatResponse sendChat(ChatRequest request, Long plannerId) {
         
         // 유저 정보
-        Member member = memberRepository.findByEmail(request.getUserId())
+        Member member = memberRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         // 프로필
