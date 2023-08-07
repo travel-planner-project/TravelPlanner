@@ -54,12 +54,12 @@ public class CalendarService {
 
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
         Calendar calendar = validatingService.validateCalendarAccess(planner, updateId);
-
         CalendarEditor.CalendarEditorBuilder editorBuilder = calendar.toEditor();
         CalendarEditor calendarEditor = editorBuilder
                 .eachDate(updateRequest.getEachDate())
                 .build();
         calendar.edit(calendarEditor);
+        calendarRepository.updateEachDate(updateId, updateRequest.getEachDate());
     }
 
     // 전체 Calendar 조회해서 response를 리스트로 리턴
