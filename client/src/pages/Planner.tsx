@@ -3,16 +3,16 @@ import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
 import { getCurrentUserPlanner } from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'
-import AddPlanModal from '../components/Planner/AddPlanModal'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { modalState, userInfo } from '../store/store'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../store/store'
 import Modal from '../components/Common/Modal/Modal'
 import useModal from '../hooks/useModal'
+import useRouter from '../hooks/useRouter'
 
 type PlannerViewProps = {
   add: () => void
   edit: () => void
-  linkToDetail: () => void
+  linkToDetail: (id: number) => void
   plannerList: PlannerDataType | null
   // isModalOpened: boolean
   modal: boolean
@@ -58,7 +58,7 @@ function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerVie
                 <PlanElement
                   key={planner.plannerId}
                   planner={planner}
-                  linkToDetail={linkToDetail}
+                  linkToDetail={() => linkToDetail(planner.plannerId)}
                 />
               )
             })}
@@ -84,9 +84,9 @@ type PlannerDataType = {
 }[]
 
 function Planner() {
-  const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
+  const { routeTo } = useRouter()
 
-  // const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
+  const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
 
   const { modalData, openModal } = useModal()
   const { email } = useRecoilValue(userInfo)
@@ -104,14 +104,13 @@ function Planner() {
       onSubmit: onSubmit,
     })
   }
-  // const handleCloseModal = () => {
-  //   setIsModalOpened(false)
-  // }
+
   const handleEditButtonClick = () => {
     console.log('편집하기')
   }
-  const handlePlannerClick = () => {
+  const handlePlannerClick = (id: number) => {
     // 해당 element의 id 값을 가진 엔드포인트로 연결
+    routeTo(`/plandetail/${id}`)
     console.log('플래너 상세 페이지')
   }
 
@@ -133,9 +132,7 @@ function Planner() {
       edit={handleEditButtonClick}
       linkToDetail={handlePlannerClick}
       plannerList={plannerList}
-      // isModalOpened={modalData?.isOpen}
       modal={modalData.isOpen}
-      // modalClose={handleCloseModal}
     />
   )
 }

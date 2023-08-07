@@ -12,6 +12,9 @@ import {
   ScheduleProps,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
+import { useParams } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../store/store'
 
 // 높이 수정중
 
@@ -134,8 +137,10 @@ function PlanDetailView({
 }
 
 function PlanDetail() {
-  const plannerId = 39 // 임시 설정. useParams()로 받아오는 게 좋을 듯.
-  const userId = 14 // 임시 설정. 로그인 기능 구현 후, 로그인한 유저의 id로 설정.
+  const { planId } = useParams()
+  const { userId } = useRecoilValue(userInfo)
+  // const plannerId = 39 // 임시 설정. useParams()로 받아오는 게 좋을 듯.
+  // const userId = 14 // 임시 설정. 로그인 기능 구현 후, 로그인한 유저의 id로 설정.
   const clientRef = useRef<StompJs.Client | null>(null)
   // 채팅 관련
   const [chatModal, setChatModal] = useState(false)
@@ -288,7 +293,7 @@ function PlanDetail() {
         }
       }
       // 구독하기
-      client.subscribe(`/sub/planner-message/${plannerId}`, callback)
+      client.subscribe(`/sub/planner-message/${planId}`, callback)
     }
 
     // 브로커에서 에러가 발생했을 때 호출되는 함수
@@ -314,7 +319,7 @@ function PlanDetail() {
       const msg = JSON.stringify(newChatObj)
       // 4. 메시지 보내기(퍼블리시)
       if (clientRef.current) {
-        clientRef.current.publish({ destination: `/pub/chat/${plannerId}`, body: msg })
+        clientRef.current.publish({ destination: `/pub/chat/${planId}`, body: msg })
       }
     }
     setNewChat('')
