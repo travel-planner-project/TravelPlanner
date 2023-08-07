@@ -1,5 +1,6 @@
 package travelplanner.project.demo.planner.service;
 
+import io.lettuce.core.ScriptOutputType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +26,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GroupMemberService {
 
-    private GroupMemberRepository groupMemberRepository;
-    private MemberRepository memberRepository;
-    private ProfileRepository profileRepository;
-    private PlannerRepository plannerRepository;
+    private final GroupMemberRepository groupMemberRepository;
+    private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
+    private final PlannerRepository plannerRepository;
 
 
     // 그룹 멤버 검색
@@ -52,6 +53,7 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 추가
+    @Transactional
     public GroupMemberCreateResponse addGroupMember(GroupMemberCreateRequest request, Long plannerId) {
 
         // 그룹멤버 찾기
@@ -59,7 +61,6 @@ public class GroupMemberService {
         Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
         if (groupMemberRepository.findGroupMemberById(member.get().getId()) == null) {
-
             GroupMember groupMember = GroupMember.builder()
                     .email(member.get().getEmail())
                     .userNickname(member.get().getUserNickname())

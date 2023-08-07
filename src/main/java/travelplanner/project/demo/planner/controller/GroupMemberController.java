@@ -1,19 +1,23 @@
 package travelplanner.project.demo.planner.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberSearchRequest;
 import travelplanner.project.demo.planner.service.GroupMemberService;
 
+@Controller
 @RequiredArgsConstructor
 public class GroupMemberController {
 
-    private SimpMessagingTemplate messagingTemplate;
+
+    private final SimpMessagingTemplate messagingTemplate;
     private final GroupMemberService groupMemberService;
     private final TokenUtil tokenUtil;
 
