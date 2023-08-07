@@ -20,7 +20,7 @@ public class ChatController {
     private final ChatService chatService;
     private final TokenUtil tokenUtil;
 
-    @MessageMapping("/pub/chat/{plannerId}")
+    @MessageMapping("/chat/{plannerId}")
     public void sendChat(
             @DestinationVariable Long plannerId,
             ChatRequest request,

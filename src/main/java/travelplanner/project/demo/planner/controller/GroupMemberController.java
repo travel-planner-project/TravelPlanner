@@ -17,7 +17,7 @@ public class GroupMemberController {
     private final GroupMemberService groupMemberService;
     private final TokenUtil tokenUtil;
 
-    @MessageMapping("pub/search-member/{plannerId}")
+    @MessageMapping("/search-member/{plannerId}")
     public void searchGroupMember(
             @DestinationVariable Long plannerId,
             GroupMemberSearchRequest request,
@@ -28,7 +28,7 @@ public class GroupMemberController {
         messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, groupMemberService.searchMember(request));
     }
 
-    @MessageMapping("pub/add-member/{plannerId}")
+    @MessageMapping("/add-member/{plannerId}")
     public void addGroupMember(
             @DestinationVariable Long plannerId,
             GroupMemberCreateRequest request,

@@ -30,7 +30,7 @@ public class CalendarController {
     private final ValidatingService validatingService;
     private final TokenUtil tokenUtil;
 
-    @MessageMapping("/pub/create-date/{plannerId}")
+    @MessageMapping("/create-date/{plannerId}")
     public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String athorization, CalendarCreateRequest request) {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
@@ -42,7 +42,7 @@ public class CalendarController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, calendarList);
     }
 
-    @MessageMapping("/pub/update-date/{plannerId}/{dateId}")
+    @MessageMapping("/update-date/{plannerId}/{dateId}")
     public void updateDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
                            CalendarEditRequest request,
@@ -55,7 +55,7 @@ public class CalendarController {
                 calendarList);
     }
 
-    @MessageMapping("/pub/delete-date/{plannerId}/{dateId}")
+    @MessageMapping("/delete-date/{plannerId}/{dateId}")
     public void deleteDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
                            @Header("Authorization") String athorization) {

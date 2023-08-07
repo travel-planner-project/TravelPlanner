@@ -23,7 +23,7 @@ public class ToDoController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final TokenUtil tokenUtil;
 
-    @MessageMapping("/pub/create-todo/{plannerId}/{dateId}")
+    @MessageMapping("/create-todo/{plannerId}/{dateId}")
     public void create(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        ToDoCraeteRequest request,
@@ -35,7 +35,7 @@ public class ToDoController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/pub/update-todo/{plannerId}/{dateId}/{toDoId}")
+    @MessageMapping("/update-todo/{plannerId}/{dateId}/{toDoId}")
     public void edit(@DestinationVariable Long plannerId,
                      @DestinationVariable Long dateId,
                      @DestinationVariable Long toDoId,
@@ -48,7 +48,7 @@ public class ToDoController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/pub/delete-todo/{plannerId}")
+    @MessageMapping("/delete-todo/{plannerId}")
     public void delete(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        @DestinationVariable Long toDoId,
