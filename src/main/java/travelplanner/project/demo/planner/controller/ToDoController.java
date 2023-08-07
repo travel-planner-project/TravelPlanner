@@ -48,7 +48,7 @@ public class ToDoController {
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
     }
 
-    @MessageMapping("/delete-todo/{plannerId}")
+    @MessageMapping("/delete-todo/{plannerId}/{dateId}/{todoId}")
     public void delete(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        @DestinationVariable Long toDoId,
