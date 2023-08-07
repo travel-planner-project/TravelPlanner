@@ -39,9 +39,9 @@ public class PlannerController {
         return plannerService.getPlannerListByUserIdOrEmail(pageable, email);
     }
 
-    @GetMapping("/{order}")
-    public PlannerDetailResponse getPlannerDetail(@PathVariable Long order, @RequestParam(required = false) String email) {
-        return plannerService.getPlannerDetailByOrderAndEmail(order, email);
+    @GetMapping("/{plannerId}")
+    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId) {
+        return plannerService.getPlannerDetailByOrderAndEmail(plannerId);
     }
 
     @DeleteMapping

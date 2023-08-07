@@ -47,6 +47,7 @@ public class PlannerService {
     // planner detail조회에서 캘린더 목록 및 투두 목록을 갖고오기 위해 추가
     private final CalendarService calendarService;
     private final ToDoService toDoService;
+    private final ValidatingService validatingService;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
@@ -86,21 +87,12 @@ public class PlannerService {
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     //
-    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long order, String email) {
-        Member member;
-        if (email != null) {
-            member = memberRepository.findByEmail(email)
-                    .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
-        } else {
-            member = getCurrentMember();
-        }
-        List<Planner> planners = plannerRepository.findByMember(member);
+    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
 
-        if (order < 0 || order >= planners.size()) {
-            throw new ApiException(ErrorType.PAGE_NOT_FOUND);
-        }
 
-        Planner planner = planners.get(order.intValue());
+        // 접근 권한 확인
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+
 
         // Planner에 해당하는 캘린더 리스트를 가져옴
         List<CalendarResponse> calendarResponses = calendarService.getCalendarList(planner.getId());
