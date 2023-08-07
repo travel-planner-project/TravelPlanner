@@ -1,20 +1,22 @@
-import axios from 'axios'
+import { AxiosError } from 'axios'
+import { axiosInstance } from './instance'
 
-const accessToken = import.meta.env.VITE_DEV_ACCESS_TOKEN
-const refreshToken = import.meta.env.VITE_DEV_REFRESH_TOKEN
-
-const getCurrentUserPlanner = async (url: string) => {
-  const headers = {
-    Access_Token: accessToken,
-    Refresh_Token: refreshToken,
-  }
+export const getCurrentUserPlanner = async (email: string) => {
   try {
-    const response = await axios.get(url, { headers })
-    return response.data
-  } catch (error) {
-    console.error('Error fetching planner:', error)
-    throw error
+    const response = await axiosInstance.get(`/planner?email=${email}`)
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
   }
 }
 
-export default getCurrentUserPlanner
+export const createNewPlan = async (email: string) => {
+  try {
+    const response = await axiosInstance.post(`/planner?email=${email}`)
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}

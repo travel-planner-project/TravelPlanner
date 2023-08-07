@@ -32,7 +32,7 @@ function AddPlanModal({ modalClose }: AddPlanModalProps) {
               type='text'
             />
           </label>
-          <label htmlFor='start-date' className={styles.label}>
+          {/* <label htmlFor='start-date' className={styles.label}>
             여행 시작일
             <input
               id='start-date'
@@ -51,7 +51,7 @@ function AddPlanModal({ modalClose }: AddPlanModalProps) {
               className={styles.tripEndDate}
               type='date'
             />
-          </label>
+          </label> */}
         </div>
         <div className={styles.buttons}>
           <button className={styles.okBtn} type='submit'>

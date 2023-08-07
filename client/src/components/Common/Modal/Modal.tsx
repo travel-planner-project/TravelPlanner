@@ -24,8 +24,9 @@ function ModalContent({
 
   const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    // const { status, data } =  await onSubmit(inputValue)
-    // if(status !== 200) { alert(data.message) }
+    onSubmit(inputValue)
+    // const { status, data } = await onSubmit(inputValue)
+    // if (status !== 200) { alert(data.message) }
 
     onClose()
   }
