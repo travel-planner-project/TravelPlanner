@@ -51,9 +51,6 @@ public class CalendarController {
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         calendarService.updateDate(plannerId, dateId, request);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
-        for (CalendarResponse entity : calendarList) {
-            System.out.println("-----"+entity);
-        }
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 calendarList);
     }
