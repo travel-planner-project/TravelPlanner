@@ -1,4 +1,4 @@
-package travelplanner.project.demo.planner.chat.service;
+package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,17 +7,16 @@ import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.chat.ChattingRepository;
-import travelplanner.project.demo.planner.chat.domain.Chatting;
-import travelplanner.project.demo.planner.chat.dto.ChatRequest;
-import travelplanner.project.demo.planner.chat.dto.ChatResponse;
+import travelplanner.project.demo.planner.repository.ChattingRepository;
+import travelplanner.project.demo.planner.domain.Chatting;
+import travelplanner.project.demo.planner.dto.request.ChatRequest;
+import travelplanner.project.demo.planner.dto.response.ChatResponse;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

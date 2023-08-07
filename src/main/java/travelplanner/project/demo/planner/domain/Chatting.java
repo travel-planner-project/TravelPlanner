@@ -1,4 +1,4 @@
-package travelplanner.project.demo.planner.chat.domain;
+package travelplanner.project.demo.planner.domain;
 
 
 import jakarta.persistence.*;

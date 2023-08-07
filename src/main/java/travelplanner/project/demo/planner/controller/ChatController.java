@@ -1,4 +1,4 @@
-package travelplanner.project.demo.planner.chat.controller;
+package travelplanner.project.demo.planner.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.util.TokenUtil;
-import travelplanner.project.demo.planner.chat.dto.ChatRequest;
-import travelplanner.project.demo.planner.chat.service.ChatService;
+import travelplanner.project.demo.planner.dto.request.ChatRequest;
+import travelplanner.project.demo.planner.service.ChatService;
 
 @RestController
 @RequiredArgsConstructor

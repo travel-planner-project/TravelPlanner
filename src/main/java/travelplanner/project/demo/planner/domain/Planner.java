@@ -9,7 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.planner.chat.domain.Chatting;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
