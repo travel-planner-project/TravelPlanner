@@ -80,4 +80,21 @@ public class CalendarService {
         return calendarResponses;
     }
 
+    // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
+    public List<CalendarResponse> getCalendarList(Long plannerId) {
+
+        List<Calendar> calendarList = calendarRepository.findByPlannerId(plannerId);
+        ArrayList<CalendarResponse> calendarResponses = new ArrayList<>();
+
+        for (Calendar calendar : calendarList) {
+            CalendarResponse calendarResponse = CalendarResponse.builder()
+                    .calendarId(calendar.getId())
+                    .eachDate(calendar.getEachDate())
+                    .createAt(calendar.getCreatedAt())
+                    .plannerId(calendar.getPlanner().getId())
+                    .build();
+            calendarResponses.add(calendarResponse);
+        }
+        return calendarResponses;
+    }
 }

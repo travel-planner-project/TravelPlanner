@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import travelplanner.project.demo.planner.domain.Calendar;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,5 +21,13 @@ public class CalendarResponse {
     @CreatedDate
     private LocalDateTime createAt;
     private Long plannerId;
+    private List<ToDoResponse> toDoList;
 
+    public static class CalendarResponseBuilder {
+        private List<ToDoResponse> toDoList;
+        public CalendarResponseBuilder toDoList(List<ToDoResponse> toDoList) {
+            this.toDoList = toDoList;
+            return this;
+        }
+    }
 }

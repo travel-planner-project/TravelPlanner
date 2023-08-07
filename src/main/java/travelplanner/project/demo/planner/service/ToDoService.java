@@ -46,6 +46,29 @@ public class ToDoService {
         return toDoResponses;
     }
 
+    // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
+    public List<ToDoResponse> getToDoList(Long calendarId) {
+
+        List<ToDo> toDoList = toDoRepository.findByCalendarId(calendarId);
+        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
+        for (ToDo toDo : toDoList) {
+            ToDoResponse toDoResponse = ToDoResponse.builder()
+                    .dateId(toDo.getId())
+                    .itemId(toDo.getCalendar().getId())
+                    .category(toDo.getCategory())
+                    .itemDate(toDo.getItemDate())
+                    .itemContent(toDo.getContent())
+                    .isPrivate(toDo.getIsPrivate())
+                    .budget(toDo.getBudget())
+                    .itemAddress(toDo.getItemAddress())
+                    .build();
+            toDoResponses.add(toDoResponse);
+        }
+        return toDoResponses;
+    }
+
+
+
     public void createTodo(Long plannerId, Long dateId,
                            ToDoCraeteRequest request) {
         // 플래너와 사용자에 대한 검증

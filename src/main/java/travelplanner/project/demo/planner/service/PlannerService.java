@@ -20,12 +20,15 @@ import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
+import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,10 @@ public class PlannerService {
     private final PlannerRepository plannerRepository;
     private final ProfileRepository profileRepository;
     private final GroupMemberRepository groupMemberRepository;
+
+    // planner detail조회에서 캘린더 목록 및 투두 목록을 갖고오기 위해 추가
+    private final CalendarService calendarService;
+    private final ToDoService toDoService;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
@@ -95,12 +102,31 @@ public class PlannerService {
 
         Planner planner = planners.get(order.intValue());
 
+        // Planner에 해당하는 캘린더 리스트를 가져옴
+        List<CalendarResponse> calendarResponses = calendarService.getCalendarList(planner.getId());
+
+        // 각 캘린더에 해당하는 투두 리스트를 가져와 CalendarResponse에 추가
+
+        List<CalendarResponse> updatedCalendarResponses = new ArrayList<>();
+        for (CalendarResponse calendarResponse : calendarResponses) {
+            List<ToDoResponse> toDoResponses = toDoService.getToDoList(calendarResponse.getCalendarId());
+            CalendarResponse updatedCalendarResponse = CalendarResponse.builder()
+                    .calendarId(calendarResponse.getCalendarId())
+                    .eachDate(calendarResponse.getEachDate())
+                    .createAt(calendarResponse.getCreateAt())
+                    .plannerId(calendarResponse.getPlannerId())
+                    .toDoList(toDoResponses)
+                    .build();
+            updatedCalendarResponses.add(updatedCalendarResponse);
+        }
+
         PlannerDetailResponse response = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
                 .isPrivate(planner.getIsPrivate())
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
+                .calendars(updatedCalendarResponses)
                 .build();
 
         return response;

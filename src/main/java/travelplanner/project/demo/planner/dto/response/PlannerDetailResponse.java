@@ -5,6 +5,7 @@ import lombok.*;
 import travelplanner.project.demo.planner.domain.Planner;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "플래너 상세 응답 DTO")
 @Getter
@@ -27,6 +28,9 @@ public class PlannerDetailResponse {
 
     @Schema(description = "여행 끝 날짜", example = "7/20")
     private LocalDateTime endDate;
+
+    @Schema(description = "캘린더 집합", example = "")
+    private List<CalendarResponse> calendars;
 
     // Todo 그룹멤버 정보 전부 추가 List<그룹멤버>
     // Todo 채팅부분 추가해야함
