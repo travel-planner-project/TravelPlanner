@@ -13,6 +13,7 @@ import travelplanner.project.demo.member.Member;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DynamicInsert
@@ -50,7 +51,7 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner")
+    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
@@ -93,4 +94,6 @@ public class Planner {
     public void mappingGroupMember(GroupMember groupMember) {
         groupMembers.add(groupMember);
     }
+
+
 }
