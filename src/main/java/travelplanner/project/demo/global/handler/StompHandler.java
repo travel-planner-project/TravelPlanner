@@ -40,7 +40,6 @@ public class StompHandler implements ChannelInterceptor {
 
         // websocket 연결 시 헤더의 JWT 토큰 유효성 검증
         if (SimpMessageType.CONNECT.equals(accessor.getMessageType())
-        || SimpMessageType.SUBSCRIBE.equals(accessor.getMessageType())
         || SimpMessageType.MESSAGE.equals(accessor.getMessageType())) {
             log.info("accessor: " + accessor.getMessageType());
 
