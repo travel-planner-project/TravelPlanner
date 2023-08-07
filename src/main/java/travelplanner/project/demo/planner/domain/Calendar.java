@@ -40,7 +40,7 @@ public class Calendar {
     }
 
     // 플래너 연관관계 매핑
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
