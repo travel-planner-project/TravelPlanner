@@ -3,16 +3,21 @@ package travelplanner.project.demo.global.util;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.exception.TokenExpiredException;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TokenUtil {
 
     private final RedisUtil redisUtil;
@@ -99,5 +104,23 @@ public class TokenUtil {
             return authorizationHeader;
         }
         return null;
+    }
+
+    // 웹소켓에서 받은 토큰을 전달
+    public void getJWTTokenFromWebSocket(String authorization) {
+
+        String principal = getEmail(authorization);
+        log.info("어세스토큰: " + authorization);
+        log.info("유저 이메일: " + principal);
+
+        // JWT 토큰이 유효하면, 사용자 정보를 연결 세션에 추가
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(principal, authorization, new ArrayList<>());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 현재 사용자의 email 얻기
+        log.info("authentication: " + authentication);
+        log.info("username: " + username);
     }
 }
