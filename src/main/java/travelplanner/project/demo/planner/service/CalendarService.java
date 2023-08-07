@@ -10,6 +10,7 @@ import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class CalendarService {
         Calendar buildRequest = Calendar.builder()
                 .eachDate(createRequest.getEachDate())
                 .planner(planner)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         calendarRepository.save(buildRequest);
