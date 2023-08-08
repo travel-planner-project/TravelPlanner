@@ -86,10 +86,13 @@ public class PlannerService {
     //
     public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
 
-
         // 접근 권한 확인
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
-
+        // 만약, 플래너가 isPrivate == false 인 경우, 그룹멤버가 아니더라도 모든 사람이 볼 수 있어야 합니다.
+        // 만약, 프랠너가 isPrivate == true 인 경우, 그룹멤버만 볼 수 있어야 합니다.
+        Planner planner = plannerRepository.findPlannerById(plannerId);
+        if (planner.getIsPrivate()) {
+            validatingService.validatePlannerAndUserAccess(plannerId); // 그룹멤버만 볼 수 있도록 하는 메서드
+        }
 
         // Planner에 해당하는 캘린더 리스트를 가져옴
         List<CalendarResponse> calendarResponses = calendarService.getCalendarList(planner.getId());
