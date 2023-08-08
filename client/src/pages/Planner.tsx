@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
-import { getCurrentUserPlanner } from '../apis/planner'
+import { createNewPlan, getCurrentUserPlanner } from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../store/store'
@@ -78,9 +78,10 @@ function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerVie
 }
 
 type PlannerDataType = {
-  userId: number
+  // userId: number
   plannerId: number
   planTitle: string
+  isPrivate: boolean
 }[]
 
 function Planner() {
@@ -91,8 +92,13 @@ function Planner() {
   const { modalData, openModal } = useModal()
   const { email } = useRecoilValue(userInfo)
 
-  const onSubmit = (planTitle: string) => {
-    console.log(planTitle)
+  const onSubmit = async (planTitle: string) => {
+    const newPlan = {
+      planTitle,
+      isPrivate: false,
+    }
+    const res = await createNewPlan(newPlan)
+    if (res) setPlannerList(prev => [...prev, res.data])
   }
 
   const handleAddButtonClick = () => {
