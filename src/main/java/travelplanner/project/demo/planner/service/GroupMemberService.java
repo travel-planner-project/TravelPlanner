@@ -60,6 +60,14 @@ public class GroupMemberService {
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
         Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
+        // 프로필이 null일 때 생성
+        if (profile == null) {
+            profile = Profile.builder()
+                    .member(member.get())
+                    .build();
+            profileRepository.save(profile);
+        }
+
         if (groupMemberRepository.findGroupMemberById(member.get().getId()) == null) {
             GroupMember groupMember = GroupMember.builder()
                     .email(member.get().getEmail())
