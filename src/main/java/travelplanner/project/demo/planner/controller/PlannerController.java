@@ -20,6 +20,7 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
+import travelplanner.project.demo.planner.dto.response.PlannerCreateResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.planner.service.PlannerService;
@@ -57,7 +58,7 @@ public class PlannerController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public ResponseEntity createPlanner(
+    public PlannerCreateResponse createPlanner(
             @RequestBody @Validated PlannerCreateRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -66,8 +67,7 @@ public class PlannerController {
 //            return ResponseEntity.badRequest().body("Planner 생성에 실패했습니다. Invalid request입니다. ");
         }
 
-        plannerService.createPlanner(request);
-        return ResponseEntity.ok().body("플래너 생성 성공");
+        return plannerService.createPlanner(request);
     }
 
     @Operation(summary = "플래너 수정")

@@ -20,10 +20,7 @@ import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
-import travelplanner.project.demo.planner.dto.response.CalendarResponse;
-import travelplanner.project.demo.planner.dto.response.PlannerDetailResponse;
-import travelplanner.project.demo.planner.dto.response.PlannerListResponse;
-import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.dto.response.*;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
@@ -156,7 +153,7 @@ public class PlannerService {
     }
 
     @Transactional
-    public void createPlanner(PlannerCreateRequest request) {
+    public PlannerCreateResponse createPlanner(PlannerCreateRequest request) {
 
         log.info("request.getPlanTitle() = {}", request.getPlanTitle());
         log.info("request.getIsPrivate() = {}", request.getIsPrivate());
@@ -185,6 +182,13 @@ public class PlannerService {
                 .build();
 
         groupMemberRepository.save(groupMember);
+
+        PlannerCreateResponse plannerCreateResponse = new PlannerCreateResponse();
+        plannerCreateResponse.setPlannerId(createPlanner.getId());
+        plannerCreateResponse.setPlanTitle(createPlanner.getPlanTitle());
+        plannerCreateResponse.setIsPrivate(createPlanner.getIsPrivate());
+
+        return plannerCreateResponse;
     }
 
     @Transactional
