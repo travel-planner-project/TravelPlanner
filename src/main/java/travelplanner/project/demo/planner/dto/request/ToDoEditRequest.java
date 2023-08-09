@@ -18,8 +18,8 @@ public class ToDoEditRequest {
     @Schema(description = "일정 제목", example = "인스타 감성 카페가기")
     private String itemTitle;
 
-    @Schema(description = "일정 날짜")
-    private String itemDate;
+    @Schema(description = "일정 시간")
+    private String itemTime;
 
     @Schema(description = "일정 카테고리")
     private String category;
@@ -31,7 +31,7 @@ public class ToDoEditRequest {
     private Long budget;
 
     @Schema(description = "일정 내용", example = "감귤 타르트가 유명하다고 했어!")
-    private String content;
+    private String itemContent;
 
     @Schema(description = "공개여부", example = "false")
     private Boolean isPrivate;

@@ -31,8 +31,8 @@ public class ToDoController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.createTodo(plannerId, dateId, request);   // 시영지기 ㅇ;ㅂ략힌 toDo
-        List<ToDoResponse> toDoList = toDoService.getToDoList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
+        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
     }
 
     @MessageMapping("/update-todo/{plannerId}/{dateId}/{toDoId}")
@@ -44,8 +44,8 @@ public class ToDoController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.editTodo(plannerId, dateId, toDoId, request);
-        List<ToDoResponse> toDoList = toDoService.getToDoList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
+        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
     }
 
     @MessageMapping("/delete-todo/{plannerId}/{dateId}/{toDoId}")
@@ -56,7 +56,7 @@ public class ToDoController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.delete(plannerId, dateId, toDoId);
-        List<ToDoResponse> toDoList = toDoService.getToDoList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, toDoList);
+        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
     }
 }

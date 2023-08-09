@@ -13,5 +13,5 @@ public class CalendarEditRequest {
     private Long dateId;
 
     @Schema(description = "날짜", example = "7/14")
-    private String eachDate;
+    private String dateTitle;
 }

@@ -16,17 +16,17 @@ import java.util.List;
 @Builder
 public class CalendarResponse {
 
-    private Long calendarId;
-    private String eachDate;
+    private Long dateId;
+    private String dateTitle;
     @CreatedDate
     private LocalDateTime createAt;
     private Long plannerId;
-    private List<ToDoResponse> toDoList;
+    private List<ToDoResponse> scheduleItemList;
 
     public static class CalendarResponseBuilder {
-        private List<ToDoResponse> toDoList;
-        public CalendarResponseBuilder toDoList(List<ToDoResponse> toDoList) {
-            this.toDoList = toDoList;
+        private List<ToDoResponse> scheduleItemList;
+        public CalendarResponseBuilder scheduleItemList(List<ToDoResponse> scheduleItemList) {
+            this.scheduleItemList = scheduleItemList;
             return this;
         }
     }

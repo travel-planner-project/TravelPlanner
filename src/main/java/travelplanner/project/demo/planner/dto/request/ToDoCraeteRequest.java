@@ -19,7 +19,7 @@ public class ToDoCraeteRequest {
     private String itemTitle;
 
     @Schema(description = "일정 날짜")
-    private String itemDate;
+    private String itemTime;
 
     @Schema(description = "일정 카테고리")
     private String category;

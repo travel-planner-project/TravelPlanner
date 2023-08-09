@@ -23,7 +23,7 @@ public class ToDo {
     // 일정 제목
     private String itemTitle;
     // 일정 시간
-    private String itemDate;
+    private String itemTime;
     // 일정 분류
     private String category;
     // 일정 주소
@@ -35,7 +35,7 @@ public class ToDo {
     @ColumnDefault("false")
     private Boolean isPrivate;
 
-    private String content;
+    private String itemContent;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "calendar_id")
@@ -50,22 +50,22 @@ public class ToDo {
 
         return ToDoEditor.builder()
                 .itemTitle(itemTitle)
-                .itemDate(itemDate)
+                .itemTime(itemTime)
                 .category(category)
                 .itemAddress(itemAddress)
                 .budget(budget)
                 .isPrivate(isPrivate)
-                .content(content);
+                .itemContent(itemContent);
     }
 
     public void edit(ToDoEditor toDoEditor) {
         itemTitle = toDoEditor.getItemTitle();
-        itemDate = toDoEditor.getItemDate();
+        itemTime = toDoEditor.getItemTime();
         category = toDoEditor.getCategory();
         itemAddress = toDoEditor.getItemAddress();
         budget = toDoEditor.getBudget();
         isPrivate = toDoEditor.getIsPrivate();
-        content = toDoEditor.getContent();
+        itemContent = toDoEditor.getItemContent();
     }
 
     @Override

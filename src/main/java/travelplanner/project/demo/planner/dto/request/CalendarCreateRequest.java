@@ -11,6 +11,6 @@ public class CalendarCreateRequest {
 
     @Schema(description = "날짜", example = "7/14")
     // 사용자가 정한 날짜, Formatter 추가해야함.
-    private String eachDate;
+    private String dateTitle;
 
 }

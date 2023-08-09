@@ -70,7 +70,7 @@ public class ValidatingService {
         ToDo toDo = toDoRepository.findById(updateId)
                 .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
 
-        if (!calendar.getToDoList().contains(toDo)) {
+        if (!calendar.getScheduleItemList().contains(toDo)) {
             throw new ApiException(ErrorType.TODO_NOT_AUTHORIZED);
         }
         return toDo;

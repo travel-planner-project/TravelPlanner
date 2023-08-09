@@ -15,7 +15,7 @@ public class ToDoEditor {
     // 일정 제목
     private String itemTitle;
     // 일정 시간
-    private String itemDate;
+    private String itemTime;
     // 일정 분류
     private String category;
     // 일정 주소
@@ -25,7 +25,7 @@ public class ToDoEditor {
     // 공개 비공개 여부
     private Boolean isPrivate;
     // 할 일 내용
-    private String content;
+    private String itemContent;
 
     public static ToDoEditorBuilder builder() {
         return new ToDoEditorBuilder();
@@ -37,7 +37,7 @@ public class ToDoEditor {
         // 일정 제목
         private String itemTitle;
         // 일정 시간
-        private String itemDate;
+        private String itemTime;
         // 일정 분류
         private String category;
         // 일정 주소
@@ -47,7 +47,7 @@ public class ToDoEditor {
         // 공개 비공개 여부
         private Boolean isPrivate;
         // 할 일 내용
-        private String content;
+        private String itemContent;
 
         public ToDoEditor.ToDoEditorBuilder itemTitle(final String itemTitle) {
             if (itemTitle != null && !itemTitle.isEmpty()) {
@@ -57,9 +57,9 @@ public class ToDoEditor {
         }
 
         // TODO 날짜 받는 데이터 확인하기
-        public ToDoEditor.ToDoEditorBuilder itemDate(final String itemDate) {
-            if (itemDate != null) {
-                this.itemDate = itemDate;
+        public ToDoEditor.ToDoEditorBuilder itemTime(final String itemTime) {
+            if (itemTime != null) {
+                this.itemTime = itemTime;
             }
             return this;
         }
@@ -92,16 +92,16 @@ public class ToDoEditor {
             return this;
         }
 
-        public ToDoEditor.ToDoEditorBuilder content(final String content) {
-            if (content != null && !content.isEmpty()) {
-                this.content = content;
+        public ToDoEditor.ToDoEditorBuilder itemContent(final String itemContent) {
+            if (itemContent != null && !itemContent.isEmpty()) {
+                this.itemContent = itemContent;
             }
             return this;
         }
 
         public ToDoEditor build() {
-            return new ToDoEditor(itemTitle, itemDate, category, itemAddress,
-                    budget, isPrivate, content);
+            return new ToDoEditor(itemTitle, itemTime, category, itemAddress,
+                    budget, isPrivate, itemContent);
         }
     }
 

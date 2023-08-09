@@ -18,7 +18,7 @@ public class DateResponse {
 
 //    public DateResponse(Date date) {
 //        this.id = date.getId();
-//        this.date = date.getToDoList();
+//        this.date = date.getScheduleItemList();
 //    }
 //
 //    public static List<DateResponse> dateResponses(List<Date> entityList) {

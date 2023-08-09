@@ -13,8 +13,8 @@ import java.util.List;
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     @Modifying
     @Transactional
-    @Query("UPDATE Calendar c SET c.eachDate = :eachDate WHERE c.id = :id")
-    void updateEachDate(@Param("id") Long id, @Param("eachDate") String eachDate);
+    @Query("UPDATE Calendar c SET c.dateTitle = :dateTitle WHERE c.id = :id")
+    void updatedateTitle(@Param("id") Long id, @Param("dateTitle") String dateTitle);
 
     List<Calendar> findByPlannerId(Long plannerId);
 }

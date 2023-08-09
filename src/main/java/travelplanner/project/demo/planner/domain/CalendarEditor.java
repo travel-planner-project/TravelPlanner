@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class CalendarEditor {
 
-    private String eachDate;
+    private String dateTitle;
 
-    public CalendarEditor(String eachDate) {
-        this.eachDate = eachDate;
+    public CalendarEditor(String dateTitle) {
+        this.dateTitle = dateTitle;
     }
 
     public static CalendarEditorBuilder builder() {
@@ -16,24 +16,24 @@ public class CalendarEditor {
     }
 
     public static class CalendarEditorBuilder {
-        private String eachDate;
+        private String dateTitle;
 
         CalendarEditorBuilder() {
         }
 
-        public CalendarEditorBuilder eachDate(final String eachDate) {
-            if (eachDate != null && !eachDate.isEmpty()) {
-                this.eachDate = eachDate;
+        public CalendarEditorBuilder dateTitle(final String dateTitle) {
+            if (dateTitle != null && !dateTitle.isEmpty()) {
+                this.dateTitle = dateTitle;
             }
             return this;
         }
 
         public CalendarEditor build() {
-            return new CalendarEditor(eachDate);
+            return new CalendarEditor(dateTitle);
         }
 
         public String toString() {
-            return "CalendarEditor.CalendarEditorBuilder(eachDate=" + this.eachDate + ")";
+            return "CalendarEditor.CalendarEditorBuilder(dateTitle=" + this.dateTitle + ")";
         }
     }
 }

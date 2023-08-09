@@ -27,7 +27,7 @@ public class CalendarService {
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
 
         Calendar buildRequest = Calendar.builder()
-                .eachDate(createRequest.getEachDate())
+                .dateTitle(createRequest.getDateTitle())
                 .planner(planner)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -56,10 +56,10 @@ public class CalendarService {
         Calendar calendar = validatingService.validateCalendarAccess(planner, updateId);
         CalendarEditor.CalendarEditorBuilder editorBuilder = calendar.toEditor();
         CalendarEditor calendarEditor = editorBuilder
-                .eachDate(updateRequest.getEachDate())
+                .dateTitle(updateRequest.getDateTitle())
                 .build();
         calendar.edit(calendarEditor);
-        calendarRepository.updateEachDate(updateId, updateRequest.getEachDate());
+        calendarRepository.updatedateTitle(updateId, updateRequest.getDateTitle());
     }
 
     // 전체 Calendar 조회해서 response를 리스트로 리턴
@@ -69,8 +69,8 @@ public class CalendarService {
         for(Calendar calendar : calendarList){
 
             CalendarResponse calendarResponse = CalendarResponse.builder()
-                    .calendarId(calendar.getId())
-                    .eachDate(calendar.getEachDate())
+                    .dateId(calendar.getId())
+                    .dateTitle(calendar.getDateTitle())
                     .createAt(calendar.getCreatedAt())
                     .plannerId(calendar.getPlanner().getId())
                     .build();
@@ -88,8 +88,8 @@ public class CalendarService {
 
         for (Calendar calendar : calendarList) {
             CalendarResponse calendarResponse = CalendarResponse.builder()
-                    .calendarId(calendar.getId())
-                    .eachDate(calendar.getEachDate())
+                    .dateId(calendar.getId())
+                    .dateTitle(calendar.getDateTitle())
                     .createAt(calendar.getCreatedAt())
                     .plannerId(calendar.getPlanner().getId())
                     .build();

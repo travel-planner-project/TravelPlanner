@@ -24,8 +24,8 @@ public class ToDoResponse {
     @Schema(description = "일정 제목", example = "인스타 감성 카페가기")
     private String itemTitle;
 
-    @Schema(description = "일정 날짜")
-    private String itemDate;
+    @Schema(description = "일정 시간")
+    private String itemTime;
 
     @Schema(description = "일정 카테고리")
     private String category;

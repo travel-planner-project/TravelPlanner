@@ -101,13 +101,13 @@ public class PlannerService {
 
         List<CalendarResponse> updatedCalendarResponses = new ArrayList<>();
         for (CalendarResponse calendarResponse : calendarResponses) {
-            List<ToDoResponse> toDoResponses = toDoService.getToDoList(calendarResponse.getCalendarId());
+            List<ToDoResponse> toDoResponses = toDoService.getScheduleItemList(calendarResponse.getDateId());
             CalendarResponse updatedCalendarResponse = CalendarResponse.builder()
-                    .calendarId(calendarResponse.getCalendarId())
-                    .eachDate(calendarResponse.getEachDate())
+                    .dateId(calendarResponse.getDateId())
+                    .dateTitle(calendarResponse.getDateTitle())
                     .createAt(calendarResponse.getCreateAt())
                     .plannerId(calendarResponse.getPlannerId())
-                    .toDoList(toDoResponses)
+                    .scheduleItemList(toDoResponses)
                     .build();
             updatedCalendarResponses.add(updatedCalendarResponse);
         }

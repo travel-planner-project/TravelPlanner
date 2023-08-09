@@ -26,17 +26,17 @@ public class Calendar {
     @GeneratedValue
     private Long id;
 
-    private String eachDate;
+    private String dateTitle;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "calendar", fetch = FetchType.EAGER)
     @Builder.Default
-    private List<ToDo> toDoList = new ArrayList<>();
+    private List<ToDo> scheduleItemList = new ArrayList<>();
 
     public void mappingToDo(ToDo toDo) {
-        toDoList.add(toDo);
+        scheduleItemList.add(toDo);
     }
 
     // 플래너 연관관계 매핑
@@ -50,12 +50,12 @@ public class Calendar {
     }
 
     public void edit(CalendarEditor calendarEditor){ // Member member
-        eachDate = calendarEditor.getEachDate();
+        dateTitle = calendarEditor.getDateTitle();
     }
 
     public CalendarEditor.CalendarEditorBuilder toEditor() {
         return CalendarEditor.builder()
-                .eachDate(eachDate);
+                .dateTitle(dateTitle);
     }
 
     @Override

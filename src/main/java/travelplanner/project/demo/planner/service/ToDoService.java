@@ -27,17 +27,17 @@ public class ToDoService {
     private final GroupMemberRepository groupMemberRepository;
     private final ValidatingService validatingService;
 
-    public List<ToDoResponse> getToDoList() {
-        List<ToDo> ToDoList = toDoRepository.findAll();
+    public List<ToDoResponse> getScheduleItemList() {
+        List<ToDo> scheduleItemList = toDoRepository.findAll();
         ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
-        for (ToDo toDo : ToDoList){
+        for (ToDo toDo : scheduleItemList){
             ToDoResponse toDoResponse = ToDoResponse.builder()
-                    .dateId(toDo.getId())
-                    .itemId(toDo.getCalendar().getId())
+                    .itemId(toDo.getId())
+                    .dateId(toDo.getCalendar().getId())
                     .itemTitle(toDo.getItemTitle())
                     .category(toDo.getCategory())
-                    .itemDate(toDo.getItemDate())
-                    .itemContent(toDo.getContent())
+                    .itemTime(toDo.getItemTime())
+                    .itemContent(toDo.getItemContent())
                     .isPrivate(toDo.getIsPrivate())
                     .budget(toDo.getBudget())
                     .itemAddress(toDo.getItemAddress())
@@ -48,18 +48,18 @@ public class ToDoService {
     }
 
     // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
-    public List<ToDoResponse> getToDoList(Long calendarId) {
+    public List<ToDoResponse> getScheduleItemList(Long calendarId) {
 
-        List<ToDo> toDoList = toDoRepository.findByCalendarId(calendarId);
+        List<ToDo> scheduleItemList = toDoRepository.findByCalendarId(calendarId);
         ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
-        for (ToDo toDo : toDoList) {
+        for (ToDo toDo : scheduleItemList) {
             ToDoResponse toDoResponse = ToDoResponse.builder()
-                    .dateId(toDo.getId())
-                    .itemId(toDo.getCalendar().getId())
+                    .itemId(toDo.getId())
+                    .dateId(toDo.getCalendar().getId())
                     .itemTitle(toDo.getItemTitle())
                     .category(toDo.getCategory())
-                    .itemDate(toDo.getItemDate())
-                    .itemContent(toDo.getContent())
+                    .itemTime(toDo.getItemTime())
+                    .itemContent(toDo.getItemContent())
                     .isPrivate(toDo.getIsPrivate())
                     .budget(toDo.getBudget())
                     .itemAddress(toDo.getItemAddress())
@@ -81,9 +81,9 @@ public class ToDoService {
         ToDo todo = ToDo.builder()
                 .calendar(calendar)
                 .itemTitle(request.getItemTitle())
-                .itemDate(request.getItemDate())
+                .itemTime(request.getItemTime())
                 .category(request.getCategory())
-                .content(request.getItemContent())
+                .itemContent(request.getItemContent())
                 .isPrivate(request.getIsPrivate())
                 .budget(request.getBudget())
                 .itemAddress(request.getItemAddress())
@@ -108,12 +108,12 @@ public class ToDoService {
         ToDoEditor.ToDoEditorBuilder editorBuilder = toDo.toEditor();
         ToDoEditor toDoEditor = editorBuilder
                 .itemTitle(editRequest.getItemTitle())
-                .itemDate(editRequest.getItemDate())
+                .itemTime(editRequest.getItemTime())
                 .category(editRequest.getCategory())
                 .itemAddress(editRequest.getItemAddress())
                 .budget(editRequest.getBudget())
                 .isPrivate(editRequest.getIsPrivate())
-                .content(editRequest.getContent())
+                .itemContent(editRequest.getItemContent())
                 .build();
         toDo.edit(toDoEditor);
     }
@@ -131,7 +131,7 @@ public class ToDoService {
         calendar = toDo.getCalendar();
 
         // 캘린더의 투두 리스트에서 투두 제거
-        calendar.getToDoList().remove(toDo);
+        calendar.getScheduleItemList().remove(toDo);
 
         toDoRepository.delete(toDo);
     }
