@@ -1,14 +1,9 @@
 package travelplanner.project.demo.member.Auth;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +17,6 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +29,6 @@ public class AuthService {
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
     private final AuthenticationManager authenticationManager;
-    private Authentication authentication;
 
 
     // 회원가입
@@ -43,10 +36,8 @@ public class AuthService {
     public void register(RegisterRequest request) throws ApiException {
 
         // 이메일로 멤버 조회
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
-        if (member.isPresent()) {
-            throw new ApiException(ErrorType.ALREADY_EXIST_EMAIL);
-        }
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ApiException(ErrorType.ALREADY_EXIST_EMAIL));
 
         if (request.getEmail() == null || request.getPassword() == null || request.getUserNickname() == null) {
             throw new ApiException(ErrorType.NULL_VALUE_EXIST);
@@ -61,6 +52,13 @@ public class AuthService {
                 .build();
 
         memberRepository.save(user);
+
+        // 프로필 생성
+        Profile profile = Profile.builder()
+                .member(user)
+                .build();
+
+        profileRepository.save(profile);
     }
 
 
@@ -75,23 +73,14 @@ public class AuthService {
                 )
         );
 
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
-        // 프로필
-        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
-
-        if (profile == null) {
-
-            profile = Profile.builder()
-                    .member(member.get())
-                    .build();
-
-            profileRepository.save(profile);
-        }
+        Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
-        String accessToken = tokenUtil.generateAccessToken(member.get().getEmail());
-        String refreshToken = tokenUtil.generateRefreshToken(member.get().getEmail());
+        String accessToken = tokenUtil.generateAccessToken(member.getEmail());
+        String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
 
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
@@ -100,12 +89,12 @@ public class AuthService {
         cookieUtil.create(refreshToken, response);
 
         // 리프레시 토큰을 Redis 에 저장
-        redisUtil.setDataExpire(member.get().getEmail(), refreshToken, 7*24*60*60); // 1 week expiration
+        redisUtil.setData(member.getEmail(), refreshToken);
 
         return AuthResponse.builder()
-                .userId(member.get().getId())
-                .email(member.get().getEmail())
-                .userNickname(member.get().getUserNickname())
+                .userId(member.getId())
+                .email(member.getEmail())
+                .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .build();
     }
