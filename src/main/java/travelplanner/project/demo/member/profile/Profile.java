@@ -20,8 +20,7 @@ public class Profile {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "profile")
     private Member member;
 
     private String profileImgUrl;
