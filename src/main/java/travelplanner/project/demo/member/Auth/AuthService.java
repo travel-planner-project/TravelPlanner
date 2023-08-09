@@ -17,6 +17,8 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +38,11 @@ public class AuthService {
     public void register(RegisterRequest request) throws ApiException {
 
         // 이메일로 멤버 조회
-        Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ApiException(ErrorType.ALREADY_EXIST_EMAIL));
+        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+
+        if (member.isPresent()) {
+            throw new ApiException(ErrorType.ALREADY_EXIST_EMAIL);
+        }
 
         if (request.getEmail() == null || request.getPassword() == null || request.getUserNickname() == null) {
             throw new ApiException(ErrorType.NULL_VALUE_EXIST);
@@ -55,8 +60,12 @@ public class AuthService {
 
         // 프로필 생성
         Profile profile = Profile.builder()
-                .member(user)
+                .member(user).id(user.getId())
+                .keyName("")
+                .profileImgUrl("")
                 .build();
+
+        System.out.println(profile.getMember().getId());
 
         profileRepository.save(profile);
     }
