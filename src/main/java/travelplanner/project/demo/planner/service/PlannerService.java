@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -40,6 +38,7 @@ public class PlannerService {
     private final PlannerRepository plannerRepository;
     private final ProfileRepository profileRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final AuthUtil authUtil;
 
     // planner detail조회에서 캘린더 목록 및 투두 목록을 갖고오기 위해 추가
     private final CalendarService calendarService;
@@ -49,7 +48,7 @@ public class PlannerService {
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
     public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email) {
-        String currentEmail = getCurrentMember().getEmail();
+        String currentEmail = authUtil.getCurrentMember().getEmail();
         List<Planner> planners;
 
         /*
@@ -137,7 +136,7 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        Member currentMember = getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember();
 
 
         // 플래너를 생성한 사람일 경우
@@ -165,7 +164,7 @@ public class PlannerService {
         Planner createPlanner = Planner.builder()
                 .planTitle(request.getPlanTitle())
                 .isPrivate(request.getIsPrivate())
-                .member(getCurrentMember())
+                .member(authUtil.getCurrentMember())
                 // todo 이곳 말고 캘린더를 생성하는 서비스에서 플래너 sratdate, enddate 업데이트해주기
                 .build();
 
@@ -173,7 +172,7 @@ public class PlannerService {
 
         // 플래너 만든 사람은 HOST 로 처음에 들어가 있어야 함
         // 플래너 만든 사람은 현재 로그인 한 사람
-        Member member = getCurrentMember();
+        Member member = authUtil.getCurrentMember();
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         GroupMember groupMember = GroupMember.builder()
@@ -203,7 +202,7 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        Member currentMember = getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember();
 
         // 플래너를 생성한 사람이 아닐 경우
         if (!planner.getMember().getId().equals(currentMember.getId())) {
@@ -217,13 +216,6 @@ public class PlannerService {
                 .isPrivate(request.getIsPrivate())
                 .build();
         planner.edit(plannerEditor);
-    }
-
-    private Member getCurrentMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
     }
 }
 
