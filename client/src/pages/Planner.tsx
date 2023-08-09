@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
-import { createNewPlan, getCurrentUserPlanner } from '../apis/planner'
+import { createNewPlan, deletePlan, getCurrentUserPlanner } from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../store/store'
@@ -10,16 +10,26 @@ import useModal from '../hooks/useModal'
 import useRouter from '../hooks/useRouter'
 
 type PlannerViewProps = {
-  add: () => void
-  edit: () => void
+  addPlan: () => void
+  editPlan: () => void
   linkToDetail: (id: number) => void
   plannerList: PlannerDataType | null
   // isModalOpened: boolean
   modal: boolean
   // modalClose: () => void
+  isEditing: boolean
+  deletePlan: (id: number) => void
 }
 
-function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerViewProps) {
+function PlannerView({
+  addPlan,
+  editPlan,
+  deletePlan,
+  linkToDetail,
+  plannerList,
+  modal,
+  isEditing,
+}: PlannerViewProps) {
   return (
     <>
       {modal ? <Modal type='create-planner' /> : null}
@@ -55,19 +65,25 @@ function PlannerView({ add, edit, linkToDetail, plannerList, modal }: PlannerVie
             {/* 플래너 리스트 맵으로 돌리기 */}
             {plannerList?.map(planner => {
               return (
-                <PlanElement
-                  key={planner.plannerId}
-                  planner={planner}
-                  linkToDetail={() => linkToDetail(planner.plannerId)}
-                />
+                <div key={planner.plannerId}>
+                  <PlanElement
+                    planner={planner}
+                    linkToDetail={() => linkToDetail(planner.plannerId)}
+                  />
+                  {isEditing ? (
+                    <button type='button' onClick={() => deletePlan(+planner.plannerId)}>
+                      delete
+                    </button>
+                  ) : null}
+                </div>
               )
             })}
           </div>
           <div className={styles.buttons}>
-            <button type='button' className={styles.addBtn} onClick={add}>
+            <button type='button' className={styles.addBtn} onClick={addPlan}>
               추가하기
             </button>
-            <button type='button' className={styles.editBtn} onClick={edit}>
+            <button type='button' className={styles.editBtn} onClick={editPlan}>
               편집하기
             </button>
           </div>
@@ -87,12 +103,14 @@ type PlannerDataType = {
 function Planner() {
   const { routeTo } = useRouter()
 
-  const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
+  const [plannerList, setPlannerList] = useState<PlannerDataType>([])
 
   const { modalData, openModal } = useModal()
   const { email } = useRecoilValue(userInfo)
 
-  const onSubmit = async (planTitle: string) => {
+  const [isEditingPlanner, setIsEditingPlanner] = useState<boolean>(false)
+
+  const onClickAddNewPlan = async (planTitle: string) => {
     const newPlan = {
       planTitle,
       isPrivate: false,
@@ -101,18 +119,35 @@ function Planner() {
     if (res) setPlannerList(prev => [...prev, res.data])
   }
 
+  const onClickDeletePlan = async (id: number) => {
+    const res = await deletePlan(id)
+    if (res) console.log(res)
+
+    const fetchPlannerData = async () => {
+      try {
+        const res = await getCurrentUserPlanner(email)
+        setPlannerList(res?.data.content)
+      } catch (error) {
+        console.error('Error fetching planner data:', error)
+      }
+    }
+
+    fetchPlannerData()
+  }
+
   const handleAddButtonClick = () => {
     openModal({
       title: '여행 추가하기',
       description: '여행의 이름을 입력하세요.',
       placeholder: '여행 이름',
       submitButton: '추가',
-      onSubmit: onSubmit,
+      onSubmit: onClickAddNewPlan,
     })
   }
 
   const handleEditButtonClick = () => {
     console.log('편집하기')
+    setIsEditingPlanner(true)
   }
   const handlePlannerClick = (id: number) => {
     // 해당 element의 id 값을 가진 엔드포인트로 연결
@@ -134,11 +169,13 @@ function Planner() {
 
   return (
     <PlannerView
-      add={handleAddButtonClick}
-      edit={handleEditButtonClick}
+      addPlan={handleAddButtonClick}
+      editPlan={handleEditButtonClick}
       linkToDetail={handlePlannerClick}
       plannerList={plannerList}
       modal={modalData.isOpen}
+      isEditing={isEditingPlanner}
+      deletePlan={onClickDeletePlan}
     />
   )
 }

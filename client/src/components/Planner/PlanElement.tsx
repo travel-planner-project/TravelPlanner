@@ -1,7 +1,7 @@
 import styles from './PlanElement.module.scss'
 
 type PlanElementProps = {
-  planner: { userId: number; plannerId: number; planTitle: string }
+  planner: { plannerId: number; planTitle: string; isPrivate: boolean }
   linkToDetail: () => void
 }
 
@@ -30,11 +30,11 @@ function PlanElement({ planner, linkToDetail }: PlanElementProps) {
             <div className={styles.plannerUserName}>유저 2</div>
           </div>
         </div>
-        <div className={styles.tripPeriod}>
+        {/* <div className={styles.tripPeriod}>
           <div className={styles.startDate}>2023. 07. 14</div>
           <span>~</span>
           <div className={styles.endDate}>2023. 07. 17</div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

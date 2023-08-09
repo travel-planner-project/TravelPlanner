@@ -35,3 +35,17 @@ export const getPlanDetail = async (id: string) => {
     return axiosError.response
   }
 }
+
+export const deletePlan = async (id: number) => {
+  try {
+    const response = await axiosInstance.delete(`/planner`, {
+      data: {
+        plannerId: id,
+      },
+    })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
