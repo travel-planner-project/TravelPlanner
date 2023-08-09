@@ -17,7 +17,7 @@ import travelplanner.project.demo.member.Member;
 public class Profile {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "profile")

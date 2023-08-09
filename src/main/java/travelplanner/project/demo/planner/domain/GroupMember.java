@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class GroupMember {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // 이메일
