@@ -139,7 +139,7 @@ function PlanDetailView({
 
 function PlanDetail() {
   const { planId } = useParams()
-  const { email, userId } = useRecoilValue(userInfo)
+  const { userId } = useRecoilValue(userInfo)
   // const plannerId = 39 // 임시 설정. useParams()로 받아오는 게 좋을 듯.
   // const userId = 14 // 임시 설정. 로그인 기능 구현 후, 로그인한 유저의 id로 설정.
   const clientRef = useRef<StompJs.Client | null>(null)
@@ -259,6 +259,7 @@ function PlanDetail() {
       const fetchPlanDetailData = async () => {
         try {
           const res = await getPlanDetail(planId)
+          console.log(res?.data.calendars)
           if (res) setScheduleData(res.data.calendars)
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
