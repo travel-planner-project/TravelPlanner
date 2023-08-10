@@ -12,6 +12,10 @@ import {
   ScheduleProps,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../store/store'
+import { getPlanDetail } from '../apis/planner'
+import useRouter from '../hooks/useRouter'
 
 // 높이 수정중
 
@@ -134,8 +138,10 @@ function PlanDetailView({
 }
 
 function PlanDetail() {
-  const plannerId = 39 // 임시 설정. useParams()로 받아오는 게 좋을 듯.
-  const userId = 14 // 임시 설정. 로그인 기능 구현 후, 로그인한 유저의 id로 설정.
+  const { params } = useRouter()
+  const { planId } = params
+
+  const { userId } = useRecoilValue(userInfo)
   const clientRef = useRef<StompJs.Client | null>(null)
   // 채팅 관련
   const [chatModal, setChatModal] = useState(false)
@@ -144,98 +150,7 @@ function PlanDetail() {
 
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
-
-  const scheduleData = [
-    {
-      dateId: 1,
-      dateTitle: '7/14',
-      scheduleItemList: [
-        {
-          dateId: 1,
-          itemId: 1,
-          itemTitle: '조은호텔 체크인',
-          itemTime: '15:00',
-          category: '숙박',
-          itemContent: '물놀이 복장으로 갈아입기 ㅎㅎ',
-          isPrivate: false,
-          budget: 16000,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-        {
-          dateId: 1,
-          itemId: 2,
-          itemTitle: '협재 해변',
-          itemTime: '17:00',
-          category: '관광',
-          itemContent: '수영, 사진 찍기',
-          isPrivate: false,
-          budget: null,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-        {
-          dateId: 1,
-          itemId: 3,
-          itemTitle: '협재 해변',
-          itemTime: '17:00',
-          category: '관광',
-          itemContent: '수영, 사진 찍기',
-          isPrivate: false,
-          budget: null,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-        {
-          dateId: 1,
-          itemId: 4,
-          itemTitle: '협재 해변',
-          itemTime: '17:00',
-          category: '관광',
-          itemContent: '수영, 사진 찍기',
-          isPrivate: false,
-          budget: null,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-        {
-          dateId: 1,
-          itemId: 5,
-          itemTitle: '협재 해변',
-          itemTime: '17:00',
-          category: '관광',
-          itemContent: '수영, 사진 찍기',
-          isPrivate: false,
-          budget: null,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-      ],
-    },
-    {
-      dateId: 2,
-      dateTitle: '7/15',
-      scheduleItemList: [
-        {
-          dateId: 1,
-          itemId: 1,
-          itemTitle: '조은호텔 체크인',
-          itemTime: '15:00',
-          category: '숙박',
-          itemContent: '물놀이 복장으로 갈아입기 ㅎㅎ',
-          isPrivate: false,
-          budget: 16000,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-        {
-          dateId: 1,
-          itemId: 2,
-          itemTitle: '협재 해변',
-          itemTime: '17:00',
-          category: '관광',
-          itemContent: '수영, 사진 찍기',
-          isPrivate: false,
-          budget: null,
-          itemAddress: '제주시 특별자치도, 한림읍 협재리 30',
-        },
-      ],
-    },
-  ]
+  const [scheduleData, setScheduleData] = useState<any>([])
 
   const handleOpenScheduleEditor = (id: number) => {
     setCurrentDateId(id)
@@ -248,6 +163,18 @@ function PlanDetail() {
   }
 
   useEffect(() => {
+    if (planId) {
+      const fetchPlanDetailData = async () => {
+        try {
+          const res = await getPlanDetail(planId)
+          if (res) setScheduleData(res.data.calendars)
+        } catch (error) {
+          console.error('Error fetching plan detail data:', error)
+        }
+      }
+      fetchPlanDetailData()
+    }
+
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
       brokerURL: import.meta.env.VITE_BROKER_URL,
@@ -288,7 +215,7 @@ function PlanDetail() {
         }
       }
       // 구독하기
-      client.subscribe(`/sub/planner-message/${plannerId}`, callback)
+      client.subscribe(`/sub/planner-message/${planId}`, callback)
     }
 
     // 브로커에서 에러가 발생했을 때 호출되는 함수
@@ -314,7 +241,7 @@ function PlanDetail() {
       const msg = JSON.stringify(newChatObj)
       // 4. 메시지 보내기(퍼블리시)
       if (clientRef.current) {
-        clientRef.current.publish({ destination: `/pub/chat/${plannerId}`, body: msg })
+        clientRef.current.publish({ destination: `/pub/chat/${planId}`, body: msg })
       }
     }
     setNewChat('')

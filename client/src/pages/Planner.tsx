@@ -1,30 +1,38 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Common/Icon'
 import styles from './Planner.module.scss'
-import getCurrentUserPlanner from '../apis/planner'
+import { createNewPlan, deletePlan, getCurrentUserPlanner } from '../apis/planner'
 import PlanElement from '../components/Planner/PlanElement'
-import AddPlanModal from '../components/Planner/AddPlanModal'
+import { useRecoilValue } from 'recoil'
+import { userInfo } from '../store/store'
+import Modal from '../components/Common/Modal/Modal'
+import useModal from '../hooks/useModal'
+import useRouter from '../hooks/useRouter'
 
 type PlannerViewProps = {
-  add: () => void
-  edit: () => void
-  linkToDetail: () => void
+  addPlan: () => void
+  editPlan: () => void
+  linkToDetail: (id: number) => void
   plannerList: PlannerDataType | null
+  // isModalOpened: boolean
   modal: boolean
-  modalClose: () => void
+  // modalClose: () => void
+  isEditing: boolean
+  deletePlan: (id: number) => void
 }
 
 function PlannerView({
-  add,
-  edit,
+  addPlan,
+  editPlan,
+  deletePlan,
   linkToDetail,
   plannerList,
   modal,
-  modalClose,
+  isEditing,
 }: PlannerViewProps) {
   return (
     <>
-      {modal ? <AddPlanModal modalClose={modalClose} /> : null}
+      {modal ? <Modal type='create-planner' /> : null}
       <div className={styles.plannerContainer}>
         <div className={styles.header}>
           <div className={styles.profileBox}>
@@ -35,7 +43,7 @@ function PlannerView({
             <div className={styles.tripDescribtion}>
               <div className={styles.pastTripCount}>
                 <span>지난 여행 </span>
-                <span>1</span>
+                <span>?</span>
                 <span>개</span>
               </div>
               <span className={styles.grayText}>|</span>
@@ -57,19 +65,25 @@ function PlannerView({
             {/* 플래너 리스트 맵으로 돌리기 */}
             {plannerList?.map(planner => {
               return (
-                <PlanElement
-                  key={planner.plannerId}
-                  planner={planner}
-                  linkToDetail={linkToDetail}
-                />
+                <div key={planner.plannerId}>
+                  <PlanElement
+                    planner={planner}
+                    linkToDetail={() => linkToDetail(planner.plannerId)}
+                  />
+                  {isEditing ? (
+                    <button type='button' onClick={() => deletePlan(+planner.plannerId)}>
+                      delete
+                    </button>
+                  ) : null}
+                </div>
               )
             })}
           </div>
           <div className={styles.buttons}>
-            <button type='button' className={styles.addBtn} onClick={add}>
+            <button type='button' className={styles.addBtn} onClick={addPlan}>
               추가하기
             </button>
-            <button type='button' className={styles.editBtn} onClick={edit}>
+            <button type='button' className={styles.editBtn} onClick={editPlan}>
               편집하기
             </button>
           </div>
@@ -80,52 +94,88 @@ function PlannerView({
 }
 
 type PlannerDataType = {
-  userId: number
+  // userId: number
   plannerId: number
   planTitle: string
+  isPrivate: boolean
 }[]
 
 function Planner() {
-  const [plannerList, setPlannerList] = useState<PlannerDataType | null>(null)
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
-  const apiUrl = `${import.meta.env.VITE_API_SERVER}/planner?userId=14`
-  console.log(plannerList)
+  const { routeTo } = useRouter()
+
+  const [plannerList, setPlannerList] = useState<PlannerDataType>([])
+
+  const { modalData, openModal } = useModal()
+  const { email } = useRecoilValue(userInfo)
+
+  const [isEditingPlanner, setIsEditingPlanner] = useState<boolean>(false)
+
+  const onClickAddNewPlan = async (planTitle: string) => {
+    const newPlan = {
+      planTitle,
+      isPrivate: false,
+    }
+    const res = await createNewPlan(newPlan)
+    if (res) setPlannerList(prev => [...prev, res.data])
+  }
+
+  const onClickDeletePlan = async (id: number) => {
+    const res = await deletePlan(id)
+    if (res) console.log(res)
+
+    const fetchPlannerData = async () => {
+      try {
+        const res = await getCurrentUserPlanner(email)
+        setPlannerList(res?.data.content)
+      } catch (error) {
+        console.error('Error fetching planner data:', error)
+      }
+    }
+
+    fetchPlannerData()
+  }
 
   const handleAddButtonClick = () => {
-    setIsModalOpened(true)
-  }
-  const handleCloseModal = () => {
-    setIsModalOpened(false)
+    openModal({
+      title: '여행 추가하기',
+      description: '여행의 이름을 입력하세요.',
+      placeholder: '여행 이름',
+      submitButton: '추가',
+      onSubmit: onClickAddNewPlan,
+    })
   }
 
   const handleEditButtonClick = () => {
     console.log('편집하기')
+    setIsEditingPlanner(true)
   }
-  const handlePlannerClick = () => {
+  const handlePlannerClick = (id: number) => {
     // 해당 element의 id 값을 가진 엔드포인트로 연결
+    routeTo(`/plandetail/${id}`)
     console.log('플래너 상세 페이지')
   }
 
   useEffect(() => {
     const fetchPlannerData = async () => {
       try {
-        const data = await getCurrentUserPlanner(apiUrl)
-        setPlannerList(data.content)
+        const res = await getCurrentUserPlanner(email)
+        setPlannerList(res?.data.content)
       } catch (error) {
         console.error('Error fetching planner data:', error)
       }
     }
     fetchPlannerData()
-  }, [apiUrl])
+  }, [email])
 
   return (
     <PlannerView
-      add={handleAddButtonClick}
-      edit={handleEditButtonClick}
+      addPlan={handleAddButtonClick}
+      editPlan={handleEditButtonClick}
       linkToDetail={handlePlannerClick}
       plannerList={plannerList}
-      modal={isModalOpened}
-      modalClose={handleCloseModal}
+      modal={modalData.isOpen}
+      isEditing={isEditingPlanner}
+      deletePlan={onClickDeletePlan}
     />
   )
 }

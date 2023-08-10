@@ -18,6 +18,7 @@
   padding: 24px;
   border: 1px solid C.$gray200;
   border-radius: 4px;
+  overflow-x: scroll;
 }
 
 .header {
@@ -68,4 +69,9 @@
     width: 48px;
     border-radius: 4px;
   }
+}
+
+.budgetBox {
+  @include U.flex-c(row);
+  gap: 4px;
 }

@@ -10,8 +10,13 @@ function ElementView({ data }: ElementViewProps) {
           <div className={styles.category}>{data.category}</div>
         </div>
         <div className={styles.itemInfo}>
-          <div className={styles.itemTime}>{data.itemTime}</div>
-          <div className={styles.itemPayment}>{data.budget}</div>
+          {data.itemTime ? <div className={styles.itemTime}>{data.itemTime}</div> : null}
+          {data.budget ? (
+            <div className={styles.budgetBox}>
+              <div className={styles.itemPayment}>{data.budget}</div>
+              <span>원</span>
+            </div>
+          ) : null}
         </div>
         <div className={styles.itemAddress}>{data.itemAddress}</div>
         <div className={styles.itemDetail}>{data.itemContent}</div>
