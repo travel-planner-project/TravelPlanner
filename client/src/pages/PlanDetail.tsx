@@ -12,7 +12,6 @@ import {
   ScheduleProps,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
-import { useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../store/store'
 import { getPlanDetail } from '../apis/planner'
