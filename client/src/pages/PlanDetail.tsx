@@ -14,7 +14,9 @@ import {
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
 import { userInfo } from '../store/store'
+import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
+import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 
 // 높이 수정중
@@ -140,14 +142,14 @@ function PlanDetailView({
 function PlanDetail() {
   const { params } = useRouter()
   const { planId } = params
-
   const { userId } = useRecoilValue(userInfo)
+  const [token, setToken] = useState(sessionStorage.getItem('token'))
   const clientRef = useRef<StompJs.Client | null>(null)
   // 채팅 관련
   const [chatModal, setChatModal] = useState(false)
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
-
+  // 플래너 관련
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [scheduleData, setScheduleData] = useState<any>([])
@@ -174,21 +176,19 @@ function PlanDetail() {
       }
       fetchPlanDetailData()
     }
+  }, [])
 
+  useEffect(() => {
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
       brokerURL: import.meta.env.VITE_BROKER_URL,
-
-      // 연결에 사용될 로그인 정보
-      // connectHeaders: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-
-      // 디버깅용
+      // 헤더에 엑세스 토큰 담기
+      connectHeaders: {
+        Authorization: `${token}`,
+      },
       // debug(str) {
       //   console.log(str)
       // },
-
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -199,19 +199,20 @@ function PlanDetail() {
       // 메시지 받는 함수
       const callback = function (message: any) {
         if (message.body) {
-          const body = JSON.parse(message.body)
-          if (body.type === 'chat') {
-            setChatList(prev => [...prev, body.msg])
-          } else if (body.type === 'todo') {
-            // 1. response의 dateId를 newDateId에 할당
-            // 2. response를 newData에 할당
-            // 3. 스케줄 리스트에서 newDateId와 일치하는 요소를 찾음
-            // 4. 해당 요소에 newData 추가
-            //   copyData.map((item) =>
-            //   item.dateId === newDateId ? item.scheduleList.push(newData) : item
-            //   )
-            // 5. setData(copyData)
-          }
+          setChatList(prev => [...prev, JSON.parse(message.body)])
+          // 추후 type으로 나눠서 처리
+          // if (message.body.type === 'chat') {
+          //   setChatList(prev => [...prev, JSON.parse(message.body)])
+          // } else if (message.body.type === 'todo') {
+          //   // 1. response의 dateId를 newDateId에 할당
+          //   // 2. response를 newData에 할당
+          //   // 3. 스케줄 리스트에서 newDateId와 일치하는 요소를 찾음
+          //   // 4. 해당 요소에 newData 추가
+          //   copyData.map((item) =>
+          //   item.dateId === newDateId ? item.scheduleList.push(newData) : item
+          //   )
+          //   // 5. setData(copyData)
+          // }
         }
       }
       // 구독하기
@@ -220,8 +221,25 @@ function PlanDetail() {
 
     // 브로커에서 에러가 발생했을 때 호출되는 함수
     client.onStompError = function (frame) {
-      console.log(`Broker reported error: ${frame.headers.message}`)
-      console.log(`Additional details: ${frame.body}`)
+      // console.log(`Broker reported error: ${frame.headers.message}`)
+      // console.log(`Additional details: ${frame.body}`)
+
+      // 액세스 토큰 만료시
+      if (
+        frame.headers.message ===
+        'Failed to send message to ExecutorSubscribableChannel[clientInboundChannel]'
+      ) {
+        refreshAccessToken().then(response => {
+          if (response?.status === 200) {
+            const { authorization } = response.headers
+            saveTokenToSessionStorage(authorization)
+            setToken(authorization) // 새로운 액세스 토큰으로 업데이트
+          }
+          if (response?.status !== 200) {
+            console.error('Error refreshing access token:', response)
+          }
+        })
+      }
     }
 
     // 2. 클라이언트 활성화 -> 설정된 주소로 연결을 시도하고, 연결이 성공하면 onConnect 콜백 함수 호출!
@@ -232,7 +250,7 @@ function PlanDetail() {
     return () => {
       client.deactivate()
     }
-  }, [])
+  }, [token])
 
   const onChatSubmit = (event: any) => {
     event.preventDefault()
@@ -241,7 +259,14 @@ function PlanDetail() {
       const msg = JSON.stringify(newChatObj)
       // 4. 메시지 보내기(퍼블리시)
       if (clientRef.current) {
-        clientRef.current.publish({ destination: `/pub/chat/${planId}`, body: msg })
+        clientRef.current.publish({
+          destination: `/pub/chat/${planId}`,
+          // 헤더에 엑세스 토큰 담기
+          headers: {
+            Authorization: `${token}`,
+          },
+          body: msg,
+        })
       }
     }
     setNewChat('')
