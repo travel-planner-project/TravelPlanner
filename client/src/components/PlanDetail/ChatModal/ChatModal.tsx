@@ -37,7 +37,8 @@ function ChatModal({
             <div className={styles.message} key={crypto.randomUUID()}>
               <span
                 className={`${
-                  chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser
+                  // chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser
+                  styles.loggedInUser
                 }`}
               >
                 {chat.userNickname}:{' '}
