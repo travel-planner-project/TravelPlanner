@@ -7,10 +7,11 @@ import org.springframework.data.repository.query.Param;
 import travelplanner.project.demo.planner.domain.Chatting;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ChattingRepository extends CrudRepository<Chatting, Long> {
-    @Query("DELETE FROM Chatting c WHERE c.createdAt < :date")
-    @Modifying
-    void deleteAllByCreatedAtBefore(@Param("date") LocalDateTime date);
+
+    List<Chatting> findTop100ByCreatedAtBefore(LocalDateTime createdAt);
+
 }
 
