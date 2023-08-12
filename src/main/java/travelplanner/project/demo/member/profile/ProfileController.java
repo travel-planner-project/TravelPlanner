@@ -112,7 +112,7 @@ public class ProfileController {
     public void deleteUser(@RequestBody PasswordCheckRequest request) throws ApiException{
 
         if (userService.checkUserPassword(request)) {
-            userService.deleteUser(request);
+            userService.deleteUser();
 
         } else {
             throw new ApiException(ErrorType.CHECK_PASSWORD_AGAIN);

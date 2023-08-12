@@ -48,31 +48,28 @@ public class UserService {
     @Transactional
     public void updatePassword(PasswordUpdateRequest request) {
 
-        Member member = memberRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
-
+        Member currentMember = authUtil.getCurrentMember();
         String encodedPassword = encoder.encode(request.getPassword());
-        member.setPassword(encodedPassword);
+        currentMember.setPassword(encodedPassword);
 
-        memberRepository.save(member);
+        memberRepository.save(currentMember);
     }
 
     // 회원탈퇴
     @Transactional
-    public void deleteUser(PasswordCheckRequest request) {
+    public void deleteUser() {
 
-        Member member = memberRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+        Member currentMember = authUtil.getCurrentMember();
 
-        Profile profile = profileRepository.findProfileByMemberId(member.getId());
+        Profile profile = profileRepository.findProfileByMemberId(currentMember.getId());
 
         // 프로필 이미지 삭제하기
         s3Service.deleteFile(profile.getKeyName());
 
         // 레디스 삭제
-        redisUtil.deleteData(member.getEmail());
+        redisUtil.deleteData(currentMember.getEmail());
 
         // 멤버 삭제
-        memberRepository.delete(member);
+        memberRepository.delete(currentMember);
     }
 }

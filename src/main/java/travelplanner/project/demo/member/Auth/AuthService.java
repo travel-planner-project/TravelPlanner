@@ -48,7 +48,7 @@ public class AuthService {
             throw new ApiException(ErrorType.NULL_VALUE_EXIST);
         }
 
-        // 멤버 생성
+        // 멤버 생성 및 저장
         Member user = Member.builder()
                 .userNickname(request.getUserNickname())
                 .email(request.getEmail())
@@ -60,15 +60,16 @@ public class AuthService {
 
         // 프로필 생성
         Profile profile = Profile.builder()
-                .member(user).id(user.getId())
                 .keyName("")
                 .profileImgUrl("")
                 .build();
 
-        System.out.println(profile.getMember().getId());
+        user.setProfile(profile);  // 양방향 연관관계 설정
 
-        profileRepository.save(profile);
+        profileRepository.save(profile);  // profile 저장
+        memberRepository.save(user);  // 변경된 user 저장
     }
+
 
 
     // 로그인
