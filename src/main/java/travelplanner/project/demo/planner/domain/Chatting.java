@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Chatting {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="chat_id")
     private Long id;
 

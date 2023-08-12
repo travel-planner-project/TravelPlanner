@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProfileUpdateRequest {
 
-    @Schema(description = "유저 인덱스", example = "1")
-    private Long userId;
-
     @Schema(description = "유저 닉네임", example = "유저1")
     private String userNickname;
 

@@ -17,7 +17,7 @@ import java.util.Objects;
 public class ToDo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // 일정 제목

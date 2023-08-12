@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Calendar;
@@ -27,22 +28,15 @@ public class ValidatingService {
     private final PlannerRepository plannerRepository;
     private final CalendarRepository calendarRepository;
     private final GroupMemberRepository groupMemberRepository;
-    private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
-
-    public Member getCurrentMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-    }
+    private final AuthUtil authUtil;
 
     // 플래너와 사용자에 대한 검증
     public Planner validatePlannerAndUserAccess(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
 
-        String currentEmail = getCurrentMember().getEmail();
+        String currentEmail = authUtil.getCurrentMember().getEmail();
         List<GroupMember> groupMembers =
                 groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 

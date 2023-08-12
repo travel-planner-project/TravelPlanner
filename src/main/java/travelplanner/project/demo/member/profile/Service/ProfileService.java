@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
@@ -33,38 +34,22 @@ import java.util.Optional;
 public class ProfileService {
 
     private final TokenUtil tokenUtil;
+    private final AuthUtil authUtil;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final S3Service s3Service;
 
     // 특정 유저의 프로필 찾기
     @Transactional
-    public ProfileResponse findUserProfile(Long userId, HttpServletRequest request) throws ApiException {
+    public ProfileResponse findUserProfile(Long userId) throws ApiException {
 
-        // 헤더에서 JWT 토큰 추출
-        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
-        // JWT 토큰을 이용하여 유저 정보를 추출
-        String email = tokenUtil.getEmail(accessToken);
-
-        // 이메일을 기반으로 유저 정보를 찾는 로직 추가 (예를 들어, 데이터베이스에서 해당 이메일에 해당하는 유저 정보를 가져올 수 있음)
-        Optional<Member> member = memberRepository.findByEmail(email);
-
-        if (!member.isPresent()) {
-            throw new ApiException(ErrorType.USER_NOT_FOUND);
-        }
-
-        Profile profile = profileRepository.findProfileByMemberId(userId);
-        if (profile == null) {
-            profile = Profile.builder()
-                    .member(member.get())
-                    .build();
-
-            profileRepository.save(profile);
-        }
+        Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = member.get().getId().equals(userId);
+        boolean isCurrentUser = member.getId().equals(userId);
 
         ProfileResponse profileResponse = new ProfileResponse();
         profileResponse.setProfileImgUrl(profile.getProfileImgUrl());
@@ -79,26 +64,14 @@ public class ProfileService {
     @Transactional
     public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
-        Member currentMember = getCurrentMember();
-
-        if (currentMember == null) {
-            throw new ApiException(ErrorType.USER_NOT_FOUND);
-        }
-
-        // 로그인한 유저와 요청한 유저가 동일한지 확인
-        boolean isCurrentUser = currentMember.getId().equals(profileUpdateRequest.getUserId());
-
-        if (!isCurrentUser) {
-            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
-        }
-
-        Profile profile = profileRepository.findProfileByMemberId(profileUpdateRequest.getUserId());
-        currentMember.setUserNickname(profileUpdateRequest.getUserNickname());
-
-        memberRepository.save(currentMember);
+        Member member = authUtil.getCurrentMember();
+        member.setUserNickname(profileUpdateRequest.getUserNickname());
+        memberRepository.save(member);
 
         ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setUserNickname(currentMember.getUserNickname());
+        response.setUserNickname(member.getUserNickname());
+
+        Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         if (profileImg.isEmpty()) { // 프로필 이미지가 비어있다면
 
@@ -122,7 +95,7 @@ public class ProfileService {
             s3Service.deleteFile(profile.getKeyName());
 
             String originalImgName = profileImg.getOriginalFilename();
-            String uniqueImgName = generateUniqueImgName(originalImgName, currentMember.getId());
+            String uniqueImgName = generateUniqueImgName(originalImgName, member.getId());
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
             String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;
@@ -163,11 +136,4 @@ public class ProfileService {
     }
 
     // 프로필 수정 [END] =========================================================================================
-
-    private Member getCurrentMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-    }
 }

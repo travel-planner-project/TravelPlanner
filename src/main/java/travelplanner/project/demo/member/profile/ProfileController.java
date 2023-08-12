@@ -46,9 +46,8 @@ public class ProfileController {
     @GetMapping("")
     public ResponseEntity<ProfileResponse> findUserProfile(
             @Parameter(name = "userId", description = "유저 인덱스", in = ParameterIn.QUERY) // swagger
-            @RequestParam Long userId
-            , HttpServletRequest request) {
-        return ResponseEntity.ok(profileService.findUserProfile(userId, request));
+            @RequestParam Long userId) {
+        return ResponseEntity.ok(profileService.findUserProfile(userId));
     }
 
 
@@ -113,7 +112,7 @@ public class ProfileController {
     public void deleteUser(@RequestBody PasswordCheckRequest request) throws ApiException{
 
         if (userService.checkUserPassword(request)) {
-            userService.deleteUser(request);
+            userService.deleteUser();
 
         } else {
             throw new ApiException(ErrorType.CHECK_PASSWORD_AGAIN);

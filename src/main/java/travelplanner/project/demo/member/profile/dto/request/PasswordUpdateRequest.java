@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PasswordUpdateRequest {
 
-    @Schema(description = "유저 인덱스", example = "1")
-    private Long userId;
-
     @Schema(description = "비밀번호", example = "123456789")
     private String password;
 }
