@@ -13,6 +13,7 @@ import travelplanner.project.demo.member.Member;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DynamicInsert
@@ -23,13 +24,22 @@ import java.util.List;
 @Getter
 public class Planner {
 
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
+
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "travelGroup_id")
+//    private TravelGroup travelGroup;
+
+    @OneToMany(mappedBy = "planner")
+    @Builder.Default
+    private List<GroupMember> groupMembers = new ArrayList<>();
 
     @Builder.Default
     private String planTitle = "제목을 입력해주세요";
@@ -41,11 +51,13 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner")
-//    @Builder.Default
+    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
+    @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chatting chatting;
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
     }
@@ -78,4 +90,10 @@ public class Planner {
     public void deleteDate(Calendar calendar){
         this.calendars.remove(calendar);
     }
+
+    public void mappingGroupMember(GroupMember groupMember) {
+        groupMembers.add(groupMember);
+    }
+
+
 }

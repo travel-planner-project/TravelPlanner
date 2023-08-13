@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -22,19 +23,20 @@ import java.util.List;
 public class Calendar {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String eachDate;
+    private String dateTitle;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "calendar")
-    private List<ToDo> toDoList = new ArrayList<>();
+    @OneToMany(mappedBy = "calendar", fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<ToDo> scheduleItemList = new ArrayList<>();
 
     public void mappingToDo(ToDo toDo) {
-        toDoList.add(toDo);
+        scheduleItemList.add(toDo);
     }
 
     // 플래너 연관관계 매핑
@@ -47,4 +49,25 @@ public class Calendar {
         planner.mappingCalendar(this);
     }
 
+    public void edit(CalendarEditor calendarEditor){ // Member member
+        dateTitle = calendarEditor.getDateTitle();
+    }
+
+    public CalendarEditor.CalendarEditorBuilder toEditor() {
+        return CalendarEditor.builder()
+                .dateTitle(dateTitle);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Calendar other = (Calendar) o;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

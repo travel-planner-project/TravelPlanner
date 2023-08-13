@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "120-test-에러분기와-동작-테스트" ]
+    branches: [ "114-be-feat-플래너-rest-api-calendar-todo-websocket-api-생성" ]
   pull_request:
-    branches: [ "120-test-에러분기와-동작-테스트" ]
+    branches: [ "114-be-feat-플래너-rest-api-calendar-todo-websocket-api-생성" ]
 
 permissions:
   contents: read

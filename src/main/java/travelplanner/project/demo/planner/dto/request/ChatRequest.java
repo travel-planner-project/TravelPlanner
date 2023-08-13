@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CalendarUpdateRequest {
+public class ChatRequest {
 
-    private Long dateId;
-    private String eachDate;
+    private Long userId;
+    private String message;
 }

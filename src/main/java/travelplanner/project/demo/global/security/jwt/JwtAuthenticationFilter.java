@@ -31,7 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
 
-        if (requestURI.startsWith("/auth") || requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/v3")) {
+        if (requestURI.startsWith("/auth") || requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/v3") || requestURI.startsWith("/ws")) {
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,12 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new TokenExpiredException();
 
         } catch (Exception e) {
-            // 토큰 검증 과정에서 예외가 발생하면, 예외를 던짐
+            e.printStackTrace();
             throw new AuthenticationException("Error verifying token.") {};
         }
 
 
         String principal = tokenUtil.getEmail(accessToken);
+        log.info("유저 정보: " + principal);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());

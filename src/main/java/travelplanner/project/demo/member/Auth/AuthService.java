@@ -1,15 +1,9 @@
 package travelplanner.project.demo.member.Auth;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +19,7 @@ import travelplanner.project.demo.member.profile.ProfileRepository;
 
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -36,7 +31,6 @@ public class AuthService {
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
     private final AuthenticationManager authenticationManager;
-    private Authentication authentication;
 
 
     // 회원가입
@@ -45,6 +39,7 @@ public class AuthService {
 
         // 이메일로 멤버 조회
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+
         if (member.isPresent()) {
             throw new ApiException(ErrorType.ALREADY_EXIST_EMAIL);
         }
@@ -53,7 +48,7 @@ public class AuthService {
             throw new ApiException(ErrorType.NULL_VALUE_EXIST);
         }
 
-        // 멤버 생성
+        // 멤버 생성 및 저장
         Member user = Member.builder()
                 .userNickname(request.getUserNickname())
                 .email(request.getEmail())
@@ -62,42 +57,40 @@ public class AuthService {
                 .build();
 
         memberRepository.save(user);
+
+        // 프로필 생성
+        Profile profile = Profile.builder()
+                .keyName("")
+                .profileImgUrl("")
+                .build();
+
+        user.setProfile(profile);  // 양방향 연관관계 설정
+
+        profileRepository.save(profile);  // profile 저장
+        memberRepository.save(user);  // 변경된 user 저장
     }
+
 
 
     // 로그인
     @Transactional
     public AuthResponse login(LoginRequest request, HttpServletResponse response) {
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-        } catch (InsufficientAuthenticationException e) {
-            System.out.println(e.getMessage());
-        }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
-
-        // 프로필
-        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
-
-        if (profile == null) {
-
-            profile = Profile.builder()
-                    .member(member.get())
-                    .build();
-
-            profileRepository.save(profile);
-        }
+        Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
-        String accessToken = tokenUtil.generateAccessToken(member.get().getEmail());
-        String refreshToken = tokenUtil.generateRefreshToken(member.get().getEmail());
+        String accessToken = tokenUtil.generateAccessToken(member.getEmail());
+        String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
 
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
@@ -106,12 +99,12 @@ public class AuthService {
         cookieUtil.create(refreshToken, response);
 
         // 리프레시 토큰을 Redis 에 저장
-        redisUtil.setData(member.get().getEmail(), refreshToken);
+        redisUtil.setData(member.getEmail(), refreshToken);
 
         return AuthResponse.builder()
-                .userId(member.get().getId())
-                .email(member.get().getEmail())
-                .userNickname(member.get().getUserNickname())
+                .userId(member.getId())
+                .email(member.getEmail())
+                .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .build();
     }

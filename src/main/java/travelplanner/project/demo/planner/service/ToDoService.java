@@ -3,35 +3,87 @@ package travelplanner.project.demo.planner.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.domain.ToDo;
-import travelplanner.project.demo.planner.domain.ToDoEditor;
+import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
-import travelplanner.project.demo.planner.dto.request.ToDoDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
+import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class ToDoService {
 
-    private final MemberRepository memberRepository;
     private final ToDoRepository toDoRepository;
+    private final GroupMemberRepository groupMemberRepository;
+    private final ValidatingService validatingService;
 
-    public void addTodo(ToDoCraeteRequest request) {
+    public List<ToDoResponse> getScheduleItemList() {
+        List<ToDo> scheduleItemList = toDoRepository.findAll();
+        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
+        for (ToDo toDo : scheduleItemList){
+            ToDoResponse toDoResponse = ToDoResponse.builder()
+                    .itemId(toDo.getId())
+                    .dateId(toDo.getCalendar().getId())
+                    .itemTitle(toDo.getItemTitle())
+                    .category(toDo.getCategory())
+                    .itemTime(toDo.getItemTime())
+                    .itemContent(toDo.getItemContent())
+                    .isPrivate(toDo.getIsPrivate())
+                    .budget(toDo.getBudget())
+                    .itemAddress(toDo.getItemAddress())
+                    .build();
+            toDoResponses.add(toDoResponse);
+        }
+        return toDoResponses;
+    }
+
+    // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
+    public List<ToDoResponse> getScheduleItemList(Long calendarId) {
+
+        List<ToDo> scheduleItemList = toDoRepository.findByCalendarId(calendarId);
+        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
+        for (ToDo toDo : scheduleItemList) {
+            ToDoResponse toDoResponse = ToDoResponse.builder()
+                    .itemId(toDo.getId())
+                    .dateId(toDo.getCalendar().getId())
+                    .itemTitle(toDo.getItemTitle())
+                    .category(toDo.getCategory())
+                    .itemTime(toDo.getItemTime())
+                    .itemContent(toDo.getItemContent())
+                    .isPrivate(toDo.getIsPrivate())
+                    .budget(toDo.getBudget())
+                    .itemAddress(toDo.getItemAddress())
+                    .build();
+            toDoResponses.add(toDoResponse);
+        }
+        return toDoResponses;
+    }
+
+
+
+    public void createTodo(Long plannerId, Long dateId,
+                           ToDoCraeteRequest request) {
+        // 플래너와 사용자에 대한 검증
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        // 캘린더에 대한 검증
+        Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
+
         ToDo todo = ToDo.builder()
+                .calendar(calendar)
                 .itemTitle(request.getItemTitle())
-                .itemDate(request.getItemDate())
+                .itemTime(request.getItemTime())
                 .category(request.getCategory())
-                .content(request.getContent())
+                .itemContent(request.getItemContent())
                 .isPrivate(request.getIsPrivate())
                 .budget(request.getBudget())
                 .itemAddress(request.getItemAddress())
@@ -40,56 +92,50 @@ public class ToDoService {
     }
 
     @Transactional
-    public void editTodo(Long id, ToDoEditRequest editRequest) {
-        ToDo toDo = toDoRepository.findById(id)
-                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
+    public void editTodo(
+            Long plannerId, Long dateId, Long toDoId,
+            ToDoEditRequest editRequest
+    ) {
 
-        // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
+        // 플래너와 사용자에 대한 검증
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        // 캘린더에 대한 검증
+        Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
+        // 투두에 대한 검증
+        ToDo toDo = validatingService.validateToDoAccess(calendar, toDoId);
 
-//        Member currentMember = getCurrentMember();
-//        for(Member x: GroupMember){
-//            Member member = GroupMember.getMemberName();
-//            if (!currentMember.equals(member)) {
-//                throw new Exception(TODO_NOT_AUTHORIZED);
-//            }
-//        }
-
+        // 수정 로직 시작
         ToDoEditor.ToDoEditorBuilder editorBuilder = toDo.toEditor();
         ToDoEditor toDoEditor = editorBuilder
                 .itemTitle(editRequest.getItemTitle())
-                .itemDate(editRequest.getItemDate())
+                .itemTime(editRequest.getItemTime())
                 .category(editRequest.getCategory())
                 .itemAddress(editRequest.getItemAddress())
                 .budget(editRequest.getBudget())
                 .isPrivate(editRequest.getIsPrivate())
-                .content(editRequest.getContent())
+                .itemContent(editRequest.getItemContent())
                 .build();
         toDo.edit(toDoEditor);
     }
 
-    public void delete(ToDoDeleteRequest deleteRequest) {
+    public void delete(Long plannerId, Long dateId, Long toDoId) {
 
-        ToDo toDo = toDoRepository.findById(deleteRequest.getDateId())
-                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
+        // 플래너와 사용자에 대한 검증
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        // 캘린더에 대한 검증
+        Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
+        // 투두에 대한 검증
+        ToDo toDo = validatingService.validateToDoAccess(calendar, toDoId);
 
-        // TODO 투두 엔티티와 별개로 지울 수 있는지에 대한 자격조건 확인해야함
+        // 투두에서 캘린더를 갖고 옴
+        calendar = toDo.getCalendar();
 
-//        Member currentMember = getCurrentMember();
-//        for(Member x: GroupMember){
-//            Member member = GroupMember.getMemberName();
-//            if (!currentMember.equals(member)) {
-//                throw new Exception(TODO_NOT_AUTHORIZED);
-//            }
-//        }
+        // 캘린더의 투두 리스트에서 투두 제거
+        calendar.getScheduleItemList().remove(toDo);
 
         toDoRepository.delete(toDo);
     }
 
-    private Member getCurrentMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
-    }
+
 }
 

@@ -3,15 +3,11 @@ package travelplanner.project.demo.member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import travelplanner.project.demo.member.Auth.Role;
-import travelplanner.project.demo.planner.domain.Calendar;
+import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.planner.domain.Planner;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -37,9 +33,19 @@ public class Member {
     private Role role;
 
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Planner> planners = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
 
     public void mappingPlanner(Planner planner) {
         planners.add(planner);
+    }
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+        profile.setMember(this);
     }
 }

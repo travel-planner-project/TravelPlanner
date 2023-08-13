@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,13 +17,13 @@ import org.hibernate.annotations.ColumnDefault;
 public class ToDo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // 일정 제목
     private String itemTitle;
     // 일정 시간
-    private String itemDate;
+    private String itemTime;
     // 일정 분류
     private String category;
     // 일정 주소
@@ -33,9 +35,9 @@ public class ToDo {
     @ColumnDefault("false")
     private Boolean isPrivate;
 
-    private String content;
+    private String itemContent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "calendar_id")
     private Calendar calendar;
 
@@ -48,21 +50,34 @@ public class ToDo {
 
         return ToDoEditor.builder()
                 .itemTitle(itemTitle)
-                .itemDate(itemDate)
+                .itemTime(itemTime)
                 .category(category)
                 .itemAddress(itemAddress)
                 .budget(budget)
                 .isPrivate(isPrivate)
-                .content(content);
+                .itemContent(itemContent);
     }
 
     public void edit(ToDoEditor toDoEditor) {
         itemTitle = toDoEditor.getItemTitle();
-        itemDate = toDoEditor.getItemDate();
+        itemTime = toDoEditor.getItemTime();
         category = toDoEditor.getCategory();
         itemAddress = toDoEditor.getItemAddress();
         budget = toDoEditor.getBudget();
         isPrivate = toDoEditor.getIsPrivate();
-        content = toDoEditor.getContent();
+        itemContent = toDoEditor.getItemContent();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ToDo other = (ToDo) o;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

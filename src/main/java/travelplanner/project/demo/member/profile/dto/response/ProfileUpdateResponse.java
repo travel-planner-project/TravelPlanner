@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "프로필 상세 응답 DTO")
+@Schema(description = "프로필 수정 응답 DTO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
