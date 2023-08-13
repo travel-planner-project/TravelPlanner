@@ -24,7 +24,7 @@ public class TokenUtil {
     private static final String SECRET_KEY = "68a4ef27a3f2f0f605a6781e6be34b466b5da3d11db5384218c407e99e6dcecf3361e1f6def13c78f2deb1e6e822bef2ca1c95b1166c97c5278ad81fdba4538";
 
     // Access 토큰 유효시간 15 분
-    static final long AccessTokenValidTime = 5 * 60 * 1000L;
+    static final long AccessTokenValidTime = 3 * 60 * 1000L;
 
     public String generateAccessToken(String email) {
 
