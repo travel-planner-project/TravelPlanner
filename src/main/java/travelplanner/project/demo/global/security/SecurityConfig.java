@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                     .requestMatchers("/ws/**").permitAll()
+                    .requestMatchers("/oauth/**", "/favicon.ico").permitAll()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
