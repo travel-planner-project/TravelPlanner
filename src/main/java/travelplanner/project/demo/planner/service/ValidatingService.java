@@ -58,7 +58,7 @@ public class ValidatingService {
         return calendar;
     }
 
-    // 캘린더에 대한 검증
+    // 투두에 대한 검증
     public ToDo validateToDoAccess(Calendar calendar, Long updateId) {
 
         ToDo toDo = toDoRepository.findById(updateId)
