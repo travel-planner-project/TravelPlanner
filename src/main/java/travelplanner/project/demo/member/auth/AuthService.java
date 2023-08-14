@@ -1,4 +1,4 @@
-package travelplanner.project.demo.member.Auth;
+package travelplanner.project.demo.member.auth;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

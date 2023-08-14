@@ -3,7 +3,7 @@ package travelplanner.project.demo.member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import travelplanner.project.demo.member.Auth.Role;
+import travelplanner.project.demo.member.auth.Role;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.planner.domain.Planner;
 
