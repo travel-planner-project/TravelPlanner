@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate customRestTemplate(RestTemplateBuilder restTemplateBuilder) {
 
         return restTemplateBuilder
                 .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
