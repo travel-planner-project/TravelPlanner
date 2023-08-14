@@ -32,7 +32,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<Planner> planners = new ArrayList<>();
 
