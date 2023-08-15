@@ -28,4 +28,6 @@ public class FeedResponse {
 
     private String hostName;
 
+    private String hostUrl;
+
 }
