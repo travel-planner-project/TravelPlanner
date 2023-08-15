@@ -26,8 +26,10 @@ public class FeedResponse {
     @Schema(description = "여행 끝 날짜", example = "7/20")
     private LocalDateTime endDate;
 
+    @Schema(description = "호스트 닉네임", example = "준형")
     private String hostName;
 
+    @Schema(description = "프로필 이미지 url")
     private String hostUrl;
 
 }

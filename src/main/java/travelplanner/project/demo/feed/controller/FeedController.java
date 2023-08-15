@@ -1,5 +1,6 @@
 package travelplanner.project.demo.feed.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import travelplanner.project.demo.global.util.PageUtil;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Feed", description = "피드 API")
 public class FeedController {
 
     private final FeedService feedService;
