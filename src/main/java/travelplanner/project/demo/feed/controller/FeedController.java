@@ -16,7 +16,7 @@ public class FeedController {
 
     private final FeedService feedService;
 
-    @GetMapping("/")
+    @GetMapping("/feed")
     public PageUtil<FeedResponse> getFeed(
             @RequestParam(required = false) String planTitle,
             @RequestParam(defaultValue = "0") int page,
