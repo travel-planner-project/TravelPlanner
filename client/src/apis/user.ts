@@ -62,14 +62,13 @@ export const editProfile = async (formData: FormData) => {
   }
 }
 
-type CheckPasswordType = {
-  userId: number
+type PasswordType = {
   password: string
 }
 
-export const checkPassword = async ({ userId, password }: CheckPasswordType) => {
+export const checkPassword = async ({ password }: PasswordType) => {
   try {
-    const response = await axiosInstance.post('/profile/user/check', { userId, password })
+    const response = await axiosInstance.post('/profile/user/check', { password })
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
@@ -77,14 +76,9 @@ export const checkPassword = async ({ userId, password }: CheckPasswordType) => 
   }
 }
 
-type EditPasswordType = {
-  userId: number
-  password: string
-}
-
-export const editPassword = async ({ userId, password }: EditPasswordType) => {
+export const editPassword = async ({ password }: PasswordType) => {
   try {
-    const response = await axiosInstance.patch('/profile/user/updateInfo', { userId, password })
+    const response = await axiosInstance.patch('/profile/user/updateInfo', { password })
     return response
   } catch (error: unknown) {
     const axiosError = error as AxiosError
@@ -92,10 +86,10 @@ export const editPassword = async ({ userId, password }: EditPasswordType) => {
   }
 }
 
-export const deleteUser = async ({ userId, password }: EditPasswordType) => {
+export const deleteUser = async ({ password }: PasswordType) => {
   try {
     const response = await axiosInstance.delete('/profile/user/delete', {
-      data: { userId, password },
+      data: { password },
     })
     return response
   } catch (error: unknown) {
