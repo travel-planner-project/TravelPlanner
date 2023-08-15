@@ -12,15 +12,27 @@ import travelplanner.project.demo.member.Member;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    // 사용자가 로그인 된 후 firebase 에게 전달받은 token 값을 웹서버에 등록
+
     private final NotificationService notificationService;
     private final AuthUtil authUtil;
 
-    @PostMapping("/firebase/register")
-    public ResponseEntity register(@RequestBody String token) {
+    // 사용자가 로그인 된 후 firebase 에게 전달받은 token 값을 웹서버에 등록
+    @PostMapping("/firebase/create")
+    public ResponseEntity createToken(@RequestBody String token) {
 
         Member member = authUtil.getCurrentMember();
-        notificationService.register(member.getId(), token);
+        notificationService.createToken(member.getId(), token);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 사용자가 로그아웃하면 토큰 삭제
+    @PostMapping("/firebase/remove")
+    public ResponseEntity removeToken(@RequestBody String token) {
+
+        Member member = authUtil.getCurrentMember();
+        notificationService.deleteToken(member.getId(), token);
+
         return ResponseEntity.ok().build();
     }
 }
