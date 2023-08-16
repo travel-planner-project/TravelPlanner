@@ -19,5 +19,4 @@
 .line {
   @include U.size(100%, 1px);
   background-color: C.$gray200;
-  // color: C.$gray200;
 }
