@@ -12,8 +12,8 @@ import java.util.List;
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
     Page<Planner> findPlannerByMemberId(Long userId, Pageable pageable);
     Planner findPlannerById(Long plannerId);
-
     List<Planner> findByMember(Member member);
+    Page<Planner> findByIsPrivateFalse(Pageable pageable);
+    Page<Planner> findByIsPrivateFalseAndPlanTitleContaining(String planTitle, Pageable pageable);
 
-    Page<Planner> findByPlanTitleContaining(String planTitle, Pageable pageable);
 }
