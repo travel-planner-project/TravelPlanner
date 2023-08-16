@@ -7,9 +7,11 @@
   border-radius: 12px;
   padding: 60px;
   background-color: C.$gray100;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 45px 2px 45px 1fr;
   gap: 36px;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .headline {
@@ -19,4 +21,8 @@
 .line {
   @include U.size(100%, 1px);
   background-color: C.$gray200;
+}
+
+.ul {
+  overflow: auto;
 }

@@ -49,3 +49,15 @@ export const deletePlan = async (id: number) => {
     return axiosError.response
   }
 }
+
+export const getPlanners = async (page = 0, planTitle = '', options = {}, size = 6) => {
+  try {
+    const response = await axiosInstance.get(`/feed`, {
+      params: { planTitle, page, size },
+      ...options,
+    })
+    return response
+  } catch (err) {
+    alert('피드를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요')
+  }
+}

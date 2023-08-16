@@ -1,6 +1,7 @@
 import { differenceInDays, getMonth } from 'date-fns'
 import Icon from '../Common/Icon'
 import styles from './PlannerTitle.module.scss'
+import { forwardRef, Ref } from 'react'
 
 type PlannerTitleProp = {
   plannerId: number
@@ -11,18 +12,15 @@ type PlannerTitleProp = {
   hostUrl: string
 }
 
-export default function PlannerTitle({
-  planTitle,
-  startDate,
-  endDate,
-  hostName,
-  hostUrl,
-}: PlannerTitleProp) {
-  const date = getMonth(new Date(startDate)) + 1
-  const dateDiffer = differenceInDays(new Date(endDate), new Date(startDate))
+export default forwardRef(function PlannerTitle(
+  { planTitle, startDate, endDate, hostName, hostUrl }: PlannerTitleProp,
+  ref: Ref<HTMLLIElement>
+) {
+  const date = startDate ? getMonth(new Date(startDate)) + 1 : getMonth(new Date()) + 1
+  const dateDiffer = startDate ? differenceInDays(new Date(endDate), new Date(startDate)) : 0
 
   return (
-    <li className={styles.li}>
+    <li className={styles.li} ref={ref}>
       {hostUrl ? (
         <img src={hostUrl} className={styles.img} alt='host profile' />
       ) : (
@@ -41,4 +39,4 @@ export default function PlannerTitle({
       </div>
     </li>
   )
-}
+})
