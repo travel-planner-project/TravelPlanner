@@ -103,3 +103,13 @@ export const deleteUser = async ({ userId, password }: EditPasswordType) => {
     return axiosError.response
   }
 }
+
+export const refreshAccessToken = async () => {
+  try {
+    const response = await axiosInstance.get('/auth/token')
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
