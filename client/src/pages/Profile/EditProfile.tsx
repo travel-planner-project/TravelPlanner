@@ -130,7 +130,6 @@ function EditProfile() {
     const nickNameBlob = new Blob(
       [
         JSON.stringify({
-          userId: userId,
           userNickname: editNickname,
           changeProfileImg: changeProfileImg,
         }),

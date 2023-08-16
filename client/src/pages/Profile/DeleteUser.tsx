@@ -1,15 +1,10 @@
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
-import { userInfo } from '../../store/store'
 import useLogout from '../../hooks/useLogout'
-import useRouter from '../../hooks/useRouter'
 import { deleteUser } from '../../apis/user'
 import styles from './DeleteUser.module.scss'
 
 function DeleteUser() {
-  const { routeTo } = useRouter()
   const logout = useLogout()
-  const { userId } = useRecoilValue(userInfo)
   const [currentPassword, setCurrentPassword] = useState('')
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +19,10 @@ function DeleteUser() {
       return
     }
 
-    deleteUser({ userId: userId, password: currentPassword }).then(response => {
+    deleteUser({ password: currentPassword }).then(response => {
       if (response?.status === 200) {
         alert('회원탈퇴가 완료되었습니다.')
         logout()
-        routeTo('/')
       } else if (response?.status === 400) {
         alert('비밀번호가 일치하지 않습니다.')
       } else {
