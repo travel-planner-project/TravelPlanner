@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react'
 
-const Home = lazy(() => import('../pages/Home'))
+// const Home = lazy(() => import('../pages/Home'))
 const Planner = lazy(() => import('../pages/Planner'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
 const SignIn = lazy(() => import('../pages/SignIn'))
@@ -65,11 +65,11 @@ export const routerData: RouterElement[] = [
     label: 'HOME',
     element: (
       <Suspense fallback={<div>loading</div>}>
-        <Home />
+        <Planner />
       </Suspense>
     ),
-    onNavBar: true,
-    withAuth: false,
+    onNavBar: false,
+    withAuth: true,
   },
   {
     id: 4,
@@ -93,7 +93,7 @@ export const routerData: RouterElement[] = [
       </Suspense>
     ),
     onNavBar: true,
-    withAuth: true,
+    withAuth: false,
   },
   {
     id: 6,
