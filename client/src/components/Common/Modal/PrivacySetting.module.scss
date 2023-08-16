@@ -1,0 +1,19 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/typography' as T;
+@use '../../../styles/utils' as U;
+
+.privacySetting {
+  @include U.flex-c(row, flex-start);
+  gap: 10px;
+  border: none;
+}
+
+.radio {
+  appearance: auto;
+  &:focus {
+    outline: auto;
+    appearance: auto;
+  }
+  -webkit-appearance: radio;
+  margin-right: 10px;
+}

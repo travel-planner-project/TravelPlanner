@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import styles from './Modal.module.scss'
 import useModal from '../../../hooks/useModal'
 import InviteModal from './InviteModal'
+import PrivacySetting from './PrivacySetting'
 
 type ModalContentProp = {
   onClose: () => void
@@ -9,7 +10,7 @@ type ModalContentProp = {
   description: string
   placeholder: string
   submitButton: string
-  onSubmit: (input: string) => void
+  onSubmit: (input: { title: string; isPrivate: boolean }) => void
 }
 
 function ModalContent({
@@ -22,9 +23,14 @@ function ModalContent({
 }: ModalContentProp) {
   const [inputValue, setInputValue] = useState('')
 
-  const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onSubmit(inputValue)
+    const isPrivate = { public: false, private: true }
+
+    const target = event.target as HTMLFormElement
+    const privacySetting: keyof typeof isPrivate = target.privacySetting.value
+
+    onSubmit({ title: inputValue, isPrivate: isPrivate[privacySetting] })
     // const { status, data } = await onSubmit(inputValue)
     // if (status !== 200) { alert(data.message) }
 
@@ -32,7 +38,7 @@ function ModalContent({
   }
 
   return (
-    <>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <label htmlFor={title} className={styles.title}>
         {title}
       </label>
@@ -46,15 +52,16 @@ function ModalContent({
           onChange={event => setInputValue(event.target.value)}
         />
       </div>
+      <PrivacySetting />
       <div className={styles.btnBox}>
-        <button type='submit' className={styles.submitBtn} onClick={handleSubmit}>
+        <button type='submit' className={styles.submitBtn}>
           {submitButton}
         </button>
         <button type='button' className={styles.cancelBtn} onClick={onClose}>
           취소
         </button>
       </div>
-    </>
+    </form>
   )
 }
 
@@ -97,7 +104,7 @@ function Modal({ type }: ModalProps) {
           onClick={(e: React.MouseEvent) => e.stopPropagation()}
           role='presentation'
         >
-          <form className={styles.content}>{modalContent}</form>
+          <div>{modalContent}</div>
         </div>
       </div>
     )
