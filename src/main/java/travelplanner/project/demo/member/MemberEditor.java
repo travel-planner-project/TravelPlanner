@@ -5,9 +5,11 @@ import lombok.Getter;
 @Getter
 public class MemberEditor {
     private String userNickname;
+    private String password; // 비밀번호 필드 추가
 
-    public MemberEditor(String userNickname) {
+    public MemberEditor(String userNickname, String password) {
         this.userNickname = userNickname;
+        this.password = password;
     }
 
     public static MemberEditorBuilder builder() {
@@ -16,6 +18,7 @@ public class MemberEditor {
 
     public static class MemberEditorBuilder {
         private String userNickname;
+        private String password;
 
         MemberEditorBuilder() {
         }
@@ -27,8 +30,15 @@ public class MemberEditor {
             return this;
         }
 
+        public MemberEditorBuilder password(final String password) {
+            if (password != null && !password.isEmpty()) {
+                this.password = password;
+            }
+            return this;
+        }
+
         public MemberEditor build() {
-            return new MemberEditor(userNickname);
+            return new MemberEditor(userNickname, password);
         }
     }
 }

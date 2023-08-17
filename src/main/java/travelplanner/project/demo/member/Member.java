@@ -43,12 +43,13 @@ public class Member {
     public void mappingPlanner(Planner planner) {
         planners.add(planner);
     }
-//    public void setProfile(Profile profile) {
-//        this.profile = profile;
-//        profile.setMember(this);
-//    }
 
     public void edit(MemberEditor memberEditor) {
-        userNickname = memberEditor.getUserNickname();
+        if (memberEditor.getUserNickname() != null) {
+            userNickname = memberEditor.getUserNickname();
+        }
+        if (memberEditor.getPassword() != null) {
+            password = memberEditor.getPassword(); // 비밀번호 수정 로직 추가
+        }
     }
 }
