@@ -12,7 +12,6 @@ export default function SearchBar({ handleSubmit }: SearchBarProps) {
         type='text'
         className={styles.input}
         placeholder='여행하고 싶은 지역을 입력하세요'
-        required
         autoComplete='off'
       />
       <button type='submit' className={styles.searchBtn}>

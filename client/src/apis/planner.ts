@@ -1,4 +1,4 @@
-import axios, { AxiosError, CancelToken, Canceler } from 'axios'
+import axios, { AxiosError, CancelToken } from 'axios'
 import { axiosInstance } from './instance'
 
 export const getCurrentUserPlanner = async (email: string) => {
