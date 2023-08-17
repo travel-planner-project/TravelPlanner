@@ -47,4 +47,8 @@ public class Member {
         this.profile = profile;
         profile.setMember(this);
     }
+
+    public void edit(MemberEditor memberEditor) {
+        userNickname = memberEditor.getUserNickname();
+    }
 }

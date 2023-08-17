@@ -1,10 +1,8 @@
 package travelplanner.project.demo.member.profile;
 
 import lombok.Getter;
-
 @Getter
 public class ProfileEditor {
-
     private String profileImgUrl;
     private String keyName;
 
@@ -25,16 +23,12 @@ public class ProfileEditor {
         }
 
         public ProfileEditorBuilder profileImgUrl(final String profileImgUrl) {
-            if (profileImgUrl != null && !profileImgUrl.isEmpty()) {
-                this.profileImgUrl = profileImgUrl;
-            }
+            this.profileImgUrl = profileImgUrl;
             return this;
         }
 
         public ProfileEditorBuilder keyName(final String keyName) {
-            if (keyName != null && !keyName.isEmpty()) {
-                this.keyName = keyName;
-            }
+            this.keyName = keyName;
             return this;
         }
 
