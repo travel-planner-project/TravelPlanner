@@ -273,6 +273,8 @@ function PlanDetail() {
     event.target.reset()
   }
 
+  const onScheduleSubmit = () => {}
+
   const planDetailProps: PlanDetailProps = {
     userId,
     chatModal,
