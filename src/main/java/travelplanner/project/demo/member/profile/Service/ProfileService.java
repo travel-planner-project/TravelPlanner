@@ -51,13 +51,12 @@ public class ProfileService {
         // 로그인한 유저와 요청한 유저가 동일한지 확인
         boolean isCurrentUser = member.getId().equals(userId);
 
-        ProfileResponse profileResponse = new ProfileResponse();
-        profileResponse.setProfileImgUrl(profile.getProfileImgUrl());
-        profileResponse.setEmail(profile.getMember().getEmail());
-        profileResponse.setUserNickname(profile.getMember().getUserNickname());
-        profileResponse.setCheckUser(isCurrentUser);
-
-        return profileResponse;
+        return ProfileResponse.builder()
+                .email(profile.getMember().getEmail())
+                .userNickname(profile.getMember().getUserNickname())
+                .profileImgUrl(profile.getProfileImgUrl())
+                .checkUser(isCurrentUser)
+                .build();
     }
 
     // 프로필 수정 [START] =========================================================================================
@@ -65,7 +64,9 @@ public class ProfileService {
     public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
         Member member = authUtil.getCurrentMember();
+
         member.setUserNickname(profileUpdateRequest.getUserNickname());
+
         memberRepository.save(member);
 
         ProfileUpdateResponse response = new ProfileUpdateResponse();

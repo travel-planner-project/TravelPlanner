@@ -49,14 +49,13 @@ public class AuthService {
         }
 
         // 멤버 생성 및 저장
-        Member user = Member.builder()
+        Member.MemberBuilder memberBuilder = Member.builder()
                 .userNickname(request.getUserNickname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.MEMBER)
-                .build();
+                .role(Role.MEMBER);
 
-        memberRepository.save(user);
+//        memberRepository.save(user);
 
         // 프로필 생성
         Profile profile = Profile.builder()
@@ -64,7 +63,10 @@ public class AuthService {
                 .profileImgUrl("")
                 .build();
 
-        user.setProfile(profile);  // 양방향 연관관계 설정
+        Member user = memberBuilder.profile(profile)
+                .build();
+
+//        user.setProfile(profile);  // 양방향 연관관계 설정
 
         profileRepository.save(profile);  // profile 저장
         memberRepository.save(user);  // 변경된 user 저장

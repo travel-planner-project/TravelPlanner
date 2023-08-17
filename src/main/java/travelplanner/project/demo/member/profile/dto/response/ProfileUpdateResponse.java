@@ -1,12 +1,11 @@
 package travelplanner.project.demo.member.profile.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Schema(description = "프로필 수정 응답 DTO")
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileUpdateResponse {

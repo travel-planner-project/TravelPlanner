@@ -13,7 +13,6 @@ import travelplanner.project.demo.member.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class Profile {
 
     @Id
