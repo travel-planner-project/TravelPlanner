@@ -43,10 +43,10 @@ public class Member {
     public void mappingPlanner(Planner planner) {
         planners.add(planner);
     }
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-        profile.setMember(this);
-    }
+//    public void setProfile(Profile profile) {
+//        this.profile = profile;
+//        profile.setMember(this);
+//    }
 
     public void edit(MemberEditor memberEditor) {
         userNickname = memberEditor.getUserNickname();
