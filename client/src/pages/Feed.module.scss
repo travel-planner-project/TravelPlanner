@@ -26,3 +26,8 @@
 .ul {
   overflow: auto;
 }
+
+.errorMessage {
+  text-align: center;
+  @include T.gray-regular-20;
+}

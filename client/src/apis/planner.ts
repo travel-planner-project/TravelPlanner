@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios'
+import axios, { AxiosError, CancelToken, Canceler } from 'axios'
 import { axiosInstance } from './instance'
 
 export const getCurrentUserPlanner = async (email: string) => {
@@ -50,14 +50,18 @@ export const deletePlan = async (id: number) => {
   }
 }
 
-export const getPlanners = async (page = 0, planTitle = '', options = {}, size = 6) => {
+type optionsType = {
+  params: { planTitle: string; page: number }
+  cancelToken: CancelToken
+}
+
+export const getPlanners = async (options: optionsType) => {
   try {
-    const response = await axiosInstance.get(`/feed`, {
-      params: { planTitle, page, size },
-      ...options,
-    })
+    const response = await axiosInstance.get(`/feed`, options)
     return response
-  } catch (err) {
-    alert('피드를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요')
+  } catch (error: unknown) {
+    if (axios.isCancel(error)) return
+    const axiosError = error as AxiosError
+    return axiosError.response
   }
 }
