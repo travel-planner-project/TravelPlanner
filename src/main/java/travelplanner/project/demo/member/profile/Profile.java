@@ -26,4 +26,15 @@ public class Profile {
     private String profileImgUrl;
 
     private String keyName;
+
+    public ProfileEditor.ProfileEditorBuilder toEditor() {
+        return ProfileEditor.builder()
+                .profileImgUrl(profileImgUrl)
+                .keyName(keyName);
+    }
+
+    public void edit(ProfileEditor profileEditor) {
+        profileImgUrl = profileEditor.getProfileImgUrl();
+        keyName = profileEditor.getKeyName();
+    }
 }
