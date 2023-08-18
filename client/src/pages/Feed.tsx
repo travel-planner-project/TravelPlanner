@@ -44,7 +44,7 @@ export default function Feed() {
       <ul className={styles.ul}>
         {results.map((data, idx) => {
           return (
-            <Link to={`/plandetail/${data.plannerId}`} key={data.plannerId}>
+            <Link to={`/planner/${data.plannerId}`} key={data.plannerId}>
               <PlannerTitle {...data} ref={idx === results.length - 1 ? lastPostRef : undefined} />
             </Link>
           )

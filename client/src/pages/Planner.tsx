@@ -151,7 +151,7 @@ function Planner() {
   }
   const handlePlannerClick = (id: number) => {
     // 해당 element의 id 값을 가진 엔드포인트로 연결
-    routeTo(`/plandetail/${id}`)
+    routeTo(`/planner/${id}`)
     console.log('플래너 상세 페이지')
   }
 
