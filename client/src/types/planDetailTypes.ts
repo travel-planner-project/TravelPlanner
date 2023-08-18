@@ -1,7 +1,7 @@
 export type Chat = {
   userId: number
   userNickname: string
-  userProfile: string
+  profileImgUrl: string
   message: string
 }
 
