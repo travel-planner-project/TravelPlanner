@@ -52,7 +52,7 @@ public class Planner {
     private List<Calendar> calendars = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id")
+    @JoinColumn(name = "chatting_id")
     private Chatting chatting;
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
@@ -91,5 +91,10 @@ public class Planner {
         groupMembers.add(groupMember);
     }
 
+    // 연관 관계 편의 메서드
+    public void mappingChatting(Chatting chatting) {
+        this.chatting = chatting;
+        chatting.mappingPlanner(this);
+    }
 
 }
