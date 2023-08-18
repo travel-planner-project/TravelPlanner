@@ -13,8 +13,19 @@ export interface ChattingProps {
   onChatSubmit: (event: any) => void
 }
 
+type dataType = {
+  dateId: number
+  itemTitle: string
+  itemDate: string
+  category: string | null
+  budget: number
+  itemContent: string
+  isPrivate: boolean
+  itemAddress: string
+}
+
 export interface ScheduleProps {
-  scheduleData: {
+  planDetailData: {
     dateId: number
     dateTitle: string
     scheduleItemList: {
@@ -33,6 +44,10 @@ export interface ScheduleProps {
   handleCloseScheduleEditor: () => void
   currentDateId: number
   isScheduleEditorOpened: boolean
+  handleChange: (field: string, value: string) => void
+  handleSubmit: (e: React.FormEvent, dateId: number) => void
+  handleOptionChange: (selectedOption: string) => void
+  scheduleData: dataType
 }
 
 export interface PlanDetailProps {

@@ -30,7 +30,11 @@ function PlanDetailView({
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
+  planDetailData,
   scheduleData,
+  handleChange,
+  handleOptionChange,
+  handleSubmit,
   handleOpenScheduleEditor,
   handleCloseScheduleEditor,
   currentDateId,
@@ -85,7 +89,7 @@ function PlanDetailView({
         <div className={styles.planner}>
           <ul className={styles.planList}>
             {/* map으로 day 별로 묶인 큰 박스 맵핑 */}
-            {scheduleData?.map((item, idx) => {
+            {planDetailData?.map((item, idx) => {
               return (
                 <li className={styles.plan} key={item.dateId}>
                   {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
@@ -103,7 +107,13 @@ function PlanDetailView({
                       })}
 
                       {currentDateId === item.dateId && isScheduleEditorOpened ? (
-                        <ElementEditor />
+                        <ElementEditor
+                          scheduleData={scheduleData}
+                          handleChange={handleChange}
+                          handleOptionChange={handleOptionChange}
+                          handleSubmit={handleSubmit}
+                          dateId={item.dateId}
+                        />
                       ) : (
                         <button
                           className={styles.addElementBtn}
@@ -152,7 +162,7 @@ function PlanDetail() {
   // 플래너 관련
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
-  const [scheduleData, setScheduleData] = useState<any>([])
+  const [planDetailData, setPlanDetailData] = useState<any>([])
 
   const handleOpenScheduleEditor = (id: number) => {
     setCurrentDateId(id)
@@ -164,12 +174,67 @@ function PlanDetail() {
     setIsScheduleEditorOpened(false)
   }
 
+  const [scheduleData, setScheduleData] = useState({
+    dateId: -1,
+    itemTitle: '',
+    category: '',
+    itemDate: '',
+    itemAddress: '',
+    budget: 0,
+    itemContent: '',
+    isPrivate: false,
+  })
+
+  const handleChange = (field: string, value: string) => {
+    setScheduleData(prevData => ({
+      ...prevData,
+      [field]: value,
+    }))
+  }
+  const handleOptionChange = (selectedOption: string) => {
+    setScheduleData(prevData => ({
+      ...prevData,
+      category: selectedOption,
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent, dateId: number) => {
+    e.preventDefault()
+    setScheduleData(prevData => ({
+      ...prevData,
+      dateId,
+    }))
+    console.log('Form data submitted:', scheduleData)
+
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/create-todo/${planId}/${dateId}`,
+        // 헤더에 엑세스 토큰 담기
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(scheduleData),
+      })
+    }
+    const resetData = {
+      dateId: -1,
+      itemTitle: '',
+      category: '',
+      itemDate: '',
+      itemAddress: '',
+      budget: 0,
+      itemContent: '',
+      isPrivate: false,
+    }
+    setScheduleData(resetData)
+  }
+
   useEffect(() => {
     if (planId) {
       const fetchPlanDetailData = async () => {
         try {
           const res = await getPlanDetail(planId)
-          if (res) setScheduleData(res.data.calendars)
+          if (res) setPlanDetailData(res.data.calendars)
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
         }
@@ -190,8 +255,8 @@ function PlanDetail() {
       //   console.log(str)
       // },
       reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      heartbeatIncoming: 1000,
+      heartbeatOutgoing: 1000,
     })
 
     // 3. 클라이언트가 메시지 브로커에 연결(커넥트)되었을 때 호출되는 함수
@@ -199,7 +264,19 @@ function PlanDetail() {
       // 메시지 받는 함수
       const callback = function (message: any) {
         if (message.body) {
-          setChatList(prev => [...prev, JSON.parse(message.body)])
+          const resBody = JSON.parse(message.body)
+          if (resBody.type === 'chat') {
+            setChatList(prev => [...prev, resBody.msg])
+          }
+          if (resBody.type === 'add-schedule') {
+            const newData = resBody.msg[resBody.msg.length - 1]
+            const newDateId = newData.dateId
+            const copyData = planDetailData
+            const targetDateIndex = copyData.findIndex(el => el.dateId === newDateId)
+            copyData[targetDateIndex].scheduleItemList.push(newData)
+            setPlanDetailData(copyData)
+          }
+          // setChatList(prev => [...prev, JSON.parse(message.body)])
           // 추후 type으로 나눠서 처리
           // if (message.body.type === 'chat') {
           //   setChatList(prev => [...prev, JSON.parse(message.body)])
@@ -290,11 +367,15 @@ function PlanDetail() {
   }
 
   const scheduleProps: ScheduleProps = {
-    scheduleData,
+    planDetailData,
     currentDateId,
     isScheduleEditorOpened,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
+    handleChange,
+    handleOptionChange,
+    handleSubmit,
+    scheduleData,
   }
 
   const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }

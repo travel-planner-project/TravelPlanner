@@ -3,6 +3,7 @@ import styles from './ElementEditor.module.scss'
 import DropDown from './DropDown'
 
 type dataType = {
+  dateId: number
   itemTitle: string
   itemDate: string
   category: string | null
@@ -16,9 +17,10 @@ interface ElementEditorViewProps extends React.HTMLProps<HTMLTextAreaElement> {
   textarea: React.RefObject<HTMLTextAreaElement>
   handleResizeHeight: () => void
   handleChange: (field: string, value: string) => void
-  handleSubmit: (e: React.FormEvent) => void
-  scheduleData: dataType
+  handleSubmit: (e: React.FormEvent, dateId: number) => void
   handleOptionChange: (selectedOption: string) => void
+  scheduleData: dataType
+  dateId: number
 }
 
 const options = [
@@ -37,9 +39,10 @@ function ElementEditorView({
   handleSubmit,
   scheduleData,
   handleOptionChange,
+  dateId,
 }: ElementEditorViewProps) {
   return (
-    <form className={styles.container} onSubmit={e => handleSubmit(e)}>
+    <form className={styles.container} onSubmit={e => handleSubmit(e, dateId)}>
       <div className={styles.inputBox}>
         <input
           className={styles.textInput}
@@ -91,34 +94,22 @@ function ElementEditorView({
     </form>
   )
 }
-function ElementEditor() {
-  const [formData, setFormData] = useState({
-    itemTitle: '',
-    category: '',
-    itemDate: '',
-    itemAddress: '',
-    budget: 0,
-    itemContent: '',
-    isPrivate: false,
-  })
-  const handleChange = (field: string, value: string) => {
-    setFormData(prevData => ({
-      ...prevData,
-      [field]: value,
-    }))
-  }
-  const handleOptionChange = (selectedOption: string) => {
-    setFormData(prevData => ({
-      ...prevData,
-      category: selectedOption,
-    }))
-  }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form data submitted:', formData)
-  }
+type ElementEditorProps = {
+  handleChange: (field: string, value: string) => void
+  handleSubmit: (e: React.FormEvent, dateId: number) => void
+  handleOptionChange: (selectedOption: string) => void
+  scheduleData: dataType
+  dateId: number
+}
 
+function ElementEditor({
+  handleChange,
+  handleSubmit,
+  handleOptionChange,
+  scheduleData,
+  dateId,
+}: ElementEditorProps) {
   const textarea = useRef<HTMLTextAreaElement>(null)
   const handleResizeHeight = () => {
     if (textarea.current) {
@@ -130,10 +121,11 @@ function ElementEditor() {
   const props = {
     textarea,
     handleResizeHeight,
-    scheduleData: formData,
+    scheduleData,
     handleChange,
     handleSubmit,
     handleOptionChange,
+    dateId,
   }
   return <ElementEditorView {...props} />
 }
