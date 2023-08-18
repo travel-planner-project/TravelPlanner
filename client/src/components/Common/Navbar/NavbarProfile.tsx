@@ -10,13 +10,11 @@ function NavbarProfile() {
   return (
     <li>
       <NavLink to={userId ? `/profile/${userId}` : '/user/login'}>
-        <div className={styles.profileBox}>
-          {userId && profileImgUrl ? (
-            <img src={profileImgUrl} alt='profile' />
-          ) : (
-            <Icon name='profile' size={70} />
-          )}
-        </div>
+        {userId && profileImgUrl ? (
+          <img src={profileImgUrl} alt='profile' className={styles.profileImg} />
+        ) : (
+          <Icon name='profile' size={70} className={styles.profileIcon} />
+        )}
         <div className={styles.profileName}>{userId ? userNickname : '로그인/회원가입'}</div>
       </NavLink>
     </li>

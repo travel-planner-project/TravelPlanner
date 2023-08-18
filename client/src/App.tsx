@@ -7,7 +7,9 @@ const router = createBrowserRouter(
   routerData.map(routerElement => ({
     path: routerElement.path,
     element: (
-      <GeneralLayout withAuth={routerElement.withAuth}>{routerElement.element}</GeneralLayout>
+      <GeneralLayout withAuth={routerElement.withAuth} label={routerElement.label}>
+        {routerElement.element}
+      </GeneralLayout>
     ),
   }))
 )

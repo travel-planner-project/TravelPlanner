@@ -1,0 +1,33 @@
+@use '../styles/color' as C;
+@use '../styles/utils' as U;
+@use '../styles/typography' as T;
+
+.container {
+  margin: 36px;
+  border-radius: 12px;
+  padding: 60px;
+  background-color: C.$gray100;
+  display: grid;
+  grid-template-rows: 45px 2px 45px 1fr;
+  gap: 36px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.headline {
+  @include T.black-bold-32;
+}
+
+.line {
+  @include U.size(100%, 1px);
+  background-color: C.$gray200;
+}
+
+.ul {
+  overflow: auto;
+}
+
+.errorMessage {
+  text-align: center;
+  @include T.gray-regular-20;
+}

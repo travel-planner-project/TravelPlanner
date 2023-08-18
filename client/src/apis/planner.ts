@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios'
+import axios, { AxiosError, CancelToken } from 'axios'
 import { axiosInstance } from './instance'
 
 export const getCurrentUserPlanner = async (email: string) => {
@@ -45,6 +45,22 @@ export const deletePlan = async (id: number) => {
     })
     return response
   } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
+type optionsType = {
+  params: { planTitle: string; page: number }
+  cancelToken: CancelToken
+}
+
+export const getPlanners = async (options: optionsType) => {
+  try {
+    const response = await axiosInstance.get(`/feed`, options)
+    return response
+  } catch (error: unknown) {
+    if (axios.isCancel(error)) return
     const axiosError = error as AxiosError
     return axiosError.response
   }

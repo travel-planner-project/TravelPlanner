@@ -33,13 +33,16 @@ type IconNameType =
 type IconProps = {
   name: IconNameType
   size?: number
+  className?: string
 }
 
-function Icon({ name, size = 24 }: IconProps) {
+function Icon({ name, size = 24, className = '' }: IconProps) {
   return (
-    <svg width={size} height={size}>
-      <use href={`${SpriteIcon}#${name}`} />
-    </svg>
+    <div className={className}>
+      <svg width={size} height={size}>
+        <use href={`${SpriteIcon}#${name}`} />
+      </svg>
+    </div>
   )
 }
 

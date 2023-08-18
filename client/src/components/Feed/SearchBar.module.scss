@@ -1,0 +1,26 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.form {
+  @include U.flex-c(row, flex-start, center);
+  gap: 12px;
+}
+
+.input {
+  border: 1px solid C.$gray200;
+  border-radius: 4px;
+  padding: 7.5px 14px;
+  flex-grow: 1;
+  max-width: 500px;
+  &::placeholder {
+    @include T.gray-regular-16;
+  }
+}
+
+.searchBtn {
+  background-color: C.$blue500;
+  padding: 7.5px 20px;
+  border-radius: 4px;
+  color: C.$white;
+}

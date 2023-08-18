@@ -2,14 +2,19 @@
 @use '../../../styles/typography' as T;
 @use '../../../styles/color' as C;
 
-.profileBox {
+.profileImg {
   @include U.size(120px);
   border-radius: 50%;
   object-fit: cover;
   overflow: hidden;
-  background-color: C.$gray;
   margin: auto;
   @include U.flex-c(row, center, center);
+}
+
+.profileIcon {
+  @extend .profileImg;
+  background-color: C.$gray;
+  padding: 25px;
 }
 
 .profileName {

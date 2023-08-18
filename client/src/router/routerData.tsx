@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react'
 
-const Home = lazy(() => import('../pages/Home'))
+// const Home = lazy(() => import('../pages/Home'))
 const Planner = lazy(() => import('../pages/Planner'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
 const SignIn = lazy(() => import('../pages/SignIn'))
@@ -9,8 +9,8 @@ const PlanDetail = lazy(() => import('../pages/PlanDetail'))
 const EditProfile = lazy(() => import('../pages/Profile/EditProfile'))
 const EditPassword = lazy(() => import('../pages/Profile/EditPassword'))
 const DeleteUser = lazy(() => import('../pages/Profile/DeleteUser'))
+const Feed = lazy(() => import('../pages/Feed'))
 
-const Feed = lazy(() => import('../pages/Home'))
 const Board = lazy(() => import('../pages/Home'))
 
 type RouterElement = {
@@ -65,11 +65,11 @@ export const routerData: RouterElement[] = [
     label: 'HOME',
     element: (
       <Suspense fallback={<div>loading</div>}>
-        <Home />
+        <Planner />
       </Suspense>
     ),
-    onNavBar: true,
-    withAuth: false,
+    onNavBar: false,
+    withAuth: true,
   },
   {
     id: 4,
@@ -92,8 +92,8 @@ export const routerData: RouterElement[] = [
         <Feed />
       </Suspense>
     ),
-    onNavBar: false,
-    withAuth: true,
+    onNavBar: true,
+    withAuth: false,
   },
   {
     id: 6,
@@ -109,7 +109,7 @@ export const routerData: RouterElement[] = [
   },
   {
     id: 7,
-    path: '/plandetail/:planId',
+    path: '/planner/:planId',
     label: 'PLANDETAIL',
     element: (
       <Suspense fallback={<div>loading</div>}>

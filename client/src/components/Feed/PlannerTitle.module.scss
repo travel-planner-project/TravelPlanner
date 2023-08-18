@@ -1,0 +1,44 @@
+@use '../../styles/utils' as U;
+@use '../../styles/typography' as T;
+@use '../../styles/color' as C;
+
+.li {
+  @include U.flex-c(row, flex-start, center);
+  gap: 24px;
+  margin-top: 24px;
+  &:hover {
+    .title,
+    .hostDateBox {
+      color: C.$blue300;
+    }
+  }
+}
+
+.img {
+  @include U.size(60px);
+  border-radius: 50%;
+  @include U.flex-c(row, center, center);
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.profileIcon {
+  @extend .img;
+  background-color: C.$gray;
+  padding: 10px;
+}
+
+.title {
+  @include T.black-bold-16;
+}
+
+.hostDateBox {
+  @include U.flex-c(row, flex-start, center);
+  gap: 6px;
+  @include T.gray-regular-16;
+}
+
+.verticalLine {
+  @include U.size(1.5px, 16px);
+  background-color: C.$gray200;
+}
