@@ -118,6 +118,8 @@ public class PlannerService {
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
                 .calendars(updatedCalendarResponses)
+                .groupMemberList(planner.getGroupMembers())
+                .chatting(planner.getChatting())
                 .build();
 
         return response;
