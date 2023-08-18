@@ -34,15 +34,27 @@ function ChatModal({
         </div>
         <div className={styles.chatBody} ref={scrollContainerRef}>
           {chatList.map(chat => (
-            <div className={styles.message} key={crypto.randomUUID()}>
-              <span
-                className={`${
-                  chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser
-                }`}
-              >
-                {chat.userNickname}:{' '}
-              </span>
-              <span className={styles.text}>{chat.message}</span>
+            <div
+              className={chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser}
+              key={crypto.randomUUID()}
+            >
+              {chat.userId === userId ? (
+                <span>{chat.message}</span>
+              ) : (
+                <>
+                  <div className={styles.profileBox}>
+                    {chat.profileImgUrl ? (
+                      <img src={chat.profileImgUrl} alt='profile' />
+                    ) : (
+                      <Icon name='profile' size={24} />
+                    )}
+                  </div>
+                  <div className={styles.messageContent}>
+                    <span>{chat.userNickname}</span>
+                    <span>{chat.message}</span>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
