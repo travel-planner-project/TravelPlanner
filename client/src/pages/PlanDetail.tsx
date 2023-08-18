@@ -163,17 +163,6 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<any>([])
-
-  const handleOpenScheduleEditor = (id: number) => {
-    setCurrentDateId(id)
-    setIsScheduleEditorOpened(true)
-  }
-
-  const handleCloseScheduleEditor = () => {
-    setCurrentDateId(-1)
-    setIsScheduleEditorOpened(false)
-  }
-
   const [scheduleData, setScheduleData] = useState({
     dateId: -1,
     itemTitle: '',
@@ -184,6 +173,16 @@ function PlanDetail() {
     itemContent: '',
     isPrivate: false,
   })
+
+  const handleOpenScheduleEditor = (id: number) => {
+    setCurrentDateId(id)
+    setIsScheduleEditorOpened(true)
+  }
+
+  const handleCloseScheduleEditor = () => {
+    setCurrentDateId(-1)
+    setIsScheduleEditorOpened(false)
+  }
 
   const onScheduleInputChange = (field: string, value: string) => {
     setScheduleData(prevData => ({
@@ -227,6 +226,27 @@ function PlanDetail() {
       isPrivate: false,
     }
     setScheduleData(resetData)
+  }
+
+  const onChatSubmit = (event: any) => {
+    event.preventDefault()
+    if (newChat.trim() !== '') {
+      const newChatObj = { userId, message: newChat }
+      const msg = JSON.stringify(newChatObj)
+      // 4. 메시지 보내기(퍼블리시)
+      if (clientRef.current) {
+        clientRef.current.publish({
+          destination: `/pub/chat/${planId}`,
+          // 헤더에 엑세스 토큰 담기
+          headers: {
+            Authorization: `${token}`,
+          },
+          body: msg,
+        })
+      }
+    }
+    setNewChat('')
+    event.target.reset()
   }
 
   useEffect(() => {
@@ -317,27 +337,6 @@ function PlanDetail() {
       client.deactivate()
     }
   }, [token])
-
-  const onChatSubmit = (event: any) => {
-    event.preventDefault()
-    if (newChat.trim() !== '') {
-      const newChatObj = { userId, message: newChat }
-      const msg = JSON.stringify(newChatObj)
-      // 4. 메시지 보내기(퍼블리시)
-      if (clientRef.current) {
-        clientRef.current.publish({
-          destination: `/pub/chat/${planId}`,
-          // 헤더에 엑세스 토큰 담기
-          headers: {
-            Authorization: `${token}`,
-          },
-          body: msg,
-        })
-      }
-    }
-    setNewChat('')
-    event.target.reset()
-  }
 
   const planDetailProps: PlanDetailProps = {
     userId,
