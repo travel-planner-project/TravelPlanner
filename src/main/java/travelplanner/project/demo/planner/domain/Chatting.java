@@ -23,7 +23,6 @@ public class Chatting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="chat_id")
     private Long id;
 
     private String userNickname;
@@ -34,6 +33,16 @@ public class Chatting {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "chatting")
+//    @OneToOne(mappedBy = "chatting")
+//    private Planner planner;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "planner_id")
     private Planner planner;
+
+    // 연관 관계 편의 메서드
+    public void mappingPlanner(Planner planner) {
+        this.planner = planner;
+        planner.mappingChatting(this);
+    }
+
 }
