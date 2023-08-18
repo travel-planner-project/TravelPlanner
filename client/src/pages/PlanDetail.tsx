@@ -32,9 +32,9 @@ function PlanDetailView({
   onChatSubmit,
   planDetailData,
   scheduleData,
-  handleChange,
-  handleOptionChange,
-  handleSubmit,
+  onScheduleInputChange,
+  onScheduleCategoryChange,
+  onScheduleSubmit,
   handleOpenScheduleEditor,
   handleCloseScheduleEditor,
   currentDateId,
@@ -109,9 +109,9 @@ function PlanDetailView({
                       {currentDateId === item.dateId && isScheduleEditorOpened ? (
                         <ElementEditor
                           scheduleData={scheduleData}
-                          handleChange={handleChange}
-                          handleOptionChange={handleOptionChange}
-                          handleSubmit={handleSubmit}
+                          handleChange={onScheduleInputChange}
+                          handleOptionChange={onScheduleCategoryChange}
+                          handleSubmit={onScheduleSubmit}
                           dateId={item.dateId}
                         />
                       ) : (
@@ -185,26 +185,26 @@ function PlanDetail() {
     isPrivate: false,
   })
 
-  const handleChange = (field: string, value: string) => {
+  const onScheduleInputChange = (field: string, value: string) => {
     setScheduleData(prevData => ({
       ...prevData,
       [field]: value,
     }))
   }
-  const handleOptionChange = (selectedOption: string) => {
+  const onScheduleCategoryChange = (selectedOption: string) => {
     setScheduleData(prevData => ({
       ...prevData,
       category: selectedOption,
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent, dateId: number) => {
+  const onScheduleSubmit = (e: React.FormEvent, dateId: number) => {
     e.preventDefault()
     setScheduleData(prevData => ({
       ...prevData,
       dateId,
     }))
-    console.log('Form data submitted:', scheduleData)
+    // console.log('Form data submitted:', scheduleData)
 
     if (clientRef.current) {
       clientRef.current.publish({
@@ -272,24 +272,13 @@ function PlanDetail() {
             const newData = resBody.msg[resBody.msg.length - 1]
             const newDateId = newData.dateId
             const copyData = planDetailData
-            const targetDateIndex = copyData.findIndex(el => el.dateId === newDateId)
+            const targetDateIndex = copyData.findIndex(
+              (el: { dateId: number }) => el.dateId === newDateId
+            )
+            console.log(copyData[targetDateIndex])
             copyData[targetDateIndex].scheduleItemList.push(newData)
             setPlanDetailData(copyData)
           }
-          // setChatList(prev => [...prev, JSON.parse(message.body)])
-          // 추후 type으로 나눠서 처리
-          // if (message.body.type === 'chat') {
-          //   setChatList(prev => [...prev, JSON.parse(message.body)])
-          // } else if (message.body.type === 'todo') {
-          //   // 1. response의 dateId를 newDateId에 할당
-          //   // 2. response를 newData에 할당
-          //   // 3. 스케줄 리스트에서 newDateId와 일치하는 요소를 찾음
-          //   // 4. 해당 요소에 newData 추가
-          //   copyData.map((item) =>
-          //   item.dateId === newDateId ? item.scheduleList.push(newData) : item
-          //   )
-          //   // 5. setData(copyData)
-          // }
         }
       }
       // 구독하기
@@ -350,8 +339,6 @@ function PlanDetail() {
     event.target.reset()
   }
 
-  const onScheduleSubmit = () => {}
-
   const planDetailProps: PlanDetailProps = {
     userId,
     chatModal,
@@ -372,9 +359,9 @@ function PlanDetail() {
     isScheduleEditorOpened,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
-    handleChange,
-    handleOptionChange,
-    handleSubmit,
+    onScheduleInputChange,
+    onScheduleCategoryChange,
+    onScheduleSubmit,
     scheduleData,
   }
 

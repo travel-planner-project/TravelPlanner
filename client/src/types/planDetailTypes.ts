@@ -44,9 +44,9 @@ export interface ScheduleProps {
   handleCloseScheduleEditor: () => void
   currentDateId: number
   isScheduleEditorOpened: boolean
-  handleChange: (field: string, value: string) => void
-  handleSubmit: (e: React.FormEvent, dateId: number) => void
-  handleOptionChange: (selectedOption: string) => void
+  onScheduleInputChange: (field: string, value: string) => void
+  onScheduleSubmit: (e: React.FormEvent, dateId: number) => void
+  onScheduleCategoryChange: (selectedOption: string) => void
   scheduleData: dataType
 }
 
