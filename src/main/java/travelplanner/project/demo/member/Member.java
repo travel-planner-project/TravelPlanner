@@ -44,6 +44,9 @@ public class Member {
         planners.add(planner);
     }
 
+    private String provider;
+    private String providerId;
+
     public void edit(MemberEditor memberEditor) {
         if (memberEditor.getUserNickname() != null) {
             userNickname = memberEditor.getUserNickname();
