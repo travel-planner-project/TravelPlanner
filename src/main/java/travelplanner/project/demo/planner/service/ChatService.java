@@ -17,6 +17,8 @@ import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +64,22 @@ public class ChatService {
         chatResponse.setProfileImgUrl(chatting.getProfileImgUrl());
 
         return chatResponse;
+    }
+
+    // 플래너 조회 시 해당 채팅 내역 조회
+    public List<ChatResponse> getChattingList(Long plannerId) {
+        List<Chatting> chattings= chattingRepository.findByPlannerId(plannerId);
+        ArrayList<ChatResponse> chatResponses = new ArrayList<>();
+
+        for(Chatting chatting : chattings){
+            ChatResponse chatResponse = ChatResponse.builder()
+                    .userId(chatting.getId())
+                    .userNickname(chatting.getUserNickname())
+                    .profileImgUrl(chatting.getProfileImgUrl())
+                    .message(chatting.getMessage())
+                    .build();
+            chatResponses.add(chatResponse);
+        }
+        return chatResponses;
     }
 }
