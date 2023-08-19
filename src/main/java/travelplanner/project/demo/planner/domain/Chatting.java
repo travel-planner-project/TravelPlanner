@@ -1,6 +1,9 @@
 package travelplanner.project.demo.planner.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +26,6 @@ public class Chatting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="chat_id")
     private Long id;
 
     private String userNickname;
@@ -34,6 +36,15 @@ public class Chatting {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "chatting")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "planner_id")
+    @JsonIgnore
     private Planner planner;
+
+    // 연관 관계 편의 메서드
+    public void mappingPlanner(Planner planner) {
+        this.planner = planner;
+        planner.mappingChatting(this);
+    }
+
 }

@@ -36,7 +36,7 @@ public class GroupMember {
     private Planner planner;
 
 
-    public void mappingTravelGroup(Planner planner) {
+    public void mappingPlanner(Planner planner) {
         this.planner = planner;
         planner.mappingGroupMember(this);
     }

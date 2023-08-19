@@ -2,6 +2,8 @@ package travelplanner.project.demo.planner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import travelplanner.project.demo.planner.domain.Chatting;
+import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.Planner;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,12 @@ public class PlannerDetailResponse {
 
     @Schema(description = "캘린더 집합", example = "")
     private List<CalendarResponse> calendars;
+
+    @Schema(description = "그룹멤버 리스트", example = "")
+    private List<GroupMemberResponse> groupMemberList;
+
+    @Schema(description = "채팅 리스트", example = "")
+    private List<ChatResponse> chattings;
 
     // Todo 그룹멤버 정보 전부 추가 List<그룹멤버>
     // Todo 채팅부분 추가해야함
