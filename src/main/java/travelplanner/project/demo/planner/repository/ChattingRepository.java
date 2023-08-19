@@ -13,5 +13,7 @@ public interface ChattingRepository extends CrudRepository<Chatting, Long> {
 
     List<Chatting> findTop100ByCreatedAtBefore(LocalDateTime createdAt);
 
+    List<Chatting> findByPlannerId(Long plannerId);
+
 }
 
