@@ -154,7 +154,7 @@ function PlanDetailView({
 
 function PlanDetail() {
   const initialScheduleData = {
-    dateId: -1,
+    // dateId: -1,
     itemTitle: '',
     category: '',
     itemDate: '',
@@ -178,7 +178,6 @@ function PlanDetail() {
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<any>([])
 
-  console.log(planDetailData)
   // const [dateList, setDateList] = useState([])
   const [scheduleData, setScheduleData] = useState(initialScheduleData)
 
@@ -186,12 +185,11 @@ function PlanDetail() {
     console.log('add-date')
     if (clientRef.current) {
       clientRef.current.publish({
-        destination: `/pub/chat/${plannerId}`,
-        // 헤더에 엑세스 토큰 담기
+        destination: `/pub/create-date/${plannerId}`,
         headers: {
           Authorization: `${token}`,
         },
-        body: 'ㅇㅇ',
+        body: JSON.stringify({ dateTitle: 'test' }),
       })
     }
   }
@@ -223,14 +221,12 @@ function PlanDetail() {
     e.preventDefault()
     setScheduleData(prevData => ({
       ...prevData,
-      dateId,
+      // dateId,
     }))
-    // console.log('Form data submitted:', scheduleData)
 
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/create-todo/${plannerId}/${dateId}`,
-        // 헤더에 엑세스 토큰 담기
         headers: {
           Authorization: `${token}`,
         },
@@ -300,8 +296,10 @@ function PlanDetail() {
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
           } else if (resBody.type === 'add-date') {
-            console.log(resBody.msg)
+            const newDate = resBody.msg[resBody.msg.length - 1]
+            setPlanDetailData(prev => [...prev, newDate])
           } else if (resBody.type === 'add-schedule') {
+            console.log(resBody.msg)
             const newData = resBody.msg[resBody.msg.length - 1]
             const newDateId = newData.dateId
             const copyData = planDetailData
