@@ -40,6 +40,7 @@ export interface ScheduleProps {
       itemAddress: string
     }[]
   }[]
+  handleAddDateBtnClick: () => void
   handleOpenScheduleEditor: (id: number) => void
   handleCloseScheduleEditor: () => void
   currentDateId: number

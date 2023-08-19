@@ -37,6 +37,7 @@ function PlanDetailView({
   onScheduleSubmit,
   handleOpenScheduleEditor,
   handleCloseScheduleEditor,
+  handleAddDateBtnClick,
   currentDateId,
   isScheduleEditorOpened,
 }: PlanDetailViewProps) {
@@ -128,7 +129,9 @@ function PlanDetailView({
               )
             })}
           </ul>
-          <div className={styles.addDayBtn}>추가하기</div>
+          <button type='button' className={styles.addDayBtn} onClick={handleAddDateBtnClick}>
+            추가하기
+          </button>
         </div>
       </div>
       {chatModal ? (
@@ -163,6 +166,7 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<any>([])
+  const [dateList, setDateList] = useState([])
   const [scheduleData, setScheduleData] = useState({
     dateId: -1,
     itemTitle: '',
@@ -173,6 +177,10 @@ function PlanDetail() {
     itemContent: '',
     isPrivate: false,
   })
+
+  const handleAddDateBtnClick = () => {
+    console.log('add-date')
+  }
 
   const handleOpenScheduleEditor = (id: number) => {
     setCurrentDateId(id)
@@ -295,7 +303,6 @@ function PlanDetail() {
             const targetDateIndex = copyData.findIndex(
               (el: { dateId: number }) => el.dateId === newDateId
             )
-            console.log(copyData[targetDateIndex])
             copyData[targetDateIndex].scheduleItemList.push(newData)
             setPlanDetailData(copyData)
           }
@@ -356,6 +363,7 @@ function PlanDetail() {
     planDetailData,
     currentDateId,
     isScheduleEditorOpened,
+    handleAddDateBtnClick,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
     onScheduleInputChange,
