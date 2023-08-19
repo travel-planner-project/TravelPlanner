@@ -11,6 +11,8 @@ import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.ChatRequest;
 import travelplanner.project.demo.planner.service.ChatService;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -27,7 +29,10 @@ public class ChatController {
             @Header("Authorization") String athorization) throws Exception{
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
-        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, chatService.sendChat(request, plannerId));
+        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","chat", "msg", chatService.sendChat(request, plannerId)
+                )
+        );
     }
 
 }

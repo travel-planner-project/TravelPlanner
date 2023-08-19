@@ -19,6 +19,7 @@ import travelplanner.project.demo.planner.service.ValidatingService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -39,7 +40,10 @@ public class CalendarController {
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
 
         log.info("리스폰스: " + calendarList.toString());
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, calendarList);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","add-date", "msg", calendarList
+                )
+        );
     }
 
     @MessageMapping("/update-date/{plannerId}/{dateId}")
@@ -52,7 +56,9 @@ public class CalendarController {
         calendarService.updateDate(plannerId, dateId, request);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                calendarList);
+                Map.of("type","modify-date", "msg", calendarList
+                )
+        );
     }
 
     @MessageMapping("/delete-date/{plannerId}/{dateId}")
@@ -64,7 +70,9 @@ public class CalendarController {
         calendarService.deleteDate(plannerId, dateId);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                calendarList);
+                Map.of("type","delete-date", "msg", calendarList
+                )
+        );
     }
 
 }

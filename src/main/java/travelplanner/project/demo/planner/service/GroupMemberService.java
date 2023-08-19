@@ -13,6 +13,7 @@ import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.GroupMemberType;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
+import travelplanner.project.demo.planner.dto.request.GroupMemberDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberSearchRequest;
 import travelplanner.project.demo.planner.dto.response.GroupMemberCreateResponse;
 import travelplanner.project.demo.planner.dto.response.GroupMemberSearchResponse;
@@ -92,9 +93,9 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 삭제
-    public void deleteGroupMember(Long groupMemberId) {
+    public void deleteGroupMember(GroupMemberDeleteRequest request) {
 
-        GroupMember groupMember = groupMemberRepository.findGroupMemberById(groupMemberId);
+        GroupMember groupMember = groupMemberRepository.findGroupMemberById(request.getGroupMemberId());
         groupMemberRepository.delete(groupMember);
     }
 }

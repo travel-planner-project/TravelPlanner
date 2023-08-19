@@ -14,6 +14,7 @@ import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.service.ToDoService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +33,10 @@ public class ToDoController {
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.createTodo(plannerId, dateId, request);   // 시영지기 ㅇ;ㅂ략힌 toDo
         List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","add-schedule", "msg", scheduleItemList
+                )
+        );
     }
 
     @MessageMapping("/update-todo/{plannerId}/{dateId}/{toDoId}")
@@ -45,7 +49,10 @@ public class ToDoController {
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.editTodo(plannerId, dateId, toDoId, request);
         List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","modify-schedule", "msg", scheduleItemList
+                )
+        );
     }
 
     @MessageMapping("/delete-todo/{plannerId}/{dateId}/{toDoId}")
@@ -57,6 +64,9 @@ public class ToDoController {
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.delete(plannerId, dateId, toDoId);
         List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","delete-schedule", "msg", scheduleItemList
+                )
+        );
     }
 }
