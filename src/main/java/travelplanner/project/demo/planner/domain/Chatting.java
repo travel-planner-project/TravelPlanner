@@ -35,7 +35,7 @@ public class Chatting {
 
 //    @OneToOne(mappedBy = "chatting")
 //    private Planner planner;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
