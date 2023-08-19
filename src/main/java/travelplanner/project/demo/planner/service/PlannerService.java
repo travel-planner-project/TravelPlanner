@@ -196,10 +196,16 @@ public class PlannerService {
 
         groupMemberRepository.save(groupMember);
 
-        PlannerCreateResponse plannerCreateResponse = new PlannerCreateResponse();
-        plannerCreateResponse.setPlannerId(createPlanner.getId());
-        plannerCreateResponse.setPlanTitle(createPlanner.getPlanTitle());
-        plannerCreateResponse.setIsPrivate(createPlanner.getIsPrivate());
+//        PlannerCreateResponse plannerCreateResponse = new PlannerCreateResponse();
+//        plannerCreateResponse.setPlannerId(createPlanner.getId());
+//        plannerCreateResponse.setPlanTitle(createPlanner.getPlanTitle());
+//        plannerCreateResponse.setIsPrivate(createPlanner.getIsPrivate());
+
+        PlannerCreateResponse plannerCreateResponse = PlannerCreateResponse.builder()
+                .plannerId(createPlanner.getId())
+                .planTitle(createPlanner.getPlanTitle())
+                .isPrivate(createPlanner.getIsPrivate())
+                .build();
 
         return plannerCreateResponse;
     }
