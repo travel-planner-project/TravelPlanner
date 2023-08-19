@@ -1,5 +1,8 @@
 package travelplanner.project.demo.planner.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,13 +50,15 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "planner", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany (mappedBy = "planner", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "planner", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Chatting> chattings = new ArrayList<>();
+
+
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
     }
