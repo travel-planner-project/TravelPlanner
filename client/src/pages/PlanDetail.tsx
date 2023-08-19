@@ -178,6 +178,17 @@ function PlanDetail() {
     isPrivate: false,
   })
 
+  const initialScheduleData = {
+    dateId: -1,
+    itemTitle: '',
+    category: '',
+    itemDate: '',
+    itemAddress: '',
+    budget: 0,
+    itemContent: '',
+    isPrivate: false,
+  }
+
   const handleAddDateBtnClick = () => {
     console.log('add-date')
   }
@@ -223,17 +234,7 @@ function PlanDetail() {
         body: JSON.stringify(scheduleData),
       })
     }
-    const resetData = {
-      dateId: -1,
-      itemTitle: '',
-      category: '',
-      itemDate: '',
-      itemAddress: '',
-      budget: 0,
-      itemContent: '',
-      isPrivate: false,
-    }
-    setScheduleData(resetData)
+    setScheduleData(initialScheduleData)
   }
 
   const onChatSubmit = (event: any) => {
@@ -295,8 +296,9 @@ function PlanDetail() {
           const resBody = JSON.parse(message.body)
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
-          }
-          if (resBody.type === 'add-schedule') {
+          } else if (resBody.type === 'add-date') {
+            console.log(resBody.msg)
+          } else if (resBody.type === 'add-schedule') {
             const newData = resBody.msg[resBody.msg.length - 1]
             const newDateId = newData.dateId
             const copyData = planDetailData

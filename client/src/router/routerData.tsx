@@ -109,7 +109,7 @@ export const routerData: RouterElement[] = [
   },
   {
     id: 7,
-    path: '/planner/:planId',
+    path: '/planner/:plannerId',
     label: 'PLANDETAIL',
     element: (
       <Suspense fallback={<div>loading</div>}>
