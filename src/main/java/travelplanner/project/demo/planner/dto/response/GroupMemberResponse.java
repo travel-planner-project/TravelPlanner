@@ -1,13 +1,14 @@
 package travelplanner.project.demo.planner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import travelplanner.project.demo.planner.domain.GroupMemberType;
 
 @Schema(description = "그룹멤버 생성 응답 DTO")
-@Data
-@NoArgsConstructor
-public class GroupMemberCreateResponse {
+@Getter
+@Builder
+@AllArgsConstructor
+public class GroupMemberResponse {
 
     @Schema(description = "그룹멤버 인덱스", example = "1")
     private Long groupMemberId;
@@ -19,5 +20,5 @@ public class GroupMemberCreateResponse {
     private String profileImageUrl;
 
     @Schema(description = "그룹 역할", example = "HOST")
-    private String role;
+    private GroupMemberType role;
 }

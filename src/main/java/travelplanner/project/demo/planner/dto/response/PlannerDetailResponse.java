@@ -34,8 +34,8 @@ public class PlannerDetailResponse {
     @Schema(description = "캘린더 집합", example = "")
     private List<CalendarResponse> calendars;
 
-
-//    private List<GroupMember> groupMemberList;
+    @Schema(description = "그룹멤버 리스트", example = "")
+    private List<GroupMemberResponse> groupMemberList;
 
     @Schema(description = "채팅 리스트", example = "")
     private List<ChatResponse> chattings;

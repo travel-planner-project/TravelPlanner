@@ -1,6 +1,5 @@
 package travelplanner.project.demo.planner.service;
 
-import io.lettuce.core.ScriptOutputType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +14,13 @@ import travelplanner.project.demo.planner.domain.GroupMemberType;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberSearchRequest;
-import travelplanner.project.demo.planner.dto.response.GroupMemberCreateResponse;
+import travelplanner.project.demo.planner.dto.response.GroupMemberResponse;
 import travelplanner.project.demo.planner.dto.response.GroupMemberSearchResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,7 +56,7 @@ public class GroupMemberService {
 
     // 그룹 멤버 추가
     @Transactional
-    public GroupMemberCreateResponse addGroupMember(GroupMemberCreateRequest request, Long plannerId) {
+    public GroupMemberResponse addGroupMember(GroupMemberCreateRequest request, Long plannerId) {
 
         // 그룹멤버 찾기
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
@@ -79,11 +80,20 @@ public class GroupMemberService {
 
             groupMemberRepository.save(groupMember);
 
-            GroupMemberCreateResponse response = new GroupMemberCreateResponse();
-            response.setGroupMemberId(groupMember.getId());
-            response.setNickname(groupMember.getUserNickname());
-            response.setProfileImageUrl(groupMember.getProfileImageUrl());
-            response.setRole(groupMember.getGroupMemberType().toString());
+//            GroupMemberResponse response = new GroupMemberResponse();
+//            response.setGroupMemberId(groupMember.getId());
+//            response.setNickname(groupMember.getUserNickname());
+//            response.setProfileImageUrl(groupMember.getProfileImageUrl());
+//            response.setRole(groupMember.getGroupMemberType().toString());
+
+            GroupMemberResponse response = GroupMemberResponse.builder()
+                    .groupMemberId(groupMember.getId())
+                    .nickname(groupMember.getUserNickname())
+                    .profileImageUrl(groupMember.getProfileImageUrl())
+                    .role(groupMember.getGroupMemberType())
+//                    .email(group.getEmail())
+                    .build();
+
 
             return response;
         }
@@ -97,5 +107,26 @@ public class GroupMemberService {
 
         GroupMember groupMember = groupMemberRepository.findGroupMemberById(request.getGroupMemberId());
         groupMemberRepository.delete(groupMember);
+    }
+
+    // 플래너 조회 시 해당 채팅 내역 조회
+    public List<GroupMemberResponse> getGroupMemberList(Long plannerId) {
+        List<GroupMember> groupMemberList = groupMemberRepository.findByPlannerId(plannerId);
+        List<GroupMemberResponse> groupMemberResponses = new ArrayList<>();
+
+
+        for (GroupMember groupMember : groupMemberList) {
+            GroupMemberResponse groupMemberResponse = GroupMemberResponse.builder()
+                    .groupMemberId(groupMember.getId())
+                    .nickname(groupMember.getUserNickname())
+                    .profileImageUrl(groupMember.getProfileImageUrl())
+//                    .email(group.getEmail())
+                    .role(groupMember.getGroupMemberType())
+                    .build();
+
+            groupMemberResponses.add(groupMemberResponse);
+        }
+
+        return groupMemberResponses;
     }
 }
