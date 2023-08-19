@@ -19,8 +19,8 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "profile")
-    /*@JoinColumn(name = "member_id")*/
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String profileImgUrl;
