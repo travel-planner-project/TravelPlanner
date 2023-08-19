@@ -51,9 +51,9 @@ public class Planner {
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatting_id")
-    private Chatting chatting;
+    @OneToMany (mappedBy = "planner", fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<Chatting> chattings = new ArrayList<>();
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
     }
@@ -62,7 +62,6 @@ public class Planner {
         this.member = member;
         member.mappingPlanner(this);
     }
-
 
 
     public PlannerEditor.PlannerEditorBuilder toEditor() {
@@ -93,8 +92,7 @@ public class Planner {
 
     // 연관 관계 편의 메서드
     public void mappingChatting(Chatting chatting) {
-        this.chatting = chatting;
-        chatting.mappingPlanner(this);
+        chattings.add(chatting);
     }
 
 }
