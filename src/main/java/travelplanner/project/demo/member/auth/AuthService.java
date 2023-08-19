@@ -49,27 +49,25 @@ public class AuthService {
         }
 
         // 멤버 생성 및 저장
-        Member.MemberBuilder memberBuilder = Member.builder()
+        Member user = Member.builder()
                 .userNickname(request.getUserNickname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.MEMBER);
+                .role(Role.MEMBER)
+                .build();
 
-//        memberRepository.save(user);
+        memberRepository.save(user);  // 변경된 user 저장
 
         // 프로필 생성
         Profile profile = Profile.builder()
                 .keyName("")
                 .profileImgUrl("")
+                .member(user)
                 .build();
-
-        Member user = memberBuilder.profile(profile)
-                .build();
-
 //        user.setProfile(profile);  // 양방향 연관관계 설정
 
         profileRepository.save(profile);  // profile 저장
-        memberRepository.save(user);  // 변경된 user 저장
+
     }
 
 

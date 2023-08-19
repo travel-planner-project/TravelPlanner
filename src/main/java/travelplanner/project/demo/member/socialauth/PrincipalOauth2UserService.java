@@ -69,24 +69,24 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         // 없다면 회원가입
         if(optionalUser.isEmpty()) {
-            Member.MemberBuilder memberBuilder = Member.builder()
+
+            Member user = Member.builder()
                     .email(email)
                     .userNickname(nickname)
                     .password(passwordEncoder.encode("kakao"))
-                    .role(Role.MEMBER);
+                    .role(Role.MEMBER)
+                    .build();
 
-           /* memberRepository.save(member);*/
+            memberRepository.save(user);
 
             Profile profile = Profile.builder()
                     .keyName("")
                     .profileImgUrl(profileUrl)
+                    .member(user)
                     .build();
 
-            member = memberBuilder.profile(profile)
-                    .build();
-            /*member.setProfile(profile);*/
             profileRepository.save(profile);
-            memberRepository.save(member);
+
         }else{
             member = optionalUser.get();
         }

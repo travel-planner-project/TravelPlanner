@@ -53,24 +53,25 @@ public class GoogleOAuthService {
         // 이메일이 없다면 회원가입 처리
         if (memberRepository.findByEmail(googleUserInfoDto.getEmail()).isEmpty()) {
 
-            Member.MemberBuilder memberBuilder = Member.builder()
+            Member user = Member.builder()
                     .email(googleUserInfoDto.getEmail())
                     .userNickname(googleUserInfoDto.getName())
                     .password(passwordEncoder.encode("google"))
-                    .role(Role.MEMBER);
+                    .role(Role.MEMBER)
+                    .build();
+
+            memberRepository.save(user);
 
             Profile profile = Profile.builder()
                     .keyName("")
                     .profileImgUrl(googleUserInfoDto.getPicture())
+                    .member(user)
                     .build();
 
 //            member.setProfile(profile);
-//            builder 형식으로 수정
-            Member member = memberBuilder.profile(profile)
-                    .build();
 
             profileRepository.save(profile);
-            memberRepository.save(member);
+
 
         }
 
