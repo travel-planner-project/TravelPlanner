@@ -19,6 +19,7 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.*;
+import travelplanner.project.demo.planner.repository.ChattingRepository;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
@@ -44,6 +45,7 @@ public class PlannerService {
     private final CalendarService calendarService;
     private final ToDoService toDoService;
     private final ValidatingService validatingService;
+    private final ChatService chatService;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
@@ -111,6 +113,10 @@ public class PlannerService {
             updatedCalendarResponses.add(updatedCalendarResponse);
         }
 
+        //플래너에 해당하는 채팅 리스트를 가져옴
+
+        List<ChatResponse> chatResponses = chatService.getChattingList(planner.getId());
+
         PlannerDetailResponse response = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
@@ -119,7 +125,7 @@ public class PlannerService {
                 .endDate(planner.getEndDate())
                 .calendars(updatedCalendarResponses)
                 .groupMemberList(planner.getGroupMembers())
-                .chatting(planner.getChatting())
+                .chattings(chatResponses)
                 .build();
 
         return response;
