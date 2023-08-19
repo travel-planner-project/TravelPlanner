@@ -36,7 +36,9 @@ public class Planner {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "planner", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "planner",
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.LAZY)
     @Builder.Default
     private List<GroupMember> groupMembers = new ArrayList<>();
 

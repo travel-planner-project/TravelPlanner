@@ -46,6 +46,7 @@ public class PlannerService {
     private final ToDoService toDoService;
     private final ValidatingService validatingService;
     private final ChatService chatService;
+    private final GroupMemberService groupMemberService;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
@@ -113,9 +114,11 @@ public class PlannerService {
             updatedCalendarResponses.add(updatedCalendarResponse);
         }
 
-        //플래너에 해당하는 채팅 리스트를 가져옴
-
+        // 플래너에 해당하는 채팅 리스트를 가져옴
         List<ChatResponse> chatResponses = chatService.getChattingList(planner.getId());
+
+        // 플래너에 해당하는 그룹멤버를 가져옴
+        List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
 
         PlannerDetailResponse response = PlannerDetailResponse.builder()
                 .plannerId(planner.getId())
@@ -124,7 +127,7 @@ public class PlannerService {
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
                 .calendars(updatedCalendarResponses)
-//                .groupMemberList(planner.getGroupMembers())
+                .groupMemberList(groupMemberResponses)
                 .chattings(chatResponses)
                 .build();
 

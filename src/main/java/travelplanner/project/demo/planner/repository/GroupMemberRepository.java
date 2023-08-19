@@ -15,4 +15,6 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 
     // 플래너 서비스 중 삭제 메서드에서 관련된 그룹멤버들을 삭제하기 위해
     void deleteAllByPlannerId(Long plannerId);
+
+    List<GroupMember> findByPlannerId(Long plannerId);
 }
