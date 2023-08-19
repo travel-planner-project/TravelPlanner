@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,9 @@ import java.util.Date;
 public class TokenUtil {
 
     private final RedisUtil redisUtil;
-    private static final String SECRET_KEY = "68a4ef27a3f2f0f605a6781e6be34b466b5da3d11db5384218c407e99e6dcecf3361e1f6def13c78f2deb1e6e822bef2ca1c95b1166c97c5278ad81fdba4538";
+
+    @Value("${secret.key}")
+    private String SECRET_KEY;
 
     // Access 토큰 유효시간 15 분
     static final long AccessTokenValidTime = 5 * 60 * 1000L;

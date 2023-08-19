@@ -1,4 +1,4 @@
-package travelplanner.project.demo.member.Auth;
+package travelplanner.project.demo.member.auth;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -56,18 +56,18 @@ public class AuthService {
                 .role(Role.MEMBER)
                 .build();
 
-        memberRepository.save(user);
+        memberRepository.save(user);  // 변경된 user 저장
 
         // 프로필 생성
         Profile profile = Profile.builder()
                 .keyName("")
                 .profileImgUrl("")
+                .member(user)
                 .build();
-
-        user.setProfile(profile);  // 양방향 연관관계 설정
+//        user.setProfile(profile);  // 양방향 연관관계 설정
 
         profileRepository.save(profile);  // profile 저장
-        memberRepository.save(user);  // 변경된 user 저장
+
     }
 
 
@@ -90,16 +90,18 @@ public class AuthService {
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
         String accessToken = tokenUtil.generateAccessToken(member.getEmail());
-        String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
 
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
-        // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
-        cookieUtil.create(refreshToken, response);
-
         // 리프레시 토큰을 Redis 에 저장
-        redisUtil.setData(member.getEmail(), refreshToken);
+        if (redisUtil.getData(member.getEmail()) == null) {
+
+            String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
+            // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
+            cookieUtil.create(refreshToken, response);
+            redisUtil.setData(member.getEmail(), refreshToken);
+        }
 
         return AuthResponse.builder()
                 .userId(member.getId())

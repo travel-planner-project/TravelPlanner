@@ -1,6 +1,7 @@
 package travelplanner.project.demo.global.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,8 @@ import travelplanner.project.demo.global.security.jwt.JwtAuthenticationEntryPoin
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
+import travelplanner.project.demo.member.socialauth.Oauth2AuthenticationSuccessHandler;
+import travelplanner.project.demo.member.socialauth.PrincipalOauth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +35,10 @@ public class SecurityConfig {
     private final CookieUtil cookieUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
+    @Autowired
+    private Oauth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 
     @Bean
@@ -47,19 +54,30 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                     .requestMatchers("/ws/**").permitAll()
+                    .requestMatchers("/oauth/**", "/favicon.ico", "/login/**").permitAll()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/feed/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated();
+
+        http    .oauth2Login()
+                .authorizationEndpoint().baseUri("/oauth/authorize")
                 .and()
+                .redirectionEndpoint().baseUri("/oauth/kakao/login")
+                .and()
+                .userInfoEndpoint().userService(principalOauth2UserService)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler);
+
+        http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+
+        http    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter(), JwtAuthenticationFilter.class);
 
         return http.build();

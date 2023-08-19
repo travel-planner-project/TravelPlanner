@@ -14,8 +14,10 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
+import travelplanner.project.demo.member.MemberEditor;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
+import travelplanner.project.demo.member.profile.ProfileEditor;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.member.profile.dto.request.ProfileUpdateRequest;
 import travelplanner.project.demo.member.profile.dto.response.ProfileResponse;
@@ -51,13 +53,12 @@ public class ProfileService {
         // 로그인한 유저와 요청한 유저가 동일한지 확인
         boolean isCurrentUser = member.getId().equals(userId);
 
-        ProfileResponse profileResponse = new ProfileResponse();
-        profileResponse.setProfileImgUrl(profile.getProfileImgUrl());
-        profileResponse.setEmail(profile.getMember().getEmail());
-        profileResponse.setUserNickname(profile.getMember().getUserNickname());
-        profileResponse.setCheckUser(isCurrentUser);
-
-        return profileResponse;
+        return ProfileResponse.builder()
+                .email(profile.getMember().getEmail())
+                .userNickname(profile.getMember().getUserNickname())
+                .profileImgUrl(profile.getProfileImgUrl())
+                .checkUser(isCurrentUser)
+                .build();
     }
 
     // 프로필 수정 [START] =========================================================================================
@@ -65,24 +66,35 @@ public class ProfileService {
     public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
         Member member = authUtil.getCurrentMember();
-        member.setUserNickname(profileUpdateRequest.getUserNickname());
-        memberRepository.save(member);
 
-        ProfileUpdateResponse response = new ProfileUpdateResponse();
-        response.setUserNickname(member.getUserNickname());
+        // 회원 닉네임 수정
+        MemberEditor memberEditor = MemberEditor.builder()
+                .userNickname(profileUpdateRequest.getUserNickname())
+                .build();
+        member.edit(memberEditor);
+
+//        memberRepository.save(member);
+
+//        ProfileUpdateResponse response = new ProfileUpdateResponse();
+//        response.setUserNickname(member.getUserNickname());
+// --------------------------------------------------------------------------------
 
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
+        ProfileEditor.ProfileEditorBuilder profileEditorBuilder = profile.toEditor();
+
+        String profileImgUrl = profile.getProfileImgUrl(); // 기존 이미지 URL을 저장
+
         if (profileImg.isEmpty()) { // 프로필 이미지가 비어있다면
-
             if (!profileUpdateRequest.getChangeProfileImg()) { // 프로필 이미지를 안바꾼다고 하면, 이미지 안바꿈
-                response.setProfileImgUrl(profile.getProfileImgUrl());
-
+//                response.setProfileImgUrl(profile.getProfileImgUrl());
+                profileEditorBuilder.profileImgUrl(profileImgUrl); // 이미지 변경 없음
             } else { // 이미지 바꿈 - 파일 입력 안함
-                profile.setProfileImgUrl("");
-                profile.setKeyName("");
-                profileRepository.save(profile);
-                response.setProfileImgUrl(profile.getProfileImgUrl());
+//                profile.setProfileImgUrl("");
+//                profile.setKeyName("");
+                profileEditorBuilder.profileImgUrl("").keyName("");
+//                profileRepository.save(profile);
+//                response.setProfileImgUrl(profile.getProfileImgUrl());
             }
 
         } else { // 이미지 바꿈 - 파일 입력
@@ -104,15 +116,25 @@ public class ProfileService {
             // S3 에 이미지 업로드
             s3Service.uploadFile(uniqueImgName, localFilePath);
             String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile/";
-            profile.setProfileImgUrl(imgUrl + uniqueImgName);
-            profile.setKeyName(uniqueImgName);
-            profileRepository.save(profile);
+//            profile.setProfileImgUrl(imgUrl + uniqueImgName);
+//            profile.setKeyName(uniqueImgName);
+            profileEditorBuilder.profileImgUrl(imgUrl + uniqueImgName).keyName(uniqueImgName);
+
+//            profileRepository.save(profile);
 
             // 로컬 임시 파일 삭제
             deleteLocalFile(localFilePath);
 
-            response.setProfileImgUrl(profile.getProfileImgUrl());
+//            response.setProfileImgUrl(profile.getProfileImgUrl());
         }
+
+        ProfileEditor profileEditor = profileEditorBuilder.build();
+        profile.edit(profileEditor);
+
+        ProfileUpdateResponse response = ProfileUpdateResponse.builder()
+                .userNickname(member.getUserNickname())
+                .profileImgUrl(profile.getProfileImgUrl())
+                .build();
 
         return response;
     }
