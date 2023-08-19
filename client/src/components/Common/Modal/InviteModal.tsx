@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styles from './Modal.module.scss'
 import FriendInfo, { FriendType } from './FriendInfo'
+import { ModalSubmitDataType } from '../../../store/store'
 
 // 가짜 Friend 데이터
 const Friend = {
@@ -16,7 +17,7 @@ type InviteModalProp = {
   description: string
   placeholder: string
   submitButton: string
-  onSubmit: (input: string) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
 }
 
 function InviteModal({

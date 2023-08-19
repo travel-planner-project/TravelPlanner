@@ -3,6 +3,7 @@ import styles from './Modal.module.scss'
 import useModal from '../../../hooks/useModal'
 import InviteModal from './InviteModal'
 import PrivacySetting from './PrivacySetting'
+import { ModalSubmitDataType } from '../../../store/store'
 
 type ModalContentProp = {
   onClose: () => void
@@ -10,7 +11,7 @@ type ModalContentProp = {
   description: string
   placeholder: string
   submitButton: string
-  onSubmit: (input: { title: string; isPrivate: boolean }) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
 }
 
 function ModalContent({
@@ -29,8 +30,8 @@ function ModalContent({
 
     const target = event.target as HTMLFormElement
     const privacySetting: keyof typeof isPrivate = target.privacySetting.value
-
-    onSubmit({ title: inputValue, isPrivate: isPrivate[privacySetting] })
+    const modalSubmitData = { planTitle: inputValue, isPrivate: isPrivate[privacySetting] }
+    onSubmit(modalSubmitData)
     // const { status, data } = await onSubmit(inputValue)
     // if (status !== 200) { alert(data.message) }
 

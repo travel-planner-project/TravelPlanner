@@ -110,11 +110,13 @@ function Planner() {
 
   const [isEditingPlanner, setIsEditingPlanner] = useState<boolean>(false)
 
-  const onClickAddNewPlan = async (planTitle: string) => {
-    const newPlan = {
-      planTitle,
-      isPrivate: false,
-    }
+  const onClickAddNewPlan = async (newPlan: any) => {
+    // console.log(planTitle)
+    // const newPlan = {
+    //   planTitle,
+    //   isPrivate: isPrivate === 'private' ? true : false,
+    // }
+    console.log(newPlan)
     const res = await createNewPlan(newPlan)
     if (res) setPlannerList(prev => [...prev, res.data])
   }

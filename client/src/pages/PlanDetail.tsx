@@ -153,6 +153,17 @@ function PlanDetailView({
 }
 
 function PlanDetail() {
+  const initialScheduleData = {
+    dateId: -1,
+    itemTitle: '',
+    category: '',
+    itemDate: '',
+    itemAddress: '',
+    budget: 0,
+    itemContent: '',
+    isPrivate: false,
+  }
+
   const { params } = useRouter()
   const { plannerId } = params
   const { userId } = useRecoilValue(userInfo)
@@ -166,31 +177,23 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<any>([])
-  // const [dateList, setDateList] = useState([])
-  const [scheduleData, setScheduleData] = useState({
-    dateId: -1,
-    itemTitle: '',
-    category: '',
-    itemDate: '',
-    itemAddress: '',
-    budget: 0,
-    itemContent: '',
-    isPrivate: false,
-  })
 
-  const initialScheduleData = {
-    dateId: -1,
-    itemTitle: '',
-    category: '',
-    itemDate: '',
-    itemAddress: '',
-    budget: 0,
-    itemContent: '',
-    isPrivate: false,
-  }
+  console.log(planDetailData)
+  // const [dateList, setDateList] = useState([])
+  const [scheduleData, setScheduleData] = useState(initialScheduleData)
 
   const handleAddDateBtnClick = () => {
     console.log('add-date')
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/chat/${plannerId}`,
+        // 헤더에 엑세스 토큰 담기
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: 'ㅇㅇ',
+      })
+    }
   }
 
   const handleOpenScheduleEditor = (id: number) => {
