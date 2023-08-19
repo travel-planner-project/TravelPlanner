@@ -1,6 +1,7 @@
 import { useResetRecoilState } from 'recoil'
 import { userInfo } from '../store/store'
 import useRouter from './useRouter'
+import { removeTokenFromSessionStorage } from '../utils/tokenHandler'
 
 const useLogout = () => {
   const resetUserInfo = useResetRecoilState(userInfo)
@@ -8,7 +9,7 @@ const useLogout = () => {
 
   const logOut = () => {
     resetUserInfo()
-    sessionStorage.removeItem('token')
+    removeTokenFromSessionStorage()
     routeTo(0)
   }
 
