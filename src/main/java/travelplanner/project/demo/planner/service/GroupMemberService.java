@@ -120,7 +120,7 @@ public class GroupMemberService {
                     .groupMemberId(groupMember.getId())
                     .nickname(groupMember.getUserNickname())
                     .profileImageUrl(groupMember.getProfileImageUrl())
-//                    .email(group.getEmail())
+                    .email(groupMember.getEmail())
                     .role(groupMember.getGroupMemberType())
                     .build();
 

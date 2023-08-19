@@ -13,6 +13,9 @@ public class GroupMemberResponse {
     @Schema(description = "그룹멤버 인덱스", example = "1")
     private Long groupMemberId;
 
+    @Schema(description = "유저 이메일" , example = "test@naver.com")
+    private String email;
+
     @Schema(description = "유저 닉네임", example = "시니")
     private String nickname;
 
@@ -21,4 +24,5 @@ public class GroupMemberResponse {
 
     @Schema(description = "그룹 역할", example = "HOST")
     private GroupMemberType role;
+
 }
