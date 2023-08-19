@@ -154,7 +154,7 @@ function PlanDetailView({
 
 function PlanDetail() {
   const { params } = useRouter()
-  const { planId } = params
+  const { plannerId } = params
   const { userId } = useRecoilValue(userInfo)
   const [token, setToken] = useState(sessionStorage.getItem('token'))
   const clientRef = useRef<StompJs.Client | null>(null)
@@ -166,7 +166,7 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<any>([])
-  const [dateList, setDateList] = useState([])
+  // const [dateList, setDateList] = useState([])
   const [scheduleData, setScheduleData] = useState({
     dateId: -1,
     itemTitle: '',
@@ -215,7 +215,7 @@ function PlanDetail() {
 
     if (clientRef.current) {
       clientRef.current.publish({
-        destination: `/pub/create-todo/${planId}/${dateId}`,
+        destination: `/pub/create-todo/${plannerId}/${dateId}`,
         // 헤더에 엑세스 토큰 담기
         headers: {
           Authorization: `${token}`,
@@ -244,7 +244,7 @@ function PlanDetail() {
       // 4. 메시지 보내기(퍼블리시)
       if (clientRef.current) {
         clientRef.current.publish({
-          destination: `/pub/chat/${planId}`,
+          destination: `/pub/chat/${plannerId}`,
           // 헤더에 엑세스 토큰 담기
           headers: {
             Authorization: `${token}`,
@@ -258,10 +258,10 @@ function PlanDetail() {
   }
 
   useEffect(() => {
-    if (planId) {
+    if (plannerId) {
       const fetchPlanDetailData = async () => {
         try {
-          const res = await getPlanDetail(planId)
+          const res = await getPlanDetail(plannerId)
           if (res) setPlanDetailData(res.data.calendars)
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
@@ -309,7 +309,7 @@ function PlanDetail() {
         }
       }
       // 구독하기
-      client.subscribe(`/sub/planner-message/${planId}`, callback)
+      client.subscribe(`/sub/planner-message/${plannerId}`, callback)
     }
 
     // 브로커에서 에러가 발생했을 때 호출되는 함수
