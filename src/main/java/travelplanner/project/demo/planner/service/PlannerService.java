@@ -124,7 +124,7 @@ public class PlannerService {
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
                 .calendars(updatedCalendarResponses)
-                .groupMemberList(planner.getGroupMembers())
+//                .groupMemberList(planner.getGroupMembers())
                 .chattings(chatResponses)
                 .build();
 
