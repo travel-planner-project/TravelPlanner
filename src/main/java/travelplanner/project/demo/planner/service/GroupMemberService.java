@@ -11,6 +11,7 @@ import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.GroupMemberType;
+import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.GroupMemberSearchRequest;
@@ -62,23 +63,24 @@ public class GroupMemberService {
         Optional<Member> member = memberRepository.findByEmail(request.getEmail());
         Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
-        // 프로필이 null일 때 생성
-        if (profile == null) {
-            profile = Profile.builder()
-                    .member(member.get())
-                    .build();
-            profileRepository.save(profile);
-        }
+        // 플래너 아이디에 해당하는 그룹 멤버 리스트 조회
+        List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 
-        if (groupMemberRepository.findGroupMemberById(member.get().getId()) == null) {
-            GroupMember groupMember = GroupMember.builder()
-                    .email(member.get().getEmail())
-                    .userNickname(member.get().getUserNickname())
-                    .profileImageUrl(profile.getProfileImgUrl())
-                    .groupMemberType(GroupMemberType.MEMBER)
-                    .build();
 
-            groupMemberRepository.save(groupMember);
+        if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(member.get().getEmail()))) {
+
+                // 그룹 멤버에 저장할 플래너 조회
+                Planner planner = plannerRepository.findPlannerById(plannerId);
+
+                GroupMember groupMember = GroupMember.builder()
+                        .email(member.get().getEmail())
+                        .userNickname(member.get().getUserNickname())
+                        .profileImageUrl(profile.getProfileImgUrl())
+                        .groupMemberType(GroupMemberType.MEMBER)
+                        .planner(planner)
+                        .build();
+
+                groupMemberRepository.save(groupMember);
 
 //            GroupMemberResponse response = new GroupMemberResponse();
 //            response.setGroupMemberId(groupMember.getId());
@@ -86,16 +88,17 @@ public class GroupMemberService {
 //            response.setProfileImageUrl(groupMember.getProfileImageUrl());
 //            response.setRole(groupMember.getGroupMemberType().toString());
 
-            GroupMemberResponse response = GroupMemberResponse.builder()
-                    .groupMemberId(groupMember.getId())
-                    .nickname(groupMember.getUserNickname())
-                    .profileImageUrl(groupMember.getProfileImageUrl())
-                    .role(groupMember.getGroupMemberType())
-//                    .email(group.getEmail())
-                    .build();
+                GroupMemberResponse response = GroupMemberResponse.builder()
+                        .groupMemberId(groupMember.getId())
+                        .nickname(groupMember.getUserNickname())
+                        .profileImageUrl(groupMember.getProfileImageUrl())
+                        .role(groupMember.getGroupMemberType())
+                        .email(groupMember.getEmail())
+                        .build();
 
 
-            return response;
+                return response;
+
         }
 
         throw new ApiException(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
