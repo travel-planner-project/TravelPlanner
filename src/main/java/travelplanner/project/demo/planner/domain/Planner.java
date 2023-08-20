@@ -32,13 +32,13 @@ public class Planner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "planner",
             cascade = CascadeType.REMOVE,
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     @Builder.Default
     private List<GroupMember> groupMembers = new ArrayList<>();
 
@@ -52,11 +52,11 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany (mappedBy = "planner", fetch = FetchType.LAZY)
+    @OneToMany (mappedBy = "planner", fetch = FetchType.EAGER)
     @Builder.Default
     private List<Chatting> chattings = new ArrayList<>();
 
