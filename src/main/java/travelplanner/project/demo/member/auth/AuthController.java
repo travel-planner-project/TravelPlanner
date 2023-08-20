@@ -6,12 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 
@@ -46,5 +48,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) throws Exception {
         AuthResponse authResponse = service.login(request, response);
         return ResponseEntity.ok().body(authResponse);
+    }
+
+    @PostMapping("/auth/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        service.logout(request, response);
     }
 }
