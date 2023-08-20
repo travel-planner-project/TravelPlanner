@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChatResponse {
 
-    private Long userId;
+    private Long id;
     private String userNickname;
     private String profileImgUrl;
     private String message;
