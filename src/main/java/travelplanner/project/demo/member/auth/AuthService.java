@@ -1,14 +1,19 @@
 package travelplanner.project.demo.member.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -21,6 +26,7 @@ import java.util.Optional;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -30,6 +36,7 @@ public class AuthService {
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
+    private final AuthUtil authUtil;
     private final AuthenticationManager authenticationManager;
 
 
@@ -109,5 +116,23 @@ public class AuthService {
                 .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .build();
+    }
+
+    @Transactional
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+
+        String emailFromToken = tokenUtil.getEmail(tokenUtil.getJWTTokenFromHeader(request));
+        log.info(emailFromToken);
+        String currentMemberEmail = authUtil.getCurrentMember().getEmail();
+        log.info(currentMemberEmail);
+
+        if (emailFromToken.equals(currentMemberEmail)) {
+            // 어세스토큰 삭제
+            response.setHeader("Authorization", "");
+
+            // 쿠키 삭제
+            cookieUtil.delete("", response);
+        }
+
     }
 }

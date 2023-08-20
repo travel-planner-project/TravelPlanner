@@ -22,6 +22,19 @@ public class CookieUtil {
         response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
+    public static void delete(String value, HttpServletResponse response) {
+
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", value)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(false)
+                .maxAge(0)
+                .build();
+
+        response.addHeader("Set-Cookie", responseCookie.toString());
+    }
+
     public Cookie getRefreshTokenCookie(HttpServletRequest request) {
         return getCookie(request, "refreshToken");
     }
