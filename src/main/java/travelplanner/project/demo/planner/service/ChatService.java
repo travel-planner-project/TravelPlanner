@@ -59,6 +59,7 @@ public class ChatService {
         ChatResponse chatResponse = new ChatResponse();
 
         chatResponse.setId(chatting.getId());
+        chatResponse.setUserId(member.getId());
         chatResponse.setMessage(chatting.getMessage());
         chatResponse.setUserNickname(chatting.getUserNickname());
         chatResponse.setProfileImgUrl(chatting.getProfileImgUrl());
@@ -71,9 +72,13 @@ public class ChatService {
         List<Chatting> chattings= chattingRepository.findByPlannerId(plannerId);
         ArrayList<ChatResponse> chatResponses = new ArrayList<>();
 
+        // 플래너 조회
+        Planner planner = plannerRepository.findPlannerById(plannerId);
+
         for(Chatting chatting : chattings){
             ChatResponse chatResponse = ChatResponse.builder()
                     .id(chatting.getId())
+                    .userId(planner.getMember().getId())
                     .userNickname(chatting.getUserNickname())
                     .profileImgUrl(chatting.getProfileImgUrl())
                     .message(chatting.getMessage())

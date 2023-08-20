@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class ChatResponse {
 
     private Long id;
+    private Long userId;
     private String userNickname;
     private String profileImgUrl;
     private String message;
