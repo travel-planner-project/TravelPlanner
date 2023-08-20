@@ -50,6 +50,11 @@ public class AuthController {
         return ResponseEntity.ok().body(authResponse);
     }
 
+    @Operation(summary = "로그아웃")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "401", description = "토큰 유효기간 만료")
+    })
     @PostMapping("/auth/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         service.logout(request, response);
