@@ -203,8 +203,16 @@ function PlanDetail() {
       description: '여행을 함께할 친구를 초대해보세요',
       placeholder: '친구의 이메일을 입력하세요',
       submitButton: '초대',
-      onSubmit: (input: string | ModalSubmitDataType) => {
-        console.log(input, '친구 초대 api request')
+      onSubmit: (email: string | ModalSubmitDataType) => {
+        if (clientRef.current) {
+          clientRef.current.publish({
+            destination: `/pub/add-member/${plannerId}`,
+            headers: {
+              Authorization: `${token}`,
+            },
+            body: JSON.stringify({ email }),
+          })
+        }
       },
     }),
     []
