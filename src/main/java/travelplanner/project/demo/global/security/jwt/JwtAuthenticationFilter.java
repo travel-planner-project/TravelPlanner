@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
+        String method = request.getMethod();
 
         if (requestURI.startsWith("/auth") ||
                 requestURI.startsWith("/oauth") ||
@@ -37,6 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 requestURI.startsWith("/v3") ||
                 requestURI.startsWith("/favicon.ico") ||
                 requestURI.startsWith("/ws") ||
+                requestURI.startsWith("/feed") ||
+                (requestURI.startsWith("/planner") && method.equals("GET")) ||
                 requestURI.startsWith("/login")) {
 
             filterChain.doFilter(request, response);
