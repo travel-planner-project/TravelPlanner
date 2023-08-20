@@ -63,7 +63,7 @@ function InviteModal({
   }
 
   return (
-    <>
+    <form className={styles.form}>
       <label htmlFor={title} className={styles.title}>
         {title}
       </label>
@@ -94,7 +94,7 @@ function InviteModal({
           취소
         </button>
       </div>
-    </>
+    </form>
   )
 }
 
