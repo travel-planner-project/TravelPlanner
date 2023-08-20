@@ -54,6 +54,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                     .requestMatchers("/ws/**").permitAll()
+                    .requestMatchers("/feed/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/planner/**").permitAll()
                     .requestMatchers("/oauth/**", "/favicon.ico", "/login/**").permitAll()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
