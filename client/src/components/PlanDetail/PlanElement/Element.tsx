@@ -30,7 +30,7 @@ function ElementView({ data }: ElementViewProps) {
 }
 type ElementProps = {
   data: {
-    dateId: number
+    // dateId: number
     itemId: number
     itemTitle: string
     itemTime: string

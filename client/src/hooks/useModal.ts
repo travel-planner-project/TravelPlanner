@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useRecoilState } from 'recoil'
-import { modalState } from '../store/store'
+import { ModalSubmitDataType, modalState } from '../store/store'
 
 type OpenModalType = {
   title: string
@@ -8,7 +8,7 @@ type OpenModalType = {
   placeholder: string
   submitButton: string
 
-  onSubmit: (input: string) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
 }
 
 const useModal = () => {

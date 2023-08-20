@@ -14,7 +14,7 @@ export interface ChattingProps {
 }
 
 type dataType = {
-  dateId: number
+  // dateId: number
   itemTitle: string
   itemDate: string
   category: string | null
@@ -24,22 +24,27 @@ type dataType = {
   itemAddress: string
 }
 
-export interface ScheduleProps {
-  planDetailData: {
-    dateId: number
-    dateTitle: string
-    scheduleItemList: {
-      dateId: number
-      itemId: number
-      itemTitle: string
-      itemTime: string
-      category: string
-      itemContent: string
-      isPrivate: boolean
-      budget: number | null
-      itemAddress: string
-    }[]
+export type PlanDetailDataType = {
+  dateId: number
+  dateTitle: string
+  dateContent: string
+  scheduleItemList: {
+    // dateId: number
+    itemId: number
+    itemTitle: string
+    itemTime: string
+    category: string
+    itemContent: string
+    isPrivate: boolean
+    budget: number | null
+    itemAddress: string
   }[]
+}[]
+
+export interface ScheduleProps {
+  planDetailData: PlanDetailDataType
+  handleEditDate: (id: number, date: string) => void
+  handleAddDateBtnClick: () => void
   handleOpenScheduleEditor: (id: number) => void
   handleCloseScheduleEditor: () => void
   currentDateId: number

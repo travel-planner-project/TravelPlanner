@@ -39,6 +39,11 @@ export const userInfo: RecoilState<UserInfoType> = atom({
   effects_UNSTABLE: [sessionStorageEffect('userInfo')],
 })
 
+export type ModalSubmitDataType = {
+  planTitle: string
+  isPrivate: boolean
+}
+
 type ModalType = {
   isOpen: boolean
   title: string
@@ -46,7 +51,7 @@ type ModalType = {
   placeholder: string
   submitButton: string
   isSearchBtn?: boolean
-  onSubmit: (input: string) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
 }
 
 export const modalState = atom<ModalType>({
