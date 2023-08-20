@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import * as StompJs from '@stomp/stompjs'
 import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
@@ -14,12 +14,14 @@ import {
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
-import { userInfo } from '../store/store'
+import { ModalSubmitDataType, userInfo } from '../store/store'
 import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 import { dateFormat } from '../utils/date'
+import useModal from '../hooks/useModal'
+import Modal from '../components/Common/Modal/Modal'
 
 // 높이 수정중
 
@@ -43,6 +45,7 @@ function PlanDetailView({
   handleEditDate,
   currentDateId,
   isScheduleEditorOpened,
+  onInviteModalOpen,
 }: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
@@ -85,9 +88,10 @@ function PlanDetailView({
             </div>
           </div>
           <div className={styles.addUserBtnBox}>
-            <button type='button' className={styles.addPerson}>
+            <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
               <Icon name='add-person' size={42} />
             </button>
+            <Modal type='invite' />
           </div>
         </div>
         <div className={styles.planner}>
@@ -191,8 +195,22 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<PlanDetailDataType>([])
+  //친구 초대 관련
+  const { openModal } = useModal()
+  const InviteModalObj = useMemo(
+    () => ({
+      title: '친구초대',
+      description: '여행을 함께할 친구를 초대해보세요',
+      placeholder: '친구의 이메일을 입력하세요',
+      submitButton: '초대',
+      onSubmit: (input: string | ModalSubmitDataType) => {
+        console.log(input, '친구 초대 api request')
+      },
+    }),
+    []
+  )
 
-  console.log(planDetailData)
+  // console.log(planDetailData)
 
   // const [dateList, setDateList] = useState([])
   const [scheduleData, setScheduleData] = useState(initialScheduleData)
@@ -407,6 +425,7 @@ function PlanDetail() {
     userId,
     chatModal,
     onChatModalTrue: () => setChatModal(true),
+    onInviteModalOpen: () => openModal(InviteModalObj),
   }
 
   const chattingProps: ChattingProps = {

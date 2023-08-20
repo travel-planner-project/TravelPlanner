@@ -8,7 +8,7 @@ type OpenModalType = {
   placeholder: string
   submitButton: string
 
-  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType | string) => void
 }
 
 const useModal = () => {

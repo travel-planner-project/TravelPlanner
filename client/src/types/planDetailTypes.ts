@@ -59,6 +59,7 @@ export interface PlanDetailProps {
   userId: number
   chatModal: boolean
   onChatModalTrue: () => void
+  onInviteModalOpen: () => void
 }
 
 export interface PlanDetailViewProps extends ChattingProps, PlanDetailProps, ScheduleProps {}

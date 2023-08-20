@@ -51,7 +51,7 @@ type ModalType = {
   placeholder: string
   submitButton: string
   isSearchBtn?: boolean
-  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
+  onSubmit: (modalSubmitData: ModalSubmitDataType | string) => void
 }
 
 export const modalState = atom<ModalType>({
