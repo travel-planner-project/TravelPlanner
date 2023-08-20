@@ -1,15 +1,11 @@
 package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.domain.Planner;
@@ -23,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ValidatingService {
 
     private final PlannerRepository plannerRepository;
