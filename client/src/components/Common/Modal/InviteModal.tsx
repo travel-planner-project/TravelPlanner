@@ -2,11 +2,11 @@ import { useState } from 'react'
 import styles from './Modal.module.scss'
 import FriendInfo, { FriendType } from './FriendInfo'
 import { ModalSubmitDataType } from '../../../store/store'
+import { getProfile } from '../../../apis/user'
 
 // 가짜 Friend 데이터
 const Friend = {
-  id: 123,
-  profileImg: 'https://i.ytimg.com/vi/y9bWhYGvBlk/maxresdefault.jpg',
+  profileImgUrl: 'https://i.ytimg.com/vi/y9bWhYGvBlk/maxresdefault.jpg',
   userNickname: '닉네임',
   email: 'test123@naver.com',
 }
@@ -38,12 +38,15 @@ function InviteModal({
     // 친구 검색 api 에 inputValue state 를 넣어서 request 전송하고
     // api의 응답 데이터를 setFriend(response.data) 로 업데이트
 
+    const response = await getProfile(1)
+    const { status, data }: { status: number; data: FriendType } = response!
+
     // const { status, data } = await searchFriend( inputValue )
-    // if(status === 200){
-    setIsSearchBtnDirty(true)
-    //    setFriend( {...data, isChecked: false } )
-    setFriend({ ...Friend, isChecked: false })
-    // }
+    if (status === 200) {
+      setIsSearchBtnDirty(true)
+      setFriend({ ...data, isChecked: false })
+      // setFriend({ ...Friend, isChecked: false })
+    }
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -75,6 +78,7 @@ function InviteModal({
           placeholder={placeholder}
           value={inputValue}
           onChange={event => setInputValue(event.target.value)}
+          autoComplete='off'
         />
         <button type='button' className={styles.searchBtn} onClick={handleSearch}>
           검색
