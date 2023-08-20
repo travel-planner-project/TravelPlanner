@@ -32,7 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        if (requestURI.startsWith("/auth") ||
+        if (requestURI.equals("/auth/signup") ||
+                requestURI.equals("/auth/login") ||
                 requestURI.startsWith("/oauth") ||
                 requestURI.startsWith("/swagger-ui") ||
                 requestURI.startsWith("/v3") ||
