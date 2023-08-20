@@ -42,6 +42,16 @@ export const signIn = async ({ email, password }: SignInType) => {
   }
 }
 
+export const removeRefreshToken = async () => {
+  try {
+    const response = await axiosInstance.post(`/auth/logout`)
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
 export const getProfile = async (id: number) => {
   try {
     const response = await axiosInstance.get(`/profile?userId=${id}`)
