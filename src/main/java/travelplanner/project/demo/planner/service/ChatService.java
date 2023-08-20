@@ -58,7 +58,7 @@ public class ChatService {
         // 채팅 리스폰스
         ChatResponse chatResponse = new ChatResponse();
 
-        chatResponse.setUserId(member.getId());
+        chatResponse.setId(member.getId());
         chatResponse.setMessage(chatting.getMessage());
         chatResponse.setUserNickname(chatting.getUserNickname());
         chatResponse.setProfileImgUrl(chatting.getProfileImgUrl());
@@ -73,7 +73,7 @@ public class ChatService {
 
         for(Chatting chatting : chattings){
             ChatResponse chatResponse = ChatResponse.builder()
-                    .userId(chatting.getId())
+                    .id(chatting.getId())
                     .userNickname(chatting.getUserNickname())
                     .profileImgUrl(chatting.getProfileImgUrl())
                     .message(chatting.getMessage())
