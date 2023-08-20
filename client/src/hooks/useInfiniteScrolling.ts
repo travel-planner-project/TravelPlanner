@@ -43,6 +43,7 @@ const useInfiniteScrolling = (page = 0, query = '') => {
         setResults(prev => [...prev, ...content])
         setHasNextPage(currentPageNumber < totalPageNumber - 1)
         setIsLoading(false)
+        setIsError(false)
       })
       .catch(error => {
         if (axios.isCancel(error)) return
