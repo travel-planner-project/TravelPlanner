@@ -3,7 +3,7 @@ import styles from './ElementEditor.module.scss'
 import DropDown from './DropDown'
 
 type dataType = {
-  dateId: number
+  // dateId: number
   itemTitle: string
   itemDate: string
   category: string | null

@@ -10,6 +10,7 @@ import {
   ChattingProps,
   PlanDetailViewProps,
   ScheduleProps,
+  PlanDetailDataType,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
@@ -18,6 +19,7 @@ import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
+import { dateFormat } from '../utils/date'
 
 // 높이 수정중
 
@@ -38,6 +40,7 @@ function PlanDetailView({
   handleOpenScheduleEditor,
   handleCloseScheduleEditor,
   handleAddDateBtnClick,
+  handleEditDate,
   currentDateId,
   isScheduleEditorOpened,
 }: PlanDetailViewProps) {
@@ -95,10 +98,21 @@ function PlanDetailView({
                 <li className={styles.plan} key={item.dateId}>
                   {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
                   {/* input type date는 idx가 0일 때만 */}
-                  <div className={styles.dayTitle}>{item.dateTitle}</div>
+                  {idx === 0 && item.dateTitle === 'none' ? (
+                    <input
+                      type='date'
+                      className={styles.dateInput}
+                      required
+                      // aria-required='true'
+                      data-placeholder='여행 시작일을 입력하세요.'
+                      onChange={e => handleEditDate(item.dateId, e.target.value)}
+                    />
+                  ) : (
+                    <div className={styles.dateTitle}>{item.dateContent}</div>
+                  )}
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
-                    <div className={styles.schedules}>
+                    <ul className={styles.schedules}>
                       {item.scheduleItemList?.map((el, idx) => {
                         return (
                           <li className={styles.scheduleItem} key={el.itemId}>
@@ -123,7 +137,7 @@ function PlanDetailView({
                           <Icon name='plus-square' size={24} />
                         </button>
                       )}
-                    </div>
+                    </ul>
                   </div>
                 </li>
               )
@@ -176,20 +190,49 @@ function PlanDetail() {
   // 플래너 관련
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
-  const [planDetailData, setPlanDetailData] = useState<any>([])
+  const [planDetailData, setPlanDetailData] = useState<PlanDetailDataType>([])
+
+  console.log(planDetailData)
 
   // const [dateList, setDateList] = useState([])
   const [scheduleData, setScheduleData] = useState(initialScheduleData)
 
   const handleAddDateBtnClick = () => {
     console.log('add-date')
+
     if (clientRef.current) {
+      let requestBody = {}
+
+      if (planDetailData.length === 0) {
+        requestBody = { dateTitle: 'none' }
+      } else {
+        if (planDetailData[planDetailData.length - 1].dateTitle === 'none') {
+          alert('먼저 여행 시작일을 입력하세요.')
+        }
+        const lastDate = new Date(planDetailData[planDetailData.length - 1].dateTitle)
+        lastDate.setDate(lastDate.getDate() + 1)
+        requestBody = { dateTitle: lastDate.toISOString() }
+      }
+
       clientRef.current.publish({
         destination: `/pub/create-date/${plannerId}`,
         headers: {
           Authorization: `${token}`,
         },
-        body: JSON.stringify({ dateTitle: 'test' }),
+        body: JSON.stringify(requestBody),
+      })
+    }
+  }
+
+  const handleEditDate = (id: number, date: string) => {
+    const convertedDate = new Date(date).toISOString()
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/update-date/${plannerId}/${id}`,
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ dateId: id, dateTitle: convertedDate }),
       })
     }
   }
@@ -262,7 +305,13 @@ function PlanDetail() {
       const fetchPlanDetailData = async () => {
         try {
           const res = await getPlanDetail(plannerId)
-          if (res) setPlanDetailData(res.data.calendars)
+          if (res) {
+            const schedules = res.data.calendars.map(el => ({
+              ...el, // Keep the other properties unchanged
+              dateContent: dateFormat(new Date(el.dateTitle)),
+            }))
+            setPlanDetailData(schedules)
+          }
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
         }
@@ -293,13 +342,19 @@ function PlanDetail() {
       const callback = function (message: any) {
         if (message.body) {
           const resBody = JSON.parse(message.body)
+          console.log('웹소켓 리스폰스: ', resBody)
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
           } else if (resBody.type === 'add-date') {
             const newDate = resBody.msg[resBody.msg.length - 1]
+            newDate.dateContent = dateFormat(new Date(newDate.dateTitle))
             setPlanDetailData(prev => [...prev, newDate])
-          } else if (resBody.type === 'add-schedule') {
+          } else if (resBody.type === 'modify-date') {
             console.log(resBody.msg)
+            const modifiedDate = resBody.msg[0]
+            modifiedDate.dateContent = dateFormat(new Date(modifiedDate.dateTitle))
+            setPlanDetailData(modifiedDate)
+          } else if (resBody.type === 'add-schedule') {
             const newData = resBody.msg[resBody.msg.length - 1]
             const newDateId = newData.dateId
             const copyData = planDetailData
@@ -317,8 +372,8 @@ function PlanDetail() {
 
     // 브로커에서 에러가 발생했을 때 호출되는 함수
     client.onStompError = function (frame) {
-      // console.log(`Broker reported error: ${frame.headers.message}`)
-      // console.log(`Additional details: ${frame.body}`)
+      console.log(`Broker reported error: ${frame.headers.message}`)
+      console.log(`Additional details: ${frame.body}`)
 
       // 액세스 토큰 만료시
       if (
@@ -367,6 +422,7 @@ function PlanDetail() {
     currentDateId,
     isScheduleEditorOpened,
     handleAddDateBtnClick,
+    handleEditDate,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
     onScheduleInputChange,

@@ -4,7 +4,7 @@
 
 .planContainer {
   // width: 100%;
-  height: 100%;
+  // height: 100%;
   max-height: 100%;
   overflow-y: hidden;
   @include U.flex-c(column, flex-start, flex-start);
@@ -135,7 +135,24 @@
   width: 100%;
 }
 
-.dayTitle {
+input[type='date']::before {
+  content: attr(data-placeholder);
+  width: 100%;
+  @include U.flex-c(row, center, center);
+}
+
+input[type='date']:focus::before,
+input[type='date']:valid::before {
+  display: none;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.dateTitle {
   @include U.flex-c();
   @include T.black-semibold-20;
   width: 100%;
