@@ -11,16 +11,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.planner.domain.GroupMember;
+import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AuthUtil {
 
-    private final MemberRepository memberRepository;
     private final TokenUtil tokenUtil;
+    private final MemberRepository memberRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public Member getCurrentMember() {
 
@@ -46,5 +50,24 @@ public class AuthUtil {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(tokenUtilEmail, accessToken, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
+
+    /**
+     * 그룹 멤버인지 확인하는 로직이 너무 많아서 만들었습니다. 아래의 내용과 비슷한 로직이 있다면 추후에 리팩토링하면 될 것 같습니다.
+     * 이 메서드는 주어진 이메일이 특정 플래너의 그룹 멤버인지 여부를 확인합니다.
+     * @param email 확인하려는 사용자의 이메일 주소입니다. 비회원의 경우 null 일 수 있습니다.
+     * @param plannerId 그룹 멤버인지 확인하려는 플래너의 고유 ID입니다.
+     * @return 이메일이 플래너의 그룹 멤버에 포함되어 있으면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
+     */
+    public boolean isGroupMember(String email, Long plannerId) {
+        // email이 null인 경우, 사용자가 비회원이므로 그룹 멤버가 아닌 것으로 판단하고 false를 반환합니다.
+        if (email == null) {
+            return false;
+        }
+        // 플래너 ID로 해당 플래너의 그룹 멤버 목록을 가져옵니다.
+        List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
+        // 그룹 멤버 목록에서 주어진 이메일과 일치하는 멤버가 있는지 확인합니다.
+        // stream()과 anyMatch()를 사용하여 이메일이 일치하는 그룹 멤버가 하나라도 있으면 true를 반환합니다.
+        return groupMembers.stream().anyMatch(gm -> gm.getEmail().equals(email));
     }
 }
