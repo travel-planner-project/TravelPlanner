@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
@@ -23,7 +22,9 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.*;
-import travelplanner.project.demo.planner.repository.ChattingRepository;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailAuthorizedResponse;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailResponse;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailUnauthorizedResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
@@ -129,18 +130,41 @@ public class PlannerService {
         // 플래너에 해당하는 그룹멤버를 가져옴
         List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
 
-        PlannerDetailResponse response = PlannerDetailResponse.builder()
-                .plannerId(planner.getId())
-                .planTitle(planner.getPlanTitle())
-                .isPrivate(planner.getIsPrivate())
-                .startDate(planner.getStartDate())
-                .endDate(planner.getEndDate())
-                .calendars(updatedCalendarResponses)
-                .groupMemberList(groupMemberResponses)
-                .chattings(chatResponses)
-                .build();
+        // 현재 유저의 이메일을 가져옴 (비회원일 경우 null)
+        String currentEmail = null;
+        try {
+            currentEmail = authUtil.getCurrentMember().getEmail();
+        } catch (UsernameNotFoundException e) {
+            // 비회원인 경우 처리는 아래에서 함
+            //  catch 블록이 비어있기 때문에 UsernameNotFoundException 예외가 발생하면 그냥 무시하고 넘어가기 때문에
+            // 비회원이여도 어떠한 로직도 없기 때문에, currentEmail에 null이 유지된다.
+        }
 
-        return response;
+        // 그룹 멤버에 포함된 경우를 체크
+        if (authUtil.isGroupMember(currentEmail, plannerId)) {
+            // 회원이면서 그룹 멤버인 경우, 채팅 리스트를 가져옴
+            return PlannerDetailAuthorizedResponse.builder()
+                    .plannerId(planner.getId())
+                    .planTitle(planner.getPlanTitle())
+                    .isPrivate(planner.getIsPrivate())
+                    .startDate(planner.getStartDate())
+                    .endDate(planner.getEndDate())
+                    .calendars(updatedCalendarResponses)
+                    .groupMemberList(groupMemberResponses)
+                    .chattings(chatResponses)
+                    .build();
+        } else {
+            // 그룹 멤버가 아니거나 비회원인 경우
+            return PlannerDetailUnauthorizedResponse.builder()
+                    .plannerId(planner.getId())
+                    .planTitle(planner.getPlanTitle())
+                    .isPrivate(planner.getIsPrivate())
+                    .startDate(planner.getStartDate())
+                    .endDate(planner.getEndDate())
+                    .calendars(updatedCalendarResponses)
+                    .groupMemberList(groupMemberResponses)
+                    .build();
+        }
     }
 
 
