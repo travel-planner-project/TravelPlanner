@@ -21,7 +21,7 @@ public class CalendarResponse {
     @CreatedDate
     private LocalDateTime createAt;
     private Long plannerId;
-    private List<ToDoResponse> scheduleItemList;
+//    private List<ToDoResponse> scheduleItemList;
 
     public static class CalendarResponseBuilder {
         private List<ToDoResponse> scheduleItemList;
