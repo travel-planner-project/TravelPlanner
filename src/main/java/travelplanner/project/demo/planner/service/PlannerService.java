@@ -22,6 +22,8 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.*;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailAuthorizedResponse;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailUnauthorizedResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
