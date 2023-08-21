@@ -1,7 +1,10 @@
-package travelplanner.project.demo.planner.dto.response;
+package travelplanner.project.demo.planner.dto.response.plannerdetail;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
+import travelplanner.project.demo.planner.dto.response.ChatResponse;
+import travelplanner.project.demo.planner.dto.response.GroupMemberResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlannerDetailAuthorizedResponse {
+public class PlannerDetailAuthorizedResponse implements PlannerDetailResponse{
 
     @Schema(description = "플래너 인덱스", example = "1")
     private Long plannerId;
