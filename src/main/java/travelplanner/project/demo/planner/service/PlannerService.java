@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
@@ -23,7 +21,6 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.*;
-import travelplanner.project.demo.planner.repository.ChattingRepository;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
@@ -95,7 +92,7 @@ public class PlannerService {
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     //
-    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
+    public PlannerDetailAuthorizedResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
 
         // 접근 권한 확인
         // 만약, 플래너가 isPrivate == false 인 경우, 그룹멤버가 아니더라도 모든 사람이 볼 수 있어야 합니다.
@@ -129,7 +126,7 @@ public class PlannerService {
         // 플래너에 해당하는 그룹멤버를 가져옴
         List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
 
-        PlannerDetailResponse response = PlannerDetailResponse.builder()
+        PlannerDetailAuthorizedResponse response = PlannerDetailAuthorizedResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
                 .isPrivate(planner.getIsPrivate())
