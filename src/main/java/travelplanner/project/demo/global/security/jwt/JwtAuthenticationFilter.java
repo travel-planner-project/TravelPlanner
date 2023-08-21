@@ -34,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (requestURI.equals("/auth/signup") ||
                 requestURI.equals("/auth/login") ||
+                requestURI.equals("/auth/token") ||
                 requestURI.startsWith("/oauth") ||
                 requestURI.startsWith("/swagger-ui") ||
                 requestURI.startsWith("/v3") ||
