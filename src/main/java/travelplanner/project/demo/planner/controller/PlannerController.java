@@ -42,7 +42,7 @@ public class PlannerController {
     }
 
     @GetMapping("/{plannerId}")
-    public PlannerDetailAuthorizedResponse getPlannerDetail(@PathVariable Long plannerId) {
+    public Object getPlannerDetail(@PathVariable Long plannerId) {
         return plannerService.getPlannerDetailByOrderAndEmail(plannerId);
     }
 
