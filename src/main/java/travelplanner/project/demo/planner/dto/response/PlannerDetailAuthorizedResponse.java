@@ -2,9 +2,6 @@ package travelplanner.project.demo.planner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import travelplanner.project.demo.planner.domain.Chatting;
-import travelplanner.project.demo.planner.domain.GroupMember;
-import travelplanner.project.demo.planner.domain.Planner;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlannerDetailResponse {
+public class PlannerDetailAuthorizedResponse {
 
     @Schema(description = "플래너 인덱스", example = "1")
     private Long plannerId;
@@ -39,8 +36,5 @@ public class PlannerDetailResponse {
 
     @Schema(description = "채팅 리스트", example = "")
     private List<ChatResponse> chattings;
-
-    // Todo 그룹멤버 정보 전부 추가 List<그룹멤버>
-    // Todo 채팅부분 추가해야함
 
 }
