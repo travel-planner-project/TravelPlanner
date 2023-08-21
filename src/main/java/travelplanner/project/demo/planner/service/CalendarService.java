@@ -2,6 +2,7 @@ package travelplanner.project.demo.planner.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.CalendarEditor;
 import travelplanner.project.demo.planner.domain.Planner;
@@ -42,6 +43,7 @@ public class CalendarService {
                 .build();
     }
 
+    @Transactional
     public void deleteDate(Long plannerId, Long deleteId){
 
         // 반환값 무시하고 검증만 함
