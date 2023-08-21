@@ -101,13 +101,18 @@ public class AuthService {
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
-        // 리프레시 토큰을 Redis 에 저장
-        if (redisUtil.getData(member.getEmail()) == null) {
+        if (redisUtil.getData(member.getEmail()) == null) { // 레디스에 토큰이 저장되어 있지 않은 경우
 
             String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
+
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
             redisUtil.setData(member.getEmail(), refreshToken);
+
+        } else { // 레디스에 토큰이 저장되어 있는 경우
+
+            String refreshToken = redisUtil.getData(member.getEmail());
+            cookieUtil.create(refreshToken, response);
         }
 
         return AuthResponse.builder()
