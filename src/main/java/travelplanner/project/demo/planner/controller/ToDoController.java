@@ -31,10 +31,10 @@ public class ToDoController {
                        @Header("Authorization") String athorization) {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
-        toDoService.createTodo(plannerId, dateId, request);   // 시영지기 ㅇ;ㅂ략힌 toDo
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","add-schedule", "msg", scheduleItemList
+                Map.of("type","add-schedule", "msg", toDoService.createTodo(plannerId, dateId, request) // 사용자가 입력한 todo
+
                 )
         );
     }
@@ -47,10 +47,9 @@ public class ToDoController {
                      @Header("Authorization") String athorization) {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
-        toDoService.editTodo(plannerId, dateId, toDoId, request);
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","modify-schedule", "msg", scheduleItemList
+                Map.of("type","modify-schedule", "msg", toDoService.editTodo(plannerId, dateId, toDoId, request)
                 )
         );
     }

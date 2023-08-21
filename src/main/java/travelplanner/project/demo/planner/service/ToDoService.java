@@ -71,7 +71,7 @@ public class ToDoService {
 
 
 
-    public void createTodo(Long plannerId, Long dateId,
+    public ToDoResponse createTodo(Long plannerId, Long dateId,
                            ToDoCraeteRequest request) {
         // 플래너와 사용자에 대한 검증
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
@@ -89,10 +89,22 @@ public class ToDoService {
                 .itemAddress(request.getItemAddress())
                 .build();
         toDoRepository.save(todo);
+
+        return ToDoResponse.builder()
+                .dateId(dateId)
+                .itemContent(todo.getItemContent())
+                .itemId(todo.getId())
+                .itemTime(todo.getItemTime())
+                .itemTitle(todo.getItemTitle())
+                .itemAddress(todo.getItemAddress())
+                .category(todo.getCategory())
+                .itemContent(todo.getItemContent())
+                .budget(todo.getBudget())
+                .build();
     }
 
     @Transactional
-    public void editTodo(
+    public ToDoResponse editTodo(
             Long plannerId, Long dateId, Long toDoId,
             ToDoEditRequest editRequest
     ) {
@@ -116,6 +128,18 @@ public class ToDoService {
                 .itemContent(editRequest.getItemContent())
                 .build();
         toDo.edit(toDoEditor);
+
+        return ToDoResponse.builder()
+                .dateId(dateId)
+                .itemContent(toDo.getItemContent())
+                .itemId(toDo.getId())
+                .itemTime(toDo.getItemTime())
+                .itemTitle(toDo.getItemTitle())
+                .itemAddress(toDo.getItemAddress())
+                .category(toDo.getCategory())
+                .itemContent(toDo.getItemContent())
+                .budget(toDo.getBudget())
+                .build();
     }
 
     public void delete(Long plannerId, Long dateId, Long toDoId) {

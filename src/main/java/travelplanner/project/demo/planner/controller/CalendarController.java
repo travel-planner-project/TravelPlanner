@@ -36,12 +36,11 @@ public class CalendarController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
 
-        calendarService.createDate(plannerId, request);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
-
-        log.info("리스폰스: " + calendarList.toString());
+//        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+//
+//        log.info("리스폰스: " + calendarList.toString());
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","add-date", "msg", calendarList
+                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request)
                 )
         );
     }
@@ -53,10 +52,8 @@ public class CalendarController {
                            @Header("Authorization") String athorization) {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
-        calendarService.updateDate(plannerId, dateId, request);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","modify-date", "msg", calendarList
+                Map.of("type","modify-date", "msg", calendarService.updateDate(plannerId, dateId, request)
                 )
         );
     }
@@ -69,10 +66,7 @@ public class CalendarController {
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         calendarService.deleteDate(plannerId, dateId);
         List<CalendarResponse> calendarList = calendarService.getCalendarList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","delete-date", "msg", calendarList
-                )
-        );
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);
     }
 
 }

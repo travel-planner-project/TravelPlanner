@@ -22,7 +22,7 @@ public class CalendarService {
     private final CalendarRepository calendarRepository;
     private final ValidatingService validatingService;
 
-    public void createDate(Long plannerId, CalendarCreateRequest createRequest) {
+    public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest) {
 
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
 
@@ -33,6 +33,13 @@ public class CalendarService {
                 .build();
 
         calendarRepository.save(buildRequest);
+
+        return CalendarResponse.builder()
+                .dateId(buildRequest.getId())
+                .createAt(buildRequest.getCreatedAt())
+                .dateTitle(buildRequest.getDateTitle())
+                .plannerId(plannerId)
+                .build();
     }
 
     public void deleteDate(Long plannerId, Long deleteId){
@@ -50,7 +57,7 @@ public class CalendarService {
         calendarRepository.delete(calendar);
     }
 
-    public void updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest) {
+    public CalendarResponse updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest) {
 
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
         Calendar calendar = validatingService.validateCalendarAccess(planner, updateId);
@@ -60,6 +67,13 @@ public class CalendarService {
                 .build();
         calendar.edit(calendarEditor);
         calendarRepository.updatedateTitle(updateId, updateRequest.getDateTitle());
+
+        return CalendarResponse.builder()
+                .dateId(calendar.getId())
+                .createAt(calendar.getCreatedAt())
+                .dateTitle(calendar.getDateTitle())
+                .plannerId(plannerId)
+                .build();
     }
 
     // 전체 Calendar 조회해서 response를 리스트로 리턴
