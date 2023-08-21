@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,8 +37,8 @@ public class PlannerController {
     private final PlannerService plannerService;
 
     @GetMapping
-    public Page<PlannerListResponse> getPlannerList(Pageable pageable, @RequestParam(required = false) String email) {
-        return plannerService.getPlannerListByUserIdOrEmail(pageable, email);
+    public Page<PlannerListResponse> getPlannerList(Pageable pageable, @RequestParam(required = false) String email, HttpServletRequest request) {
+        return plannerService.getPlannerListByUserIdOrEmail(pageable, email, request);
     }
 
     @GetMapping("/{plannerId}")

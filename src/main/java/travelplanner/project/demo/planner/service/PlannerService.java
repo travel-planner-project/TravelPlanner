@@ -1,15 +1,19 @@
 package travelplanner.project.demo.planner.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
+import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -47,11 +51,16 @@ public class PlannerService {
     private final ValidatingService validatingService;
     private final ChatService chatService;
     private final GroupMemberService groupMemberService;
+    private final TokenUtil tokenUtil;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
-    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email) {
+    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email, HttpServletRequest request) {
+
+        authUtil.authenticationUser(request);
+
         String currentEmail = authUtil.getCurrentMember().getEmail();
+
         List<Planner> planners;
 
         /*
