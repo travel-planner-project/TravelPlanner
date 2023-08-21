@@ -36,22 +36,25 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
+    public GroupMemberSearchResponse searchMember (Long plannerId, GroupMemberSearchRequest request) {
 
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
-        Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
+        List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 
-        if (member.isEmpty()) {
-
+        // 조회한 그룹멤버 리스트에 일치하는 멤버가 없으면 에러
+        if(groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(request.getEmail()))){
             throw new ApiException(ErrorType.USER_NOT_FOUND);
+        }else{
+            //그룹 멤버가 존재하면 해당하는 멤버 조회
+            Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+            Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
+
+            GroupMemberSearchResponse response = new GroupMemberSearchResponse();
+            response.setProfileImageUrl(profile.getProfileImgUrl());
+            response.setEmail(member.get().getEmail());
+            response.setUserNickname(member.get().getUserNickname());
+
+            return response;
         }
-
-        GroupMemberSearchResponse response = new GroupMemberSearchResponse();
-        response.setProfileImageUrl(profile.getProfileImgUrl());
-        response.setEmail(member.get().getEmail());
-        response.setUserNickname(member.get().getUserNickname());
-
-        return response;
     }
 
 
@@ -75,8 +78,8 @@ public class GroupMemberService {
                 GroupMember groupMember = GroupMember.builder()
                         .email(member.get().getEmail())
                         .userNickname(member.get().getUserNickname())
-                        .profileImageUrl(profile.getProfileImgUrl())
                         .groupMemberType(GroupMemberType.MEMBER)
+                        .profile(profile)
                         .planner(planner)
                         .build();
 
@@ -91,11 +94,10 @@ public class GroupMemberService {
                 GroupMemberResponse response = GroupMemberResponse.builder()
                         .groupMemberId(groupMember.getId())
                         .nickname(groupMember.getUserNickname())
-                        .profileImageUrl(groupMember.getProfileImageUrl())
+                        .profileImageUrl(groupMember.getProfile().getProfileImgUrl())
                         .role(groupMember.getGroupMemberType())
                         .email(groupMember.getEmail())
                         .build();
-
 
                 return response;
 
@@ -106,6 +108,7 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 삭제
+    @Transactional
     public void deleteGroupMember(GroupMemberDeleteRequest request) {
 
         GroupMember groupMember = groupMemberRepository.findGroupMemberById(request.getGroupMemberId());
@@ -119,10 +122,11 @@ public class GroupMemberService {
 
 
         for (GroupMember groupMember : groupMemberList) {
+
             GroupMemberResponse groupMemberResponse = GroupMemberResponse.builder()
                     .groupMemberId(groupMember.getId())
                     .nickname(groupMember.getUserNickname())
-                    .profileImageUrl(groupMember.getProfileImageUrl())
+                    .profileImageUrl(groupMember.getProfile().getProfileImgUrl())
                     .email(groupMember.getEmail())
                     .role(groupMember.getGroupMemberType())
                     .build();

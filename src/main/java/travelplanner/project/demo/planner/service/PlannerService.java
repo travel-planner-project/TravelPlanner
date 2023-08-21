@@ -198,9 +198,9 @@ public class PlannerService {
         GroupMember groupMember = GroupMember.builder()
                 .email(member.getEmail())
                 .groupMemberType(GroupMemberType.HOST)
-                .profileImageUrl(profile.getProfileImgUrl())
                 .userNickname(member.getUserNickname())
                 .planner(createPlanner)
+                .profile(profile)
                 .build();
 
         groupMemberRepository.save(groupMember);
