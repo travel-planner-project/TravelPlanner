@@ -58,19 +58,9 @@ public class PlannerService {
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
     public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email, HttpServletRequest request) {
 
-        authUtil.authenticationUser(request);
-
-        String currentEmail = authUtil.getCurrentMember().getEmail();
+        // [공통] ==============================================
 
         List<Planner> planners;
-
-        /*
-        이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
-        특정 유저의 이메일을 담고 요청: 해당 유저의 플래너만 보여주되, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
-         */
-
-        // 현재 사용자가 그룹 멤버인지 확인
-        List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
 
         if (email == null) {
             // 이메일 값을 보내지 않았을 때, 모든 유저의 플래너 조회
@@ -82,10 +72,39 @@ public class PlannerService {
             planners = plannerRepository.findByMember(member);
         }
 
-        // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
-        planners = planners.stream()
-                .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
-                .collect(Collectors.toList());
+        // ==================================================
+
+        // [로그인 / 비로그인 분기] ===================================
+
+        // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
+        if (authUtil.authenticationUser(request)) {
+
+            String currentEmail = authUtil.getCurrentMember().getEmail();
+
+            /*
+            이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+            특정 유저의 이메일을 담고 요청: 해당 유저의 플래너만 보여주되, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+             */
+
+            // 현재 사용자가 그룹 멤버인지 확인
+            List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
+
+            // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
+            planners = planners.stream()
+                    .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
+                    .collect(Collectors.toList());
+
+        } else { // 비로그인한 유저의 경우 공개 플래너만 모아서 반환
+
+            // isPrivate = true 인 플래너 제거
+            planners = planners.stream()
+                    .filter(planner -> !planner.getIsPrivate())
+                    .collect(Collectors.toList());
+        }
+
+        // ==================================================
+
+        // [공통] 페이지 처리 ======================================
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), planners.size());
