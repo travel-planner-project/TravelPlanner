@@ -3,13 +3,6 @@ import styles from './Modal.module.scss'
 import FriendInfo, { FriendType } from './FriendInfo'
 import { getProfile } from '../../../apis/user'
 
-// 가짜 Friend 데이터
-const Friend = {
-  profileImgUrl: 'https://i.ytimg.com/vi/y9bWhYGvBlk/maxresdefault.jpg',
-  userNickname: '닉네임',
-  email: 'test123@naver.com',
-}
-
 type InviteModalProp = {
   onClose: () => void
   title: string
@@ -32,19 +25,15 @@ function InviteModal({
   const [isSearchBtnDirty, setIsSearchBtnDirty] = useState(false)
 
   const handleSearch = async () => {
-    console.log('input 입력값:', inputValue, '을 서버로 보내고 받은 응답으로 friend 상태 업데이트')
-
     // 친구 검색 api 에 inputValue state 를 넣어서 request 전송하고
     // api의 응답 데이터를 setFriend(response.data) 로 업데이트
 
-    const response = await getProfile(5)
+    const response = await getProfile(3)
     const { status, data }: { status: number; data: FriendType } = response!
 
-    // const { status, data } = await searchFriend( inputValue )
     if (status === 200) {
       setIsSearchBtnDirty(true)
       setFriend({ ...data, isChecked: false })
-      // setFriend({ ...Friend, isChecked: false })
     }
   }
 
@@ -53,15 +42,12 @@ function InviteModal({
     if (!isSearchBtnDirty) {
       return alert('이메일로 친구 검색을 먼저 해주세요')
     }
-
     if (!friend.isChecked) {
       return alert('초대하실 친구를 선택 후 초대 버튼을 눌러주세요')
     }
     if (friend.email) {
       onSubmit(friend.email)
     }
-    // if(status !== 200) { return alert('친구 초대에 실패했습니다. 잠시 후 다시 시도해주세요.') }
-
     onClose()
   }
 

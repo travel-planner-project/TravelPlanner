@@ -11,6 +11,7 @@ import {
   PlanDetailViewProps,
   ScheduleProps,
   PlanDetailDataType,
+  GroupMemberListType,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
@@ -46,6 +47,7 @@ function PlanDetailView({
   currentDateId,
   isScheduleEditorOpened,
   onInviteModalOpen,
+  groupMember,
 }: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
@@ -65,27 +67,20 @@ function PlanDetailView({
       <div className={styles.planBody}>
         <div className={styles.userList}>
           <div className={styles.users}>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>시은</div>
-            </div>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>설화</div>
-            </div>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>예슬</div>
-            </div>
+            {groupMember.map(member => {
+              return (
+                <div className={styles.user} key={member.email}>
+                  <div className={styles.userProfileBox}>
+                    {member.profileImageUrl ? (
+                      <img src={member.profileImageUrl} alt='프로필 이미지' />
+                    ) : (
+                      <Icon name='profile' size={42} />
+                    )}
+                  </div>
+                  <div className={styles.userName}>{member.nickname}</div>
+                </div>
+              )
+            })}
           </div>
           <div className={styles.addUserBtnBox}>
             <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
@@ -196,6 +191,7 @@ function PlanDetail() {
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<PlanDetailDataType>([])
   //친구 초대 관련
+  const [groupMember, setGroupMember] = useState<GroupMemberListType>([])
   const { openModal } = useModal()
   const InviteModalObj = useMemo(
     () => ({
@@ -215,7 +211,7 @@ function PlanDetail() {
         }
       },
     }),
-    []
+    [token]
   )
 
   // console.log(planDetailData)
@@ -332,11 +328,14 @@ function PlanDetail() {
         try {
           const res = await getPlanDetail(plannerId)
           if (res) {
-            const schedules = res.data.calendars.map(el => ({
+            const { calendars, groupMemberList, chattings } = res.data
+            const schedules = calendars.map(el => ({
               ...el, // Keep the other properties unchanged
               dateContent: dateFormat(new Date(el.dateTitle)),
             }))
             setPlanDetailData(schedules)
+            setGroupMember(groupMemberList)
+            console.log('g', groupMemberList)
           }
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
@@ -389,6 +388,8 @@ function PlanDetail() {
             )
             copyData[targetDateIndex].scheduleItemList.push(newData)
             setPlanDetailData(copyData)
+          } else if (resBody.type === 'add-user') {
+            setGroupMember(pre => [...pre, resBody.msg])
           }
         }
       }
@@ -432,6 +433,7 @@ function PlanDetail() {
   const planDetailProps: PlanDetailProps = {
     userId,
     chatModal,
+    groupMember,
     onChatModalTrue: () => setChatModal(true),
     onInviteModalOpen: () => openModal(InviteModalObj),
   }

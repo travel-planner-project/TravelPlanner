@@ -55,9 +55,18 @@ export interface ScheduleProps {
   scheduleData: dataType
 }
 
+export type GroupMemberListType = {
+  groupMemberId: number
+  email: string
+  nickname: string
+  profileImageUrl: string
+  role: string
+}[]
+
 export interface PlanDetailProps {
   userId: number
   chatModal: boolean
+  groupMember: GroupMemberListType
   onChatModalTrue: () => void
   onInviteModalOpen: () => void
 }
