@@ -199,6 +199,7 @@ function PlanDetail() {
       description: '여행을 함께할 친구를 초대해보세요',
       placeholder: '친구의 이메일을 입력하세요',
       submitButton: '초대',
+      groupMember: groupMember,
       onSubmit: (email: string | ModalSubmitDataType) => {
         if (clientRef.current) {
           clientRef.current.publish({
@@ -211,7 +212,7 @@ function PlanDetail() {
         }
       },
     }),
-    [token]
+    [token, groupMember]
   )
 
   // console.log(planDetailData)
@@ -335,7 +336,6 @@ function PlanDetail() {
             }))
             setPlanDetailData(schedules)
             setGroupMember(groupMemberList)
-            console.log('g', groupMemberList)
           }
         } catch (error) {
           console.error('Error fetching plan detail data:', error)
