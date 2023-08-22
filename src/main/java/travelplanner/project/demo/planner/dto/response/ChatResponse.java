@@ -1,14 +1,10 @@
 package travelplanner.project.demo.planner.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
+@AllArgsConstructor
 public class ChatResponse {
 
     private Long id;
@@ -17,3 +13,4 @@ public class ChatResponse {
     private String profileImgUrl;
     private String message;
 }
+

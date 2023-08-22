@@ -18,7 +18,6 @@ import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +58,14 @@ public class ChatService {
 
         chattingRepository.save(chatting);
 
-        // 채팅 리스폰스
-        ChatResponse chatResponse = new ChatResponse();
-
-        chatResponse.setId(chatting.getId());
-        chatResponse.setUserId(member.getId());
-        chatResponse.setMessage(chatting.getMessage());
-        chatResponse.setUserNickname(chatting.getUserNickname());
-        chatResponse.setProfileImgUrl(chatting.getProfileImgUrl());
-
-        return chatResponse;
+        ChatResponse response = ChatResponse.builder()
+                .id(chatting.getId())
+//                .userId(chatting.get)
+                .message(chatting.getMessage())
+                .userNickname(chatting.getUserNickname())
+                .profileImgUrl(chatting.getProfileImgUrl())
+                .build();
+        return response;
     }
 
     // 플래너 조회 시 해당 채팅 내역 조회
