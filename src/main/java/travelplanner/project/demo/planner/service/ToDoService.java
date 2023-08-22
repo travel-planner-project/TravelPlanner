@@ -11,7 +11,9 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.repository.CalendarRepository;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
 
@@ -24,8 +26,9 @@ import java.util.List;
 public class ToDoService {
 
     private final ToDoRepository toDoRepository;
-    private final GroupMemberRepository groupMemberRepository;
+    private final CalendarRepository calendarRepository;
     private final ValidatingService validatingService;
+
 
     public List<ToDoResponse> getScheduleItemList() {
         List<ToDo> scheduleItemList = toDoRepository.findAll();
@@ -162,5 +165,36 @@ public class ToDoService {
     }
 
 
+    @Transactional
+    public List<CalendarResponse> getCalendarScheduleList(Long plannerId) {
+        // 캘린더 서비스를 가져오면 순환참조 문제로 다시 작성
+        List<Calendar> calendarList = calendarRepository.findByPlannerId(plannerId);
+        ArrayList<CalendarResponse> calendarResponses = new ArrayList<>();
+
+        for (Calendar calendar : calendarList) {
+            CalendarResponse calendarResponse = CalendarResponse.builder()
+                    .dateId(calendar.getId())
+                    .dateTitle(calendar.getDateTitle())
+                    .createAt(calendar.getCreatedAt())
+                    .plannerId(calendar.getPlanner().getId())
+                    .build();
+            calendarResponses.add(calendarResponse);
+        }
+
+        // 투두를 조회하여 캘린더 리스트에 추가
+        List<CalendarResponse> updatedCalendarResponses = new ArrayList<>();
+        for (CalendarResponse calendarResponse : calendarResponses) {
+            List<ToDoResponse> toDoResponses = getScheduleItemList(calendarResponse.getDateId());
+            CalendarResponse updatedCalendarResponse = CalendarResponse.builder()
+                    .dateId(calendarResponse.getDateId())
+                    .dateTitle(calendarResponse.getDateTitle())
+                    .createAt(calendarResponse.getCreateAt())
+                    .plannerId(calendarResponse.getPlannerId())
+                    .scheduleItemList(toDoResponses)
+                    .build();
+            updatedCalendarResponses.add(updatedCalendarResponse);
+        }
+        return updatedCalendarResponses;
+    }
 }
 
