@@ -116,8 +116,8 @@ function Planner() {
     //   planTitle,
     //   isPrivate: isPrivate === 'private' ? true : false,
     // }
-    console.log(newPlan)
     const res = await createNewPlan(newPlan)
+    console.log(res)
     if (res) setPlannerList(prev => [...prev, res.data])
   }
 

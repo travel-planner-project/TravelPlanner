@@ -40,7 +40,13 @@ function PlanDetailView({
   handleOpenScheduleEditor,
   handleCloseScheduleEditor,
   handleAddDateBtnClick,
+  isEditingDate,
+  isEditingDateList,
+  editingDateId,
+  handleEditDateBtnClick,
+  handleEditDateListBtnClick,
   handleEditDate,
+  handleDeleteDate,
   currentDateId,
   isScheduleEditorOpened,
 }: PlanDetailViewProps) {
@@ -98,17 +104,29 @@ function PlanDetailView({
                 <li className={styles.plan} key={item.dateId}>
                   {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
                   {/* input type date는 idx가 0일 때만 */}
-                  {idx === 0 && item.dateTitle === 'none' ? (
+                  {isEditingDate && item.dateId === editingDateId ? (
                     <input
                       type='date'
                       className={styles.dateInput}
                       required
-                      // aria-required='true'
-                      data-placeholder='여행 시작일을 입력하세요.'
+                      aria-required='true'
+                      data-placeholder='날짜 선택'
                       onChange={e => handleEditDate(item.dateId, e.target.value)}
                     />
                   ) : (
-                    <div className={styles.dateTitle}>{item.dateContent}</div>
+                    <>
+                      <div className={styles.dateTitle}>{item.dateContent}</div>
+                      {isEditingDateList ? (
+                        <>
+                          <button type='button' onClick={() => handleEditDateBtnClick(item.dateId)}>
+                            날짜 수정하기
+                          </button>
+                          <button type='button' onClick={() => handleDeleteDate(item.dateId)}>
+                            날짜 삭제하기
+                          </button>
+                        </>
+                      ) : null}
+                    </>
                   )}
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
@@ -144,7 +162,10 @@ function PlanDetailView({
             })}
           </ul>
           <button type='button' className={styles.addDayBtn} onClick={handleAddDateBtnClick}>
-            추가하기
+            여행 일정 추가
+          </button>
+          <button type='button' className={styles.addDayBtn} onClick={handleEditDateListBtnClick}>
+            편집
           </button>
         </div>
       </div>
@@ -191,20 +212,27 @@ function PlanDetail() {
   const [currentDateId, setCurrentDateId] = useState(-1)
   const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [planDetailData, setPlanDetailData] = useState<PlanDetailDataType>([])
+  console.log('외부: ', planDetailData)
 
-  console.log(planDetailData)
+  // 스케줄 수정 관련
+  const [isEditingDateList, setIsEditingDateList] = useState<boolean>(false)
 
-  // const [dateList, setDateList] = useState([])
+  // date 수정 관련
+  const [isEditingDate, setIsEditingDate] = useState<boolean>(false)
+  const [editingDateId, setEditingDateId] = useState<number>(-1)
+
+  // 단일 스케줄 관련
   const [scheduleData, setScheduleData] = useState(initialScheduleData)
 
   const handleAddDateBtnClick = () => {
-    console.log('add-date')
+    // console.log('add-date')
 
     if (clientRef.current) {
       let requestBody = {}
+      const currentDate = new Date()
 
       if (planDetailData.length === 0) {
-        requestBody = { dateTitle: 'none' }
+        requestBody = { dateTitle: currentDate }
       } else {
         if (planDetailData[planDetailData.length - 1].dateTitle === 'none') {
           alert('먼저 여행 시작일을 입력하세요.')
@@ -224,8 +252,25 @@ function PlanDetail() {
     }
   }
 
+  const handleEditDateListBtnClick = () => {
+    setIsEditingDateList(true)
+  }
+
+  const handleEditDateBtnClick = (id: number) => {
+    setEditingDateId(id)
+    setIsEditingDate(true)
+  }
+
   const handleEditDate = (id: number, date: string) => {
     const convertedDate = new Date(date).toISOString()
+    const modifiedData = planDetailData.map(el => {
+      if (el.dateId === id) {
+        return { ...el, dateContent: dateFormat(new Date(convertedDate)) }
+      }
+      return { ...el } // 깊은 복사를 위해 새로운 객체로 복사
+    })
+    setPlanDetailData(modifiedData)
+
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/update-date/${plannerId}/${id}`,
@@ -235,6 +280,20 @@ function PlanDetail() {
         body: JSON.stringify({ dateId: id, dateTitle: convertedDate }),
       })
     }
+  }
+
+  const handleDeleteDate = (id: number) => {
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/delete-date/${plannerId}/${id}`,
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ dateId: id }),
+      })
+    }
+    const modifiedData = planDetailData.filter(el => el.dateId !== id)
+    setPlanDetailData(modifiedData)
   }
 
   const handleOpenScheduleEditor = (id: number) => {
@@ -306,6 +365,7 @@ function PlanDetail() {
         try {
           const res = await getPlanDetail(plannerId)
           if (res) {
+            // 스케줄 state 세팅
             const schedules = res.data.calendars.map(el => ({
               ...el, // Keep the other properties unchanged
               dateContent: dateFormat(new Date(el.dateTitle)),
@@ -342,18 +402,16 @@ function PlanDetail() {
       const callback = function (message: any) {
         if (message.body) {
           const resBody = JSON.parse(message.body)
-          console.log('웹소켓 리스폰스: ', resBody)
+          // console.log('웹소켓 리스폰스: ', resBody)
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
           } else if (resBody.type === 'add-date') {
-            const newDate = resBody.msg[resBody.msg.length - 1]
+            const newDate = resBody.msg
             newDate.dateContent = dateFormat(new Date(newDate.dateTitle))
             setPlanDetailData(prev => [...prev, newDate])
           } else if (resBody.type === 'modify-date') {
-            console.log(resBody.msg)
-            const modifiedDate = resBody.msg[0]
-            modifiedDate.dateContent = dateFormat(new Date(modifiedDate.dateTitle))
-            setPlanDetailData(modifiedDate)
+            setIsEditingDate(false)
+            setIsEditingDateList(false)
           } else if (resBody.type === 'add-schedule') {
             const newData = resBody.msg[resBody.msg.length - 1]
             const newDateId = newData.dateId
@@ -422,7 +480,13 @@ function PlanDetail() {
     currentDateId,
     isScheduleEditorOpened,
     handleAddDateBtnClick,
+    isEditingDate,
+    isEditingDateList,
+    editingDateId,
+    handleEditDateBtnClick,
+    handleEditDateListBtnClick,
     handleEditDate,
+    handleDeleteDate,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
     onScheduleInputChange,

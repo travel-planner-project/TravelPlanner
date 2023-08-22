@@ -138,6 +138,8 @@
 input[type='date']::before {
   content: attr(data-placeholder);
   width: 100%;
+  // border-radius: 4px;
+  // padding: 12px;
   @include U.flex-c(row, center, center);
 }
 
@@ -170,12 +172,14 @@ input[type='date']:valid::before {
 
 .addDayBtn {
   @include U.flex-c();
-  width: 324px;
-  color: C.$white;
+  width: fit-content;
+  color: C.$blue500;
   font-size: 2rem;
-  background-color: C.$blue500;
+  // border-bottom: 1px solid C.$blue500;
+  // background-color: C.$blue500;
   padding: 12px;
-  border-radius: 4px;
+  // border-radius: 4px;
+  margin-right: -24px;
 }
 
 .chatModalBtn {

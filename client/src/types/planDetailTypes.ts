@@ -45,6 +45,12 @@ export interface ScheduleProps {
   planDetailData: PlanDetailDataType
   handleEditDate: (id: number, date: string) => void
   handleAddDateBtnClick: () => void
+  isEditingDate: boolean
+  isEditingDateList: boolean
+  editingDateId: number
+  handleEditDateBtnClick: (id: number) => void
+  handleEditDateListBtnClick: () => void
+  handleDeleteDate: (id: number) => void
   handleOpenScheduleEditor: (id: number) => void
   handleCloseScheduleEditor: () => void
   currentDateId: number
