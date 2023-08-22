@@ -5,5 +5,5 @@ export function dateFormat(date: Date) {
   const formattedMonth: string = `${month}`
   const formattedDay: string = `${day}`
 
-  return `${formattedMonth}월 ${formattedDay}일`
+  return `${date.getFullYear()}년 ${formattedMonth}월 ${formattedDay}일`
 }

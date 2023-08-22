@@ -13,41 +13,36 @@ export interface ChattingProps {
   onChatSubmit: (event: any) => void
 }
 
-type dataType = {
+export type ScheduleType = {
   // dateId: number
+  itemId: number
   itemTitle: string
-  itemDate: string
-  category: string | null
+  itemTime: string
+  category: string
   budget: number
   itemContent: string
   isPrivate: boolean
   itemAddress: string
 }
 
-export type PlanDetailDataType = {
+export type DateType = {
   dateId: number
   dateTitle: string
   dateContent: string
-  scheduleItemList: {
-    // dateId: number
-    itemId: number
-    itemTitle: string
-    itemTime: string
-    category: string
-    itemContent: string
-    isPrivate: boolean
-    budget: number | null
-    itemAddress: string
-  }[]
-}[]
+  scheduleItemList: ScheduleType[]
+}
+
+export type DateListType = DateType[]
 
 export interface ScheduleProps {
-  planDetailData: PlanDetailDataType
+  dateListData: DateListType
   handleEditDate: (id: number, date: string) => void
   handleAddDateBtnClick: () => void
   isEditingDate: boolean
   isEditingDateList: boolean
   editingDateId: number
+  handleChangeCurrentDate: (date: string) => void
+  currentDate: string
   handleEditDateBtnClick: (id: number) => void
   handleEditDateListBtnClick: () => void
   handleCancelEditingDate: () => void
@@ -59,7 +54,12 @@ export interface ScheduleProps {
   onScheduleInputChange: (field: string, value: string) => void
   onScheduleSubmit: (e: React.FormEvent, dateId: number) => void
   onScheduleCategoryChange: (selectedOption: string) => void
-  scheduleData: dataType
+  scheduleData: ScheduleType
+  handleDeleteSchedule: (dateId: number, itemId: number) => void
+  handleEditScheduleBtnClick: (dateId: number, itemId: number) => void
+  handleEditSchedule: (e: React.FormEvent, dateId: number, itemId: number) => void
+  editingScheduleId: number
+  onCancelEditingScheduleBtnClick: () => void
 }
 
 export interface PlanDetailProps {
