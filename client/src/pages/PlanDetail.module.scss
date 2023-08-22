@@ -135,29 +135,6 @@
   width: 100%;
 }
 
-.dateChangeForm {
-  width: 100%;
-}
-
-input[type='date']::before {
-  content: attr(data-placeholder);
-  width: 100%;
-  // border-radius: 4px;
-  // padding: 12px;
-  @include U.flex-c(row, center, center);
-}
-
-input[type='date']:focus::before,
-input[type='date']:valid::before {
-  display: none;
-}
-
-.dateInput {
-  width: 100%;
-  padding: 12px;
-  border-radius: 4px;
-}
-
 .dateTitle {
   @include U.flex-c();
   @include T.black-semibold-20;
@@ -172,18 +149,6 @@ input[type='date']:valid::before {
   @include U.flex-c();
   margin-top: 12px;
   width: 100%;
-}
-
-.addDayBtn {
-  @include U.flex-c();
-  width: fit-content;
-  color: C.$blue500;
-  font-size: 2rem;
-  // border-bottom: 1px solid C.$blue500;
-  // background-color: C.$blue500;
-  padding: 12px;
-  // border-radius: 4px;
-  margin-right: -24px;
 }
 
 .chatModalBtn {

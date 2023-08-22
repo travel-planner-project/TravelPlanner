@@ -22,7 +22,10 @@ import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 import { dateFormat } from '../utils/date'
-import { setDate } from 'date-fns'
+import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
+import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
+import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
+import { initialScheduleData, usePlanDetailManagement } from '../utils/usePlanDetailManagement'
 
 // 높이 수정중
 
@@ -46,12 +49,11 @@ function PlanDetailView({
   isEditingDate,
   isEditingDateList,
   editingDateId,
-  handleChangeCurrentDate,
-  currentDate,
   handleEditDateBtnClick,
   handleEditDateListBtnClick,
   handleEditDate,
   handleCancelEditingDate,
+  handleCancelEditingDateList,
   handleDeleteDate,
   currentDateId,
   isScheduleEditorOpened,
@@ -59,7 +61,7 @@ function PlanDetailView({
   handleEditScheduleBtnClick,
   handleEditSchedule,
   editingScheduleId,
-  onCancelEditingScheduleBtnClick,
+  handleCancelEditingScheduleBtnClick,
 }: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
@@ -110,46 +112,31 @@ function PlanDetailView({
         <div className={styles.planner}>
           <ul className={styles.planList}>
             {/* map으로 day 별로 묶인 큰 박스 맵핑 */}
-            {dateListData?.map((item, idx) => {
+            {dateListData?.map(item => {
               return (
                 <li className={styles.plan} key={item.dateId}>
-                  {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
-                  {/* input type date는 idx가 0일 때만 */}
                   {isEditingDate && item.dateId === editingDateId ? (
-                    <form
-                      onSubmit={e => handleEditDate(item.dateId, currentDate)}
-                      className={styles.dateChangeForm}
-                    >
-                      <input
-                        type='date'
-                        className={styles.dateInput}
-                        required
-                        aria-required='true'
-                        data-placeholder='날짜 선택'
-                        onChange={e => handleChangeCurrentDate(e.target.value)}
-                      />
-                      <button type='submit'>변경</button>
-                      <button type='button'>취소</button>
-                    </form>
+                    <DateInputBox
+                      item={item}
+                      handleEdit={handleEditDate}
+                      handleCancel={handleCancelEditingDate}
+                    />
                   ) : (
                     <>
                       <div className={styles.dateTitle}>{item.dateContent}</div>
                       {isEditingDateList ? (
-                        <>
-                          <button type='button' onClick={() => handleEditDateBtnClick(item.dateId)}>
-                            날짜 수정하기
-                          </button>
-                          <button type='button' onClick={() => handleDeleteDate(item.dateId)}>
-                            날짜 삭제하기
-                          </button>
-                        </>
+                        <EditingDateButtonBox
+                          handleEdit={handleEditDateBtnClick}
+                          handleDelete={handleDeleteDate}
+                          dateId={item.dateId}
+                        />
                       ) : null}
                     </>
                   )}
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
                     <ul className={styles.schedules}>
-                      {item.scheduleItemList?.map((el, idx) => {
+                      {item.scheduleItemList?.map(el => {
                         return (
                           <li className={styles.scheduleItem} key={el.itemId}>
                             {editingScheduleId === el.itemId ? (
@@ -158,7 +145,7 @@ function PlanDetailView({
                                 handleChange={onScheduleInputChange}
                                 handleOptionChange={onScheduleCategoryChange}
                                 handleEdit={handleEditSchedule}
-                                handleCancel={onCancelEditingScheduleBtnClick}
+                                handleCancel={handleCancelEditingScheduleBtnClick}
                                 dateId={item.dateId}
                                 type='edit'
                               />
@@ -200,18 +187,12 @@ function PlanDetailView({
               )
             })}
           </ul>
-          <button type='button' className={styles.addDayBtn} onClick={handleAddDateBtnClick}>
-            여행 일정 추가
-          </button>
-          {!isEditingDateList ? (
-            <button type='button' className={styles.addDayBtn} onClick={handleEditDateListBtnClick}>
-              편집
-            </button>
-          ) : (
-            <button type='button' className={styles.addDayBtn} onClick={handleCancelEditingDate}>
-              편집 그만하기
-            </button>
-          )}
+          <DateAddEditBtnBox
+            handleAdd={handleAddDateBtnClick}
+            handleEdit={handleEditDateListBtnClick}
+            handleCancelEditing={handleCancelEditingDateList}
+            isEditingDateList={isEditingDateList}
+          />
         </div>
       </div>
       {chatModal ? (
@@ -233,46 +214,52 @@ function PlanDetailView({
 }
 
 function PlanDetail() {
-  const initialScheduleData = {
-    itemId: -1,
-    itemTime: '',
-    itemTitle: '',
-    category: '',
-    itemAddress: '',
-    budget: 0,
-    itemContent: '',
-    isPrivate: false,
-  }
+  const clientRef = useRef<StompJs.Client | null>(null)
+
+  const {
+    // 스케줄 에디터 관련
+    isScheduleEditorOpened,
+    setIsScheduleEditorOpened,
+    // 플래너 수정 관련
+    editingScheduleId,
+    setEditingScheduleId,
+    // 날짜 수정 관련
+    currentDateId,
+    setCurrentDateId,
+    isEditingDateList,
+    setIsEditingDateList,
+    isEditingDate,
+    setIsEditingDate,
+    editingDateId,
+    setEditingDateId,
+    handleEditDateListBtnClick,
+    handleEditDateBtnClick,
+    handleCancelEditingDate,
+    handleCancelEditingDateList,
+    // 스케줄 수정 관련
+    handleOpenScheduleEditor,
+    handleCloseScheduleEditor,
+    handleCancelEditingScheduleBtnClick,
+    onScheduleCategoryChange,
+    onScheduleInputChange,
+    // 단일 스케줄 최신화 관련
+    scheduleData,
+    setScheduleData,
+  } = usePlanDetailManagement()
 
   const { params } = useRouter()
   const { plannerId } = params
   const { userId } = useRecoilValue(userInfo)
+
   const [token, setToken] = useState(sessionStorage.getItem('token'))
-  const clientRef = useRef<StompJs.Client | null>(null)
+
   // 채팅 관련
   const [chatModal, setChatModal] = useState(false)
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
+
   // 플래너 관련
-  const [currentDateId, setCurrentDateId] = useState(-1)
-  const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
   const [dateListData, setDateListData] = useState<DateListType>([])
-
-  console.log('최상단:', dateListData)
-
-  // 스케줄 수정 관련
-  const [editingScheduleId, setEditingScheduleId] = useState<number>(-1)
-
-  // 스케줄 삭제 관련
-
-  // date 수정 관련
-  const [isEditingDateList, setIsEditingDateList] = useState<boolean>(false)
-  const [isEditingDate, setIsEditingDate] = useState<boolean>(false)
-  const [editingDateId, setEditingDateId] = useState<number>(-1)
-  const [currentDate, setCurrentDate] = useState('')
-
-  // 단일 스케줄 관련
-  const [scheduleData, setScheduleData] = useState(initialScheduleData)
 
   const handleAddDateBtnClick = () => {
     if (clientRef.current) {
@@ -300,19 +287,6 @@ function PlanDetail() {
     }
   }
 
-  const handleEditDateListBtnClick = () => {
-    setIsEditingDateList(true)
-  }
-
-  const handleChangeCurrentDate = (date: string) => {
-    setCurrentDate(date)
-  }
-
-  const handleEditDateBtnClick = (id: number) => {
-    setEditingDateId(id)
-    setIsEditingDate(true)
-  }
-
   const handleEditDate = (id: number, date: string) => {
     const convertedDate = new Date(date).toISOString()
     const modifiedData = dateListData.map(el => {
@@ -335,57 +309,21 @@ function PlanDetail() {
     setEditingDateId(-1)
   }
 
-  const handleCancelEditingDate = () => {
-    setIsEditingDateList(false)
-    setIsEditingDate(false)
-  }
-
   const handleDeleteDate = (id: number) => {
-    if (clientRef.current) {
-      clientRef.current.publish({
-        destination: `/pub/delete-date/${plannerId}/${id}`,
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: JSON.stringify({ dateId: id }),
-      })
-    }
-    const modifiedData = dateListData.filter(el => el.dateId !== id)
-    setDateListData(modifiedData)
-    setEditingDateId(-1)
-  }
-
-  const handleOpenScheduleEditor = (id: number) => {
-    if (isEditingDateList || isEditingDate) {
-      alert('날짜 수정을 완료한 후에 다시 시도해주세요.')
-      return
-    }
-    setCurrentDateId(id)
-    setIsScheduleEditorOpened(true)
-  }
-
-  const handleCloseScheduleEditor = () => {
-    setCurrentDateId(-1)
-    setIsScheduleEditorOpened(false)
-    setScheduleData(initialScheduleData)
-  }
-
-  const onCancelEditingScheduleBtnClick = () => {
-    setEditingScheduleId(-1)
-    setScheduleData(initialScheduleData)
-  }
-
-  const onScheduleInputChange = (field: string, value: string) => {
-    setScheduleData(prevData => ({
-      ...prevData,
-      [field]: value,
-    }))
-  }
-  const onScheduleCategoryChange = (selectedOption: string) => {
-    setScheduleData(prevData => ({
-      ...prevData,
-      category: selectedOption,
-    }))
+    if (window.confirm('OK 버튼을 누르면 해당 날짜의 모든 스케줄이 지워집니다.')) {
+      if (clientRef.current) {
+        clientRef.current.publish({
+          destination: `/pub/delete-date/${plannerId}/${id}`,
+          headers: {
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ dateId: id }),
+        })
+      }
+      const modifiedData = dateListData.filter(el => el.dateId !== id)
+      setDateListData(modifiedData)
+      setEditingDateId(-1)
+    } else return
   }
 
   const onScheduleSubmit = (e: React.FormEvent, dateId: number) => {
@@ -505,18 +443,18 @@ function PlanDetail() {
       // 메시지 받는 함수
       const callback = function (message: any) {
         if (message.body) {
+          // 아예 message.body를 받지 못하는 경우의 에러 처리는 어떻게 할 것인가?
           const resBody = JSON.parse(message.body)
-          console.log('웹소켓 리스폰스: ', resBody)
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
           } else if (resBody.type === 'add-date') {
             const newDate = resBody.msg
             if (newDate) {
               newDate.dateContent = dateFormat(new Date(newDate.dateTitle))
+              setDateListData(prev => [...prev, newDate])
             } else {
               alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
             }
-            setDateListData(prev => [...prev, newDate])
           } else if (resBody.type === 'modify-date') {
             setIsEditingDate(false)
             setIsEditingDateList(false)
@@ -609,12 +547,11 @@ function PlanDetail() {
     isEditingDate,
     isEditingDateList,
     editingDateId,
-    handleChangeCurrentDate,
-    currentDate,
     handleEditDateBtnClick,
     handleEditDateListBtnClick,
     handleEditDate,
     handleCancelEditingDate,
+    handleCancelEditingDateList,
     handleDeleteDate,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
@@ -626,7 +563,7 @@ function PlanDetail() {
     handleEditScheduleBtnClick,
     handleEditSchedule,
     editingScheduleId,
-    onCancelEditingScheduleBtnClick,
+    handleCancelEditingScheduleBtnClick,
   }
 
   const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }

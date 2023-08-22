@@ -1,0 +1,39 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+
+.dateInputBoxContainer {
+  width: 100%;
+}
+
+input[type='date']::before {
+  content: attr(data-placeholder);
+  width: 100%;
+  // border-radius: 4px;
+  // padding: 12px;
+  @include U.flex-c(row, center, center);
+}
+
+input[type='date']:focus::before,
+input[type='date']:valid::before {
+  display: none;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 11px;
+  border-radius: 4px;
+  font-size: 2rem;
+  border: 1px solid black;
+}
+
+.buttonBox {
+  margin-top: 12px;
+  @include U.flex-c(row, flex-end, center);
+  padding: 0px 12px 0px 12px;
+  gap: 24px;
+  color: C.$gray800;
+  button:hover {
+    color: C.$blue500;
+  }
+}

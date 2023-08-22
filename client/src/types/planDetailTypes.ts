@@ -41,11 +41,10 @@ export interface ScheduleProps {
   isEditingDate: boolean
   isEditingDateList: boolean
   editingDateId: number
-  handleChangeCurrentDate: (date: string) => void
-  currentDate: string
   handleEditDateBtnClick: (id: number) => void
   handleEditDateListBtnClick: () => void
   handleCancelEditingDate: () => void
+  handleCancelEditingDateList: () => void
   handleDeleteDate: (id: number) => void
   handleOpenScheduleEditor: (id: number) => void
   handleCloseScheduleEditor: () => void
@@ -59,7 +58,7 @@ export interface ScheduleProps {
   handleEditScheduleBtnClick: (dateId: number, itemId: number) => void
   handleEditSchedule: (e: React.FormEvent, dateId: number, itemId: number) => void
   editingScheduleId: number
-  onCancelEditingScheduleBtnClick: () => void
+  handleCancelEditingScheduleBtnClick: () => void
 }
 
 export interface PlanDetailProps {
