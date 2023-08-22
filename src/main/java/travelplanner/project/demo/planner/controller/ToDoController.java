@@ -65,10 +65,9 @@ public class ToDoController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.delete(plannerId, dateId, toDoId);
-//        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        List<CalendarResponse> calendarResponses = calendarService.getCalendarList(plannerId);
+        List<CalendarResponse> calendarScheduleList = toDoService.getCalendarScheduleList(plannerId);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","delete-schedule", "msg", calendarResponses
+                Map.of("type","delete-schedule", "msg", calendarScheduleList
                 )
         );
     }
