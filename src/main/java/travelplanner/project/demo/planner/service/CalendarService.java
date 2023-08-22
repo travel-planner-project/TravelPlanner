@@ -9,6 +9,7 @@ import travelplanner.project.demo.planner.domain.Planner;
 import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
+import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class CalendarService {
 
     private final CalendarRepository calendarRepository;
     private final ValidatingService validatingService;
+    private final ToDoService toDoService;
 
     public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest) {
 
@@ -35,11 +37,14 @@ public class CalendarService {
 
         calendarRepository.save(buildRequest);
 
+        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList(buildRequest.getId());
+
         return CalendarResponse.builder()
                 .dateId(buildRequest.getId())
                 .createAt(buildRequest.getCreatedAt())
                 .dateTitle(buildRequest.getDateTitle())
                 .plannerId(plannerId)
+                .scheduleItemList(scheduleItemList)
                 .build();
     }
 
@@ -70,11 +75,14 @@ public class CalendarService {
         calendar.edit(calendarEditor);
         calendarRepository.updatedateTitle(updateId, updateRequest.getDateTitle());
 
+        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList(calendar.getId());
+
         return CalendarResponse.builder()
                 .dateId(calendar.getId())
                 .createAt(calendar.getCreatedAt())
                 .dateTitle(calendar.getDateTitle())
                 .plannerId(plannerId)
+                .scheduleItemList(scheduleItemList)
                 .build();
     }
 
