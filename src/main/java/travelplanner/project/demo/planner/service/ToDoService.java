@@ -142,6 +142,7 @@ public class ToDoService {
                 .build();
     }
 
+    @Transactional
     public void delete(Long plannerId, Long dateId, Long toDoId) {
 
         // 플래너와 사용자에 대한 검증
