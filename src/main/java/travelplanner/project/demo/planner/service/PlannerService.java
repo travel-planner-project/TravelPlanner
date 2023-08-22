@@ -149,19 +149,24 @@ public class PlannerService {
         // 플래너에 해당하는 그룹멤버를 가져옴
         List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
 
+//        log.info("------------------email : " + authUtil.getCurrentMember().getEmail());
         // 현재 유저의 이메일을 가져옴 (비회원일 경우 null)
+
         String currentEmail = null;
         try {
             currentEmail = authUtil.getCurrentMember().getEmail();
+            log.info("---------------------------------------------- cuuurentEmail:" + currentEmail + "----------------------------------------------");
         } catch (UsernameNotFoundException e) {
             // 비회원인 경우 처리는 아래에서 함
             //  catch 블록이 비어있기 때문에 UsernameNotFoundException 예외가 발생하면 그냥 무시하고 넘어가기 때문에
             // 비회원이여도 어떠한 로직도 없기 때문에, currentEmail에 null이 유지된다.
+            log.info("---------------------------------------------- null" + "----------------------------------------------");
         }
 
         // 그룹 멤버에 포함된 경우를 체크
         if (authUtil.isGroupMember(currentEmail, plannerId)) {
             // 회원이면서 그룹 멤버인 경우, 채팅 리스트를 가져옴
+            log.info("---------------그룹 멤버에 포함된다. ");
             return PlannerDetailAuthorizedResponse.builder()
                     .plannerId(planner.getId())
                     .planTitle(planner.getPlanTitle())
@@ -173,7 +178,8 @@ public class PlannerService {
                     .chattings(chatResponses)
                     .build();
         } else {
-            // 그룹 멤버가 아니거나 비회원인 경우
+            // 그룹 멤버가 아니거나 비회원인 경우\
+            log.info("---------------그룹 멤버에 포함되지 않는다.");
             return PlannerDetailUnauthorizedResponse.builder()
                     .plannerId(planner.getId())
                     .planTitle(planner.getPlanTitle())

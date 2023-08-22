@@ -77,9 +77,11 @@ public class TokenUtil {
     }
 
     public String getEmail (String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY)
+        String email = Jwts.parser().setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody().getSubject();
+        log.info("--------------TokenUtil.getEmail(token)" + email);
+        return email;
     }
 
     public String refreshAccessToken(String refreshToken) throws ApiException {
@@ -102,7 +104,7 @@ public class TokenUtil {
     public String getJWTTokenFromHeader(HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader("Authorization");
-
+        log.info("-------------------------Authorization Header: " + authorizationHeader); // 로그 추가
         if (authorizationHeader != null) {
             return authorizationHeader;
         }

@@ -76,12 +76,15 @@ public class AuthUtil {
     public boolean isGroupMember(String email, Long plannerId) {
         // email이 null인 경우, 사용자가 비회원이므로 그룹 멤버가 아닌 것으로 판단하고 false를 반환합니다.
         if (email == null) {
+            log.info("-------------- email이 전달되지 않거나 비회원");
             return false;
         }
         // 플래너 ID로 해당 플래너의 그룹 멤버 목록을 가져옵니다.
         List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
         // 그룹 멤버 목록에서 주어진 이메일과 일치하는 멤버가 있는지 확인합니다.
         // stream()과 anyMatch()를 사용하여 이메일이 일치하는 그룹 멤버가 하나라도 있으면 true를 반환합니다.
+        log.info("-------------- Checking group members for email: " + email);
+        log.info("-------------- Group members found: " + groupMembers.toString());
         return groupMembers.stream().anyMatch(gm -> gm.getEmail().equals(email));
     }
 }
