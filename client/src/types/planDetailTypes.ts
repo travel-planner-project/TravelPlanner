@@ -50,6 +50,7 @@ export interface ScheduleProps {
   editingDateId: number
   handleEditDateBtnClick: (id: number) => void
   handleEditDateListBtnClick: () => void
+  handleCancelEditingDate: () => void
   handleDeleteDate: (id: number) => void
   handleOpenScheduleEditor: (id: number) => void
   handleCloseScheduleEditor: () => void

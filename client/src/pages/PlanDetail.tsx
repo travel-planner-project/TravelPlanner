@@ -46,6 +46,7 @@ function PlanDetailView({
   handleEditDateBtnClick,
   handleEditDateListBtnClick,
   handleEditDate,
+  handleCancelEditingDate,
   handleDeleteDate,
   currentDateId,
   isScheduleEditorOpened,
@@ -164,9 +165,15 @@ function PlanDetailView({
           <button type='button' className={styles.addDayBtn} onClick={handleAddDateBtnClick}>
             여행 일정 추가
           </button>
-          <button type='button' className={styles.addDayBtn} onClick={handleEditDateListBtnClick}>
-            편집
-          </button>
+          {!isEditingDateList ? (
+            <button type='button' className={styles.addDayBtn} onClick={handleEditDateListBtnClick}>
+              편집
+            </button>
+          ) : (
+            <button type='button' className={styles.addDayBtn} onClick={handleCancelEditingDate}>
+              편집 그만하기
+            </button>
+          )}
         </div>
       </div>
       {chatModal ? (
@@ -280,6 +287,12 @@ function PlanDetail() {
         body: JSON.stringify({ dateId: id, dateTitle: convertedDate }),
       })
     }
+    setEditingDateId(-1)
+  }
+
+  const handleCancelEditingDate = () => {
+    setIsEditingDateList(false)
+    setIsEditingDate(false)
   }
 
   const handleDeleteDate = (id: number) => {
@@ -294,6 +307,7 @@ function PlanDetail() {
     }
     const modifiedData = planDetailData.filter(el => el.dateId !== id)
     setPlanDetailData(modifiedData)
+    setEditingDateId(-1)
   }
 
   const handleOpenScheduleEditor = (id: number) => {
@@ -486,6 +500,7 @@ function PlanDetail() {
     handleEditDateBtnClick,
     handleEditDateListBtnClick,
     handleEditDate,
+    handleCancelEditingDate,
     handleDeleteDate,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
