@@ -42,8 +42,8 @@ public class PlannerController {
     }
 
     @GetMapping("/{plannerId}")
-    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId) {
-        return plannerService.getPlannerDetailByOrderAndEmail(plannerId);
+    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId, HttpServletRequest request) {
+        return plannerService.getPlannerDetailByOrderAndEmail(plannerId, request);
     }
 
     @DeleteMapping

@@ -115,8 +115,9 @@ public class PlannerService {
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     //
-    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
+    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId, HttpServletRequest request) {
 
+        // ===================================== 공통 =============================================
         // 접근 권한 확인
         // 만약, 플래너가 isPrivate == false 인 경우, 그룹멤버가 아니더라도 모든 사람이 볼 수 있어야 합니다.
         // 만약, 프랠너가 isPrivate == true 인 경우, 그룹멤버만 볼 수 있어야 합니다.
@@ -151,47 +152,39 @@ public class PlannerService {
 
 //        log.info("------------------email : " + authUtil.getCurrentMember().getEmail());
         // 현재 유저의 이메일을 가져옴 (비회원일 경우 null)
+//      ======================================= 공통 로직 종료 ===================================
 
-        String currentEmail = null;
-        try {
-            currentEmail = authUtil.getCurrentMember().getEmail();
-            log.info("---------------------------------------------- cuuurentEmail:" + currentEmail + "----------------------------------------------");
-        } catch (UsernameNotFoundException e) {
-            // 비회원인 경우 처리는 아래에서 함
-            //  catch 블록이 비어있기 때문에 UsernameNotFoundException 예외가 발생하면 그냥 무시하고 넘어가기 때문에
-            // 비회원이여도 어떠한 로직도 없기 때문에, currentEmail에 null이 유지된다.
-            log.info("---------------------------------------------- null" + "----------------------------------------------");
-        }
+//      ========  회원 분기 =========
 
-        // 그룹 멤버에 포함된 경우를 체크
-        if (authUtil.isGroupMember(currentEmail, plannerId)) {
-            // 회원이면서 그룹 멤버인 경우, 채팅 리스트를 가져옴
-            log.info("---------------그룹 멤버에 포함된다. ");
-            return PlannerDetailAuthorizedResponse.builder()
-                    .plannerId(planner.getId())
-                    .planTitle(planner.getPlanTitle())
-                    .isPrivate(planner.getIsPrivate())
-                    .startDate(planner.getStartDate())
-                    .endDate(planner.getEndDate())
-                    .calendars(updatedCalendarResponses)
-                    .groupMemberList(groupMemberResponses)
-                    .chattings(chatResponses)
-                    .build();
-        } else {
-            // 그룹 멤버가 아니거나 비회원인 경우\
-            log.info("---------------그룹 멤버에 포함되지 않는다.");
-            return PlannerDetailUnauthorizedResponse.builder()
-                    .plannerId(planner.getId())
-                    .planTitle(planner.getPlanTitle())
-                    .isPrivate(planner.getIsPrivate())
-                    .startDate(planner.getStartDate())
-                    .endDate(planner.getEndDate())
-                    .calendars(updatedCalendarResponses)
-                    .groupMemberList(groupMemberResponses)
-                    .build();
+        // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
+        if (authUtil.authenticationUser(request)) {
+            String currentEmail = authUtil.getCurrentMember().getEmail();
+            if (authUtil.isGroupMember(currentEmail, plannerId)) {
+                log.info("---------------회원이며 그룹 멤버다.");
+                return PlannerDetailAuthorizedResponse.builder()
+                        .plannerId(planner.getId())
+                        .planTitle(planner.getPlanTitle())
+                        .isPrivate(planner.getIsPrivate())
+                        .startDate(planner.getStartDate())
+                        .endDate(planner.getEndDate())
+                        .calendars(updatedCalendarResponses)
+                        .groupMemberList(groupMemberResponses)
+                        .chattings(chatResponses)
+                        .build();
+            }
+            log.info("---------------회원이지만 그룹 멤버에 포함되지 않는다.");
         }
+        log.info("---------------채팅이 없는 response");
+        return PlannerDetailUnauthorizedResponse.builder()
+                .plannerId(planner.getId())
+                .planTitle(planner.getPlanTitle())
+                .isPrivate(planner.getIsPrivate())
+                .startDate(planner.getStartDate())
+                .endDate(planner.getEndDate())
+                .calendars(updatedCalendarResponses)
+                .groupMemberList(groupMemberResponses)
+                .build();
     }
-
 
     @Transactional
     //플래너 삭제
