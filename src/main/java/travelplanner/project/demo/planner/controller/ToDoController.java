@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.service.CalendarService;
 import travelplanner.project.demo.planner.service.ToDoService;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Map;
 public class ToDoController {
 
     private final ToDoService toDoService;
+    private final CalendarService calendarService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final TokenUtil tokenUtil;
 
@@ -62,9 +65,10 @@ public class ToDoController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         toDoService.delete(plannerId, dateId, toDoId);
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+//        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        List<CalendarResponse> calendarResponses = calendarService.getCalendarList(plannerId);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","delete-schedule", "msg", scheduleItemList
+                Map.of("type","delete-schedule", "msg", calendarResponses
                 )
         );
     }
