@@ -356,6 +356,10 @@ function PlanDetail() {
   }
 
   const handleOpenScheduleEditor = (id: number) => {
+    if (isEditingDateList || isEditingDate) {
+      alert('날짜 수정을 완료한 후에 다시 시도해주세요.')
+      return
+    }
     setCurrentDateId(id)
     setIsScheduleEditorOpened(true)
   }
@@ -529,9 +533,17 @@ function PlanDetail() {
               }
               return date
             })
-            setDateListData(updatedDateList)
+            if (updatedDateList.length === 0) {
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            } else {
+              setDateListData(updatedDateList)
+            }
           } else if (resBody.type === 'delete-schedule') {
-            setDateListData(resBody.msg)
+            const schedules = resBody.msg.map((el: DateType) => ({
+              ...el,
+              dateContent: dateFormat(new Date(el.dateTitle)),
+            }))
+            setDateListData(schedules)
           } else if (resBody.type === 'modify-schedule') {
             setEditingScheduleId(-1)
             setScheduleData(initialScheduleData)
