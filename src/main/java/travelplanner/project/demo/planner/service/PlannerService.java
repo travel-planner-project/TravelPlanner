@@ -147,6 +147,13 @@ public class PlannerService {
         // 플래너에 해당하는 채팅 리스트를 가져옴
         List<ChatResponse> chatResponses = chatService.getChattingList(planner.getId());
 
+        for (ChatResponse chatRespons : chatResponses) {
+            log.info("------------------ chatRespons.getId() = " + chatRespons.getId());
+            log.info("------------------ chatRespons.getUserNickname() = " + chatRespons.getUserNickname());
+            log.info("------------------ chatRespons.getMessage() = " + chatRespons.getMessage());
+            log.info("------------------ chatRespons.getUserId() = " + chatRespons.getUserId());
+        }
+
         // 플래너에 해당하는 그룹멤버를 가져옴
         List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
 

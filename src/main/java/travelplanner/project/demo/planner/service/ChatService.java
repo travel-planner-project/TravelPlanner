@@ -49,6 +49,7 @@ public class ChatService {
 
         // 새로운 채팅 메시지 생성
         Chatting chatting = Chatting.builder()
+                .userId(member.getId())
                 .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .message(request.getMessage())
@@ -60,10 +61,10 @@ public class ChatService {
 
         ChatResponse response = ChatResponse.builder()
                 .id(chatting.getId())
-//                .userId(chatting.get)
-                .message(chatting.getMessage())
+                .userId(chatting.getUserId())
                 .userNickname(chatting.getUserNickname())
                 .profileImgUrl(chatting.getProfileImgUrl())
+                .message(chatting.getMessage())
                 .build();
         return response;
     }
@@ -73,13 +74,10 @@ public class ChatService {
         List<Chatting> chattings= chattingRepository.findByPlannerId(plannerId);
         ArrayList<ChatResponse> chatResponses = new ArrayList<>();
 
-        // 플래너 조회
-        Planner planner = plannerRepository.findPlannerById(plannerId);
-
         for(Chatting chatting : chattings){
             ChatResponse chatResponse = ChatResponse.builder()
                     .id(chatting.getId())
-                    .userId(planner.getMember().getId())
+                    .userId(chatting.getUserId())
                     .userNickname(chatting.getUserNickname())
                     .profileImgUrl(chatting.getProfileImgUrl())
                     .message(chatting.getMessage())
