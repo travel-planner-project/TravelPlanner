@@ -21,11 +21,12 @@ import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
-import { dateFormat, dateFormatDash } from '../utils/date'
+import { dateFormat } from '../utils/date'
 import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
 import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
 import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
 import { initialScheduleData, usePlanDetailManagement } from '../utils/usePlanDetailManagement'
+import PlanPeriodBox from '../components/PlanDetail/planPeriodBox'
 
 // 높이 수정중
 
@@ -67,24 +68,7 @@ function PlanDetailView({
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
         <div className={styles.planTitle}>제주 여행</div>
-        <div className={styles.planPeriodBox}>
-          <div className={styles.planPeriod}>
-            <Icon name='calendar' size={16} />
-            <div className={styles.dateBox}>
-              <div className={styles.startDate}>
-                {dateListData?.length >= 1
-                  ? dateFormatDash(new Date(dateListData[0].dateTitle))
-                  : dateFormatDash(new Date())}
-              </div>
-              <span> ~ </span>
-              <div className={styles.endDate}>
-                {dateListData?.length >= 2
-                  ? dateFormatDash(new Date(dateListData[dateListData.length - 1].dateTitle))
-                  : dateFormatDash(new Date())}
-              </div>
-            </div>
-          </div>
-        </div>
+        <PlanPeriodBox dateListData={dateListData} />
       </div>
       <div className={styles.planBody}>
         <div className={styles.userList}>
@@ -225,33 +209,27 @@ function PlanDetail() {
   const clientRef = useRef<StompJs.Client | null>(null)
 
   const {
-    // 스케줄 에디터 관련
+    scheduleData,
     isScheduleEditorOpened,
-    setIsScheduleEditorOpened,
-    // 플래너 수정 관련
     editingScheduleId,
-    setEditingScheduleId,
-    // 날짜 수정 관련
     currentDateId,
-    setCurrentDateId,
     isEditingDateList,
-    setIsEditingDateList,
     isEditingDate,
-    setIsEditingDate,
     editingDateId,
+    setIsScheduleEditorOpened,
+    setEditingScheduleId,
+    setIsEditingDateList,
+    setIsEditingDate,
     setEditingDateId,
     handleEditDateListBtnClick,
     handleEditDateBtnClick,
     handleCancelEditingDate,
     handleCancelEditingDateList,
-    // 스케줄 수정 관련
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
     handleCancelEditingScheduleBtnClick,
     onScheduleCategoryChange,
     onScheduleInputChange,
-    // 단일 스케줄 최신화 관련
-    scheduleData,
     setScheduleData,
   } = usePlanDetailManagement()
 
@@ -268,7 +246,25 @@ function PlanDetail() {
 
   // 플래너 관련
   const [dateListData, setDateListData] = useState<DateListType>([])
+  const fetchPlanDetailData = async () => {
+    try {
+      if (plannerId) {
+        const res = await getPlanDetail(plannerId)
+        if (res) {
+          console.log(res.data.calendars)
+          // 스케줄 state 세팅
+          const schedules = res.data.calendars
+          setDateListData(schedules)
+          return res.data.calendars
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching plan detail data:', error)
+      return false
+    }
+  }
 
+  // '일정 추가' 버튼 클릭 시 실행
   const handleAddDateBtnClick = () => {
     if (clientRef.current) {
       let requestBody = {}
@@ -295,16 +291,9 @@ function PlanDetail() {
     }
   }
 
+  // 여행 날짜 수정 시 실행
   const handleEditDate = (id: number, date: string) => {
     const convertedDate = new Date(date).toISOString()
-    const modifiedData = dateListData.map(el => {
-      if (el.dateId === id) {
-        return { ...el, dateTitle: date }
-      }
-      return { ...el } // 깊은 복사를 위해 새로운 객체로 복사
-    })
-    setDateListData(modifiedData)
-
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/update-date/${plannerId}/${id}`,
@@ -317,6 +306,8 @@ function PlanDetail() {
     setEditingDateId(-1)
   }
 
+  // 여행 날짜 삭제 시 실행
+  // 전체 스케줄이 함께 삭제되기 때문에 확인 절차 거침
   const handleDeleteDate = (id: number) => {
     if (window.confirm('OK 버튼을 누르면 해당 날짜의 모든 스케줄이 지워집니다.')) {
       if (clientRef.current) {
@@ -331,6 +322,7 @@ function PlanDetail() {
     } else return
   }
 
+  // 스케줄 생성 버튼 클릭 시 실행
   const onScheduleSubmit = (e: React.FormEvent, dateId: number) => {
     e.preventDefault()
     if (clientRef.current) {
@@ -342,9 +334,9 @@ function PlanDetail() {
         body: JSON.stringify(scheduleData),
       })
     }
-    setScheduleData(initialScheduleData)
   }
 
+  // 스케줄 삭제 버튼 클릭 시 실행
   const handleDeleteSchedule = (dateId: number, itemId: number) => {
     if (isEditingDate || isEditingDateList) {
       alert('일정 편집을 종료한 후에 다시 시도해주세요.')
@@ -360,6 +352,7 @@ function PlanDetail() {
     }
   }
 
+  // 스케줄 수정 버튼 클릭 시 실행 (에디터로 바뀌는 과정)
   const handleEditScheduleBtnClick = (dateId: number, itemId: number) => {
     if (isEditingDate || isEditingDateList) {
       alert('일정 편집을 종료한 후에 다시 시도해주세요.')
@@ -372,8 +365,10 @@ function PlanDetail() {
     setEditingScheduleId(itemId)
   }
 
+  // 스케줄 수정 시 실행
   const handleEditSchedule = (e: React.FormEvent, dateId: number, itemId: number) => {
     e.preventDefault()
+    console.log(scheduleData)
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/update-todo/${plannerId}/${dateId}/${itemId}`,
@@ -385,6 +380,7 @@ function PlanDetail() {
     }
   }
 
+  // 채팅 전송 시 실행
   const onChatSubmit = (event: any) => {
     event.preventDefault()
     if (newChat.trim() !== '') {
@@ -408,18 +404,6 @@ function PlanDetail() {
 
   useEffect(() => {
     if (plannerId) {
-      const fetchPlanDetailData = async () => {
-        try {
-          const res = await getPlanDetail(plannerId)
-          if (res) {
-            // 스케줄 state 세팅
-            const schedules = res.data.calendars
-            setDateListData(schedules)
-          }
-        } catch (error) {
-          console.error('Error fetching plan detail data:', error)
-        }
-      }
       fetchPlanDetailData()
     }
   }, [])
@@ -443,7 +427,7 @@ function PlanDetail() {
     // 3. 클라이언트가 메시지 브로커에 연결(커넥트)되었을 때 호출되는 함수
     client.onConnect = function () {
       // 메시지 받는 함수
-      const callback = function (message: any) {
+      const callback = async function (message: any) {
         if (message.body) {
           // 아예 message.body를 받지 못하는 경우의 에러 처리는 어떻게 할 것인가?
           const resBody = JSON.parse(message.body)
@@ -457,15 +441,15 @@ function PlanDetail() {
               alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
             }
           } else if (resBody.type === 'modify-date') {
-            const data = resBody.msg
-            const targetDateIndex = dateListData.findIndex(
-              (date: DateType) => date.dateId === data.dateId
-            )
-            const targetScheduleIndex = dateListData[targetDateIndex].scheduleItemList.findIndex(
-              (schedule: ScheduleType) => schedule.itemId === data.itemId
-            )
-            dateListData[targetDateIndex].scheduleItemList[targetScheduleIndex] = scheduleData
-            const modifiedData = JSON.parse(JSON.stringify(dateListData))
+            const newDate = resBody.msg
+            const { dateId, dateTitle } = newDate
+
+            const modifiedData = dateListData.map(el => {
+              if (el.dateId === dateId) {
+                return { ...el, dateTitle }
+              }
+              return { ...el }
+            })
             setDateListData(modifiedData)
             setIsEditingDate(false)
             setIsEditingDateList(false)
@@ -473,29 +457,65 @@ function PlanDetail() {
             const schedules = resBody.msg
             setDateListData(schedules)
           } else if (resBody.type === 'add-schedule') {
-            const newData = resBody.msg
-            const newDateId = newData.dateId
-            // 배열 내 특정 날짜 객체 찾기
-            const updatedDateList = dateListData.map((date: DateType) => {
-              if (date.dateId === newDateId) {
-                return {
-                  ...date,
-                  scheduleItemList: [...date.scheduleItemList, newData], // 스케줄 추가
-                }
-              }
-              return { ...date }
-            })
-            if (updatedDateList.length === 0) {
-              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            // const newData = resBody.msg
+            // const newDateId = newData.dateId
+            const fetchRes = await fetchPlanDetailData()
+            if (fetchRes) {
+              setDateListData(fetchRes)
             } else {
-              setDateListData(updatedDateList)
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
             }
+            // const updatedDateList = fetchRes.map((date: DateType) => {
+            //   if (date.dateId === newDateId) {
+            //     return {
+            //       ...date,
+            //       scheduleItemList: [...date.scheduleItemList, newData], // 스케줄 추가
+            //     }
+            //   }
+            //   return { ...date }
+            // })
+            setScheduleData(initialScheduleData)
+            setIsScheduleEditorOpened(false)
           } else if (resBody.type === 'delete-schedule') {
             const schedules = resBody.msg
             setDateListData(schedules)
           } else if (resBody.type === 'modify-schedule') {
+            // const editedData = resBody.msg
+            // if (dateListData.length === 0) {
+            //   const fetchRes = await fetchPlanDetailData()
+            //   if (fetchRes === 'success') {
+            //     const copyData = JSON.parse(JSON.stringify(dateListData))
+            //     const targetDateIndex = copyData.findIndex(
+            //       (date: DateType) => date.dateId === editedData.dateId
+            //     )
+            //     const targetScheduleIndex = copyData[targetDateIndex].scheduleItemList.findIndex(
+            //       (schedule: ScheduleType) => schedule.itemId === editedData.itemId
+            //     )
+            //     copyData[targetDateIndex].scheduleItemList[targetScheduleIndex] = editedData
+            //     setDateListData(copyData)
+            //   } else {
+            //     alert('문제가 발생했습니다. 페이지를 새로고침해주세요.')
+            //   }
+            // } else {
+            //   const copyData = JSON.parse(JSON.stringify(dateListData))
+            //   const targetDateIndex = copyData.findIndex(
+            //     (date: DateType) => date.dateId === editedData.dateId
+            //   )
+            //   const targetScheduleIndex = copyData[targetDateIndex].scheduleItemList.findIndex(
+            //     (schedule: ScheduleType) => schedule.itemId === editedData.itemId
+            //   )
+            //   copyData[targetDateIndex].scheduleItemList[targetScheduleIndex] = editedData
+            //   setDateListData(copyData)
+            // }
+            const fetchRes = await fetchPlanDetailData()
+            if (fetchRes) {
+              setDateListData(fetchRes)
+            } else {
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            }
             setEditingScheduleId(-1)
             setScheduleData(initialScheduleData)
+            setIsScheduleEditorOpened(false)
           }
         }
       }
@@ -554,10 +574,12 @@ function PlanDetail() {
     dateListData,
     currentDateId,
     isScheduleEditorOpened,
-    handleAddDateBtnClick,
     isEditingDate,
     isEditingDateList,
     editingDateId,
+    editingScheduleId,
+    scheduleData,
+    handleAddDateBtnClick,
     handleEditDateBtnClick,
     handleEditDateListBtnClick,
     handleEditDate,
@@ -569,11 +591,9 @@ function PlanDetail() {
     onScheduleInputChange,
     onScheduleCategoryChange,
     onScheduleSubmit,
-    scheduleData,
     handleDeleteSchedule,
     handleEditScheduleBtnClick,
     handleEditSchedule,
-    editingScheduleId,
     handleCancelEditingScheduleBtnClick,
   }
 

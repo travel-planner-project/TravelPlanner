@@ -23,25 +23,6 @@
   @include U.flex-c(column, center, center);
 }
 
-.planPeriodBox {
-  @include U.flex-c(row, center, center);
-}
-
-.planPeriod {
-  @include U.flex-c(row, center, center);
-  border: 1px solid C.$gray200;
-  border-radius: 4px;
-  background-color: C.$white;
-  padding: 6px 12px 6px 12px;
-  gap: 12px;
-}
-
-.dateBox {
-  @include U.flex-c(row, center, center);
-  font-size: 1.4rem;
-  gap: 6px;
-}
-
 .planBody {
   width: 100%;
   // height: 100%;
