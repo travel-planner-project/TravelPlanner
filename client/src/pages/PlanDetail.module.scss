@@ -23,25 +23,6 @@
   @include U.flex-c(column, center, center);
 }
 
-.planPeriodBox {
-  @include U.flex-c(row, center, center);
-}
-
-.planPeriod {
-  @include U.flex-c(row, center, center);
-  border: 1px solid C.$gray200;
-  border-radius: 4px;
-  background-color: C.$white;
-  padding: 6px 12px 6px 12px;
-  gap: 12px;
-}
-
-.dateBox {
-  @include U.flex-c(row, center, center);
-  font-size: 1.4rem;
-  gap: 6px;
-}
-
 .planBody {
   width: 100%;
   // height: 100%;
@@ -135,23 +116,6 @@
   width: 100%;
 }
 
-input[type='date']::before {
-  content: attr(data-placeholder);
-  width: 100%;
-  @include U.flex-c(row, center, center);
-}
-
-input[type='date']:focus::before,
-input[type='date']:valid::before {
-  display: none;
-}
-
-.dateInput {
-  width: 100%;
-  padding: 12px;
-  border-radius: 4px;
-}
-
 .dateTitle {
   @include U.flex-c();
   @include T.black-semibold-20;
@@ -166,16 +130,6 @@ input[type='date']:valid::before {
   @include U.flex-c();
   margin-top: 12px;
   width: 100%;
-}
-
-.addDayBtn {
-  @include U.flex-c();
-  width: 324px;
-  color: C.$white;
-  font-size: 2rem;
-  background-color: C.$blue500;
-  padding: 12px;
-  border-radius: 4px;
 }
 
 .chatModalBtn {

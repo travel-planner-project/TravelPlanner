@@ -1,25 +1,17 @@
 import { useRef, useState } from 'react'
 import styles from './ElementEditor.module.scss'
 import DropDown from './DropDown'
-
-type dataType = {
-  // dateId: number
-  itemTitle: string
-  itemDate: string
-  category: string | null
-  budget: number
-  itemContent: string
-  isPrivate: boolean
-  itemAddress: string
-}
+import { ScheduleType } from '../../../types/planDetailTypes'
 
 interface ElementEditorViewProps extends React.HTMLProps<HTMLTextAreaElement> {
   textarea: React.RefObject<HTMLTextAreaElement>
   handleResizeHeight: () => void
   handleChange: (field: string, value: string) => void
-  handleSubmit: (e: React.FormEvent, dateId: number) => void
+  handleSubmit?: (e: React.FormEvent, dateId: number) => void
+  handleEdit?: (e: React.FormEvent, dateId: number, itemId: number) => void
   handleOptionChange: (selectedOption: string) => void
-  scheduleData: dataType
+  handleCancel: () => void
+  scheduleData: ScheduleType
   dateId: number
 }
 
@@ -39,31 +31,45 @@ function ElementEditorView({
   handleSubmit,
   scheduleData,
   handleOptionChange,
+  handleCancel,
+  handleEdit,
   dateId,
+  type,
 }: ElementEditorViewProps) {
   return (
-    <form className={styles.container} onSubmit={e => handleSubmit(e, dateId)}>
+    <form
+      className={styles.container}
+      onSubmit={
+        type === 'add'
+          ? e => handleSubmit!(e, dateId)
+          : e => handleEdit!(e, dateId, scheduleData.itemId)
+      }
+    >
       <div className={styles.inputBox}>
         <input
           className={styles.textInput}
           type='text'
           placeholder='일정 제목'
-          value={scheduleData.itemTitle}
+          value={scheduleData.itemTitle || ''}
           onChange={e => handleChange('itemTitle', e.target.value)}
         />
-        <DropDown options={options} onOptionChange={handleOptionChange} />
+        <DropDown
+          options={options}
+          onOptionChange={handleOptionChange}
+          current={scheduleData.category}
+        />
         <input
           className={styles.timeInput}
           type='time'
           placeholder='시간'
-          value={scheduleData.itemDate}
-          onChange={e => handleChange('itemDate', e.target.value)}
+          value={scheduleData.itemTime || ''}
+          onChange={e => handleChange('itemTime', e.target.value)}
         />
         <input
           className={styles.textInput}
           type='text'
           placeholder='주소'
-          value={scheduleData.itemAddress}
+          value={scheduleData.itemAddress || ''}
           onChange={e => handleChange('itemAddress', e.target.value)}
         />
         <input
@@ -78,7 +84,7 @@ function ElementEditorView({
           rows={1}
           placeholder='세부 내용 (선택 사항)'
           ref={textarea}
-          value={scheduleData.itemContent}
+          value={scheduleData.itemContent || ''}
           onChange={e => {
             handleChange('itemContent', e.target.value)
             handleResizeHeight()
@@ -86,10 +92,18 @@ function ElementEditorView({
         />
       </div>
       <div className={styles.buttons}>
-        <button type='submit' className={styles.addBtn}>
-          추가
+        {type === 'add' ? (
+          <button type='submit' className={styles.addBtn}>
+            추가
+          </button>
+        ) : (
+          <button type='submit' className={styles.addBtn}>
+            변경
+          </button>
+        )}
+        <button type='button' className={styles.cancelBtn} onClick={handleCancel}>
+          취소
         </button>
-        <div className={styles.cancelBtn}>취소</div>
       </div>
     </form>
   )
@@ -97,18 +111,24 @@ function ElementEditorView({
 
 type ElementEditorProps = {
   handleChange: (field: string, value: string) => void
-  handleSubmit: (e: React.FormEvent, dateId: number) => void
+  handleSubmit?: (e: React.FormEvent, dateId: number) => void
+  handleEdit?: (e: React.FormEvent, dateId: number, itemId: number) => void
   handleOptionChange: (selectedOption: string) => void
-  scheduleData: dataType
+  handleCancel: () => void
+  scheduleData: ScheduleType
   dateId: number
+  type: string
 }
 
 function ElementEditor({
   handleChange,
   handleSubmit,
+  handleEdit,
   handleOptionChange,
+  handleCancel,
   scheduleData,
   dateId,
+  type,
 }: ElementEditorProps) {
   const textarea = useRef<HTMLTextAreaElement>(null)
   const handleResizeHeight = () => {
@@ -124,8 +144,11 @@ function ElementEditor({
     scheduleData,
     handleChange,
     handleSubmit,
+    handleEdit,
     handleOptionChange,
+    handleCancel,
     dateId,
+    type,
   }
   return <ElementEditorView {...props} />
 }

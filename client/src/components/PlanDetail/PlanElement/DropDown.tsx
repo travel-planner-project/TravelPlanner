@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './DropDown.module.scss'
 import Icon from '../../Common/Icon'
 
 type DropDownProps = {
   options: { title: string; key: number }[]
   onOptionChange: (selectedOption: string) => void
+  current: string
 }
 
-function DropDown({ options, onOptionChange }: DropDownProps) {
+type CategoryOptionsType = '관광' | '숙박' | '교통' | '카페' | '식당' | '기타'
+
+function DropDown({ options, onOptionChange, current }: DropDownProps) {
   const initialTitleValue = '일정 분류'
   const [isOptionOpened, setIsOptionOpened] = useState<boolean>(false)
   const [selectedOptionTitle, setSelectedOptionTitle] = useState<string>(initialTitleValue)
@@ -23,6 +26,14 @@ function DropDown({ options, onOptionChange }: DropDownProps) {
   const handleOpenOptions = () => {
     setIsOptionOpened(prev => !prev)
   }
+
+  useEffect(() => {
+    if (current) {
+      if (current.length > 1 && (current as CategoryOptionsType)) {
+        setSelectedOptionTitle(current)
+      }
+    }
+  }, [])
 
   return (
     <ul className={styles.listContainer}>

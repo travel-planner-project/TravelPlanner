@@ -1,0 +1,17 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+
+.editingBtnBox {
+  @include U.flex-c(row, flex-end, center);
+  width: 100%;
+  padding: 0px 12px 0px 12px;
+  gap: 24px;
+  color: C.$gray800;
+  button:hover {
+    color: C.$blue500;
+  }
+  .deleteDateBtn:hover {
+    color: red;
+  }
+}
