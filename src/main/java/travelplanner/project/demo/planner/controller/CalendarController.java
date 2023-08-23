@@ -15,6 +15,7 @@ import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.service.CalendarService;
+import travelplanner.project.demo.planner.service.ToDoService;
 import travelplanner.project.demo.planner.service.ValidatingService;
 
 import java.util.ArrayList;
@@ -26,10 +27,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CalendarController {
 
-    private final CalendarService calendarService;
-    private final SimpMessagingTemplate simpMessagingTemplate;
-    private final ValidatingService validatingService;
     private final TokenUtil tokenUtil;
+    private final ToDoService toDoService;
+    private final CalendarService calendarService;
+    private final ValidatingService validatingService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/create-date/{plannerId}")
     public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String athorization, CalendarCreateRequest request) {
@@ -65,8 +67,16 @@ public class CalendarController {
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         calendarService.deleteDate(plannerId, dateId);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);
+//        기존 로직
+//        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+//        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);
+        List<CalendarResponse> calendarScheduleList = toDoService.getCalendarScheduleList(plannerId);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","delete-schedule", "msg", calendarScheduleList
+                )
+        );
     }
+
+
 
 }
