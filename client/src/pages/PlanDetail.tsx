@@ -21,7 +21,7 @@ import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
-import { dateFormat } from '../utils/date'
+import { dateFormat, dateFormatDash } from '../utils/date'
 import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
 import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
 import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
@@ -71,9 +71,17 @@ function PlanDetailView({
           <div className={styles.planPeriod}>
             <Icon name='calendar' size={16} />
             <div className={styles.dateBox}>
-              <div className={styles.startDate}>2023-07-14</div>
+              <div className={styles.startDate}>
+                {dateListData?.length >= 1
+                  ? dateFormatDash(new Date(dateListData[0].dateTitle))
+                  : dateFormatDash(new Date())}
+              </div>
               <span> ~ </span>
-              <div className={styles.endDate}>2023-07-16</div>
+              <div className={styles.endDate}>
+                {dateListData?.length >= 2
+                  ? dateFormatDash(new Date(dateListData[dateListData.length - 1].dateTitle))
+                  : dateFormatDash(new Date())}
+              </div>
             </div>
           </div>
         </div>
@@ -123,7 +131,7 @@ function PlanDetailView({
                     />
                   ) : (
                     <>
-                      <div className={styles.dateTitle}>{item.dateContent}</div>
+                      <div className={styles.dateTitle}>{dateFormat(new Date(item.dateTitle))}</div>
                       {isEditingDateList ? (
                         <EditingDateButtonBox
                           handleEdit={handleEditDateBtnClick}
@@ -291,7 +299,7 @@ function PlanDetail() {
     const convertedDate = new Date(date).toISOString()
     const modifiedData = dateListData.map(el => {
       if (el.dateId === id) {
-        return { ...el, dateContent: dateFormat(new Date(convertedDate)) }
+        return { ...el, dateTitle: date }
       }
       return { ...el } // 깊은 복사를 위해 새로운 객체로 복사
     })
@@ -320,9 +328,6 @@ function PlanDetail() {
           body: JSON.stringify({ dateId: id }),
         })
       }
-      const modifiedData = dateListData.filter(el => el.dateId !== id)
-      setDateListData(modifiedData)
-      setEditingDateId(-1)
     } else return
   }
 
@@ -341,6 +346,10 @@ function PlanDetail() {
   }
 
   const handleDeleteSchedule = (dateId: number, itemId: number) => {
+    if (isEditingDate || isEditingDateList) {
+      alert('일정 편집을 종료한 후에 다시 시도해주세요.')
+      return
+    }
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/delete-todo/${plannerId}/${dateId}/${itemId}`,
@@ -352,9 +361,12 @@ function PlanDetail() {
   }
 
   const handleEditScheduleBtnClick = (dateId: number, itemId: number) => {
+    if (isEditingDate || isEditingDateList) {
+      alert('일정 편집을 종료한 후에 다시 시도해주세요.')
+      return
+    }
     const targetDateIndex = dateListData.findIndex(el => el.dateId === dateId)
     const currentList = dateListData[targetDateIndex].scheduleItemList
-
     const targetScheduleIndex = currentList.findIndex(el => el.itemId === itemId)
     setScheduleData(currentList[targetScheduleIndex])
     setEditingScheduleId(itemId)
@@ -362,13 +374,6 @@ function PlanDetail() {
 
   const handleEditSchedule = (e: React.FormEvent, dateId: number, itemId: number) => {
     e.preventDefault()
-    const targetDateIndex = dateListData.findIndex((date: DateType) => date.dateId === dateId)
-    const targetScheduleIndex = dateListData[targetDateIndex].scheduleItemList.findIndex(
-      (schedule: ScheduleType) => schedule.itemId === itemId
-    )
-    dateListData[targetDateIndex].scheduleItemList[targetScheduleIndex] = scheduleData
-    const modifiedData = JSON.parse(JSON.stringify(dateListData))
-    setDateListData(modifiedData)
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/update-todo/${plannerId}/${dateId}/${itemId}`,
@@ -408,10 +413,7 @@ function PlanDetail() {
           const res = await getPlanDetail(plannerId)
           if (res) {
             // 스케줄 state 세팅
-            const schedules = res.data.calendars.map((el: DateType) => ({
-              ...el, // Keep the other properties unchanged
-              dateContent: dateFormat(new Date(el.dateTitle)),
-            }))
+            const schedules = res.data.calendars
             setDateListData(schedules)
           }
         } catch (error) {
@@ -450,26 +452,38 @@ function PlanDetail() {
           } else if (resBody.type === 'add-date') {
             const newDate = resBody.msg
             if (newDate) {
-              newDate.dateContent = dateFormat(new Date(newDate.dateTitle))
               setDateListData(prev => [...prev, newDate])
             } else {
               alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
             }
           } else if (resBody.type === 'modify-date') {
+            const data = resBody.msg
+            const targetDateIndex = dateListData.findIndex(
+              (date: DateType) => date.dateId === data.dateId
+            )
+            const targetScheduleIndex = dateListData[targetDateIndex].scheduleItemList.findIndex(
+              (schedule: ScheduleType) => schedule.itemId === data.itemId
+            )
+            dateListData[targetDateIndex].scheduleItemList[targetScheduleIndex] = scheduleData
+            const modifiedData = JSON.parse(JSON.stringify(dateListData))
+            setDateListData(modifiedData)
             setIsEditingDate(false)
             setIsEditingDateList(false)
+          } else if (resBody.type === 'delete-date') {
+            const schedules = resBody.msg
+            setDateListData(schedules)
           } else if (resBody.type === 'add-schedule') {
             const newData = resBody.msg
             const newDateId = newData.dateId
             // 배열 내 특정 날짜 객체 찾기
-            const updatedDateList = dateListData.map(date => {
+            const updatedDateList = dateListData.map((date: DateType) => {
               if (date.dateId === newDateId) {
                 return {
                   ...date,
                   scheduleItemList: [...date.scheduleItemList, newData], // 스케줄 추가
                 }
               }
-              return date
+              return { ...date }
             })
             if (updatedDateList.length === 0) {
               alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
@@ -477,10 +491,7 @@ function PlanDetail() {
               setDateListData(updatedDateList)
             }
           } else if (resBody.type === 'delete-schedule') {
-            const schedules = resBody.msg.map((el: DateType) => ({
-              ...el,
-              dateContent: dateFormat(new Date(el.dateTitle)),
-            }))
+            const schedules = resBody.msg
             setDateListData(schedules)
           } else if (resBody.type === 'modify-schedule') {
             setEditingScheduleId(-1)

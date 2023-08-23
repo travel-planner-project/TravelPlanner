@@ -47,7 +47,7 @@ export function usePlanDetailManagement() {
 
   const handleOpenScheduleEditor = (id: number) => {
     if (isEditingDateList || isEditingDate) {
-      alert('날짜 수정을 완료한 후에 다시 시도해주세요.')
+      alert('일정 편집을 종료한 후에 다시 시도해주세요.')
       return
     }
     setCurrentDateId(id)
