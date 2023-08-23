@@ -31,7 +31,7 @@ public class Calendar {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "calendar", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     private List<ToDo> scheduleItemList = new ArrayList<>();
 
