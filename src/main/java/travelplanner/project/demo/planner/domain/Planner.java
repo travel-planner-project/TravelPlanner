@@ -52,11 +52,11 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "planner",  cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany (mappedBy = "planner", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "planner",  cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     private List<Chatting> chattings = new ArrayList<>();
 
