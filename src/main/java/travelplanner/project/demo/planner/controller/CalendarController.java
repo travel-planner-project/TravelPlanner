@@ -34,9 +34,9 @@ public class CalendarController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/create-date/{plannerId}")
-    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String athorization, CalendarCreateRequest request) {
+    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String authorization, CalendarCreateRequest request) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
 
 //        List<CalendarResponse> calendarList = calendarService.getCalendarList();
 //
@@ -51,9 +51,9 @@ public class CalendarController {
     public void updateDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
                            CalendarEditRequest request,
-                           @Header("Authorization") String athorization) {
+                           @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 Map.of("type","modify-date", "msg", calendarService.updateDate(plannerId, dateId, request)
                 )
@@ -63,9 +63,9 @@ public class CalendarController {
     @MessageMapping("/delete-date/{plannerId}/{dateId}")
     public void deleteDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
-                           @Header("Authorization") String athorization) {
+                           @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         calendarService.deleteDate(plannerId, dateId);
 //        기존 로직
 //        List<CalendarResponse> calendarList = calendarService.getCalendarList();

@@ -22,18 +22,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ToDoController {
 
+    private final TokenUtil tokenUtil;
     private final ToDoService toDoService;
     private final CalendarService calendarService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final TokenUtil tokenUtil;
 
     @MessageMapping("/create-todo/{plannerId}/{dateId}")
     public void create(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        ToDoCraeteRequest request,
-                       @Header("Authorization") String athorization) {
+                       @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 Map.of("type","add-schedule", "msg", toDoService.createTodo(plannerId, dateId, request) // 사용자가 입력한 todo
@@ -47,9 +47,9 @@ public class ToDoController {
                      @DestinationVariable Long dateId,
                      @DestinationVariable Long toDoId,
                      ToDoEditRequest request,
-                     @Header("Authorization") String athorization) {
+                     @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 Map.of("type","modify-schedule", "msg", toDoService.editTodo(plannerId, dateId, toDoId, request)
@@ -61,9 +61,9 @@ public class ToDoController {
     public void delete(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        @DestinationVariable Long toDoId,
-                       @Header("Authorization") String athorization) {
+                       @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         toDoService.delete(plannerId, dateId, toDoId);
         List<CalendarResponse> calendarScheduleList = toDoService.getCalendarScheduleList(plannerId);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
