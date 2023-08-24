@@ -16,6 +16,9 @@ public enum ErrorType {
     // 리프레시 토큰이 만료된 경우
     REFRESH_TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "TOKEN-002", "리프레시 토큰이 만료되었습니다."),
 
+    // 리프레시 토큰이 null 인 경우
+    REFRESH_TOKEN_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "TOKEN-003", "리프레시 토큰이 null 값 입니다."),
+
 
     // ==================================================================================================================
 

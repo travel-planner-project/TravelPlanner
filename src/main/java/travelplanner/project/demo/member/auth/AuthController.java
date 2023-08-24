@@ -42,7 +42,8 @@ public class AuthController {
     @Operation(summary = "로그인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "401", description = "로그인 정보가 일치하지 않는 경우")
+            @ApiResponse(responseCode = "401", description = "로그인 정보가 일치하지 않는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) throws Exception {
@@ -53,7 +54,10 @@ public class AuthController {
     @Operation(summary = "로그아웃")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "401", description = "토큰 유효기간 만료")
+            @ApiResponse(responseCode = "401", description = "어세스 토큰이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "403", description = "리프레시 토큰이 만료되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping("/auth/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {

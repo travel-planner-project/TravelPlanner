@@ -1,6 +1,8 @@
 package travelplanner.project.demo.global.security.jwt;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
@@ -38,8 +41,10 @@ public class JwtController {
     @Operation(summary = "accessToken 재발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "accessToken 재발급 성공"),
-            @ApiResponse(responseCode = "403", description = "어세스토큰을 재발급 할 수 없습니다."),
-            @ApiResponse(responseCode = "404", description = "리프레시 토큰이 존재하지 않습니다.")
+            @ApiResponse(responseCode = "403", description = "어세스토큰을 재발급 할 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "리프레시 토큰이 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/token")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
@@ -47,21 +52,14 @@ public class JwtController {
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
         if (refreshTokenCookie == null) {
 
-            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
+            throw new ApiException(ErrorType.REFRESH_TOKEN_DOES_NOT_EXIST);
         }
 
         String refreshToken = refreshTokenCookie.getValue();
 
         // 어세스 토큰 재발급
         String newAccessToken;
-        try {
-            newAccessToken = tokenUtil.refreshAccessToken(refreshToken);
-        } catch (Exception e) {
-
-            // 헤더에 존재하는 쿠키 삭제
-            cookieUtil.delete("", response);
-            return ResponseEntity.badRequest().body("어세스토큰을 재발급 할 수 없습니다.");
-        }
+        newAccessToken = tokenUtil.refreshAccessToken(refreshToken, response); // 만약 리프레시 토큰이 만료상태라면 403 에러를 반환.
 
         // 헤더에 추가
         HttpHeaders responseHeaders = new HttpHeaders();

@@ -2,6 +2,7 @@ package travelplanner.project.demo.global.util;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.Date;
 public class TokenUtil {
 
     private final RedisUtil redisUtil;
+    private final CookieUtil cookieUtil;
 
     @Value("${secret.key}")
     private String SECRET_KEY;
@@ -94,7 +96,7 @@ public class TokenUtil {
 
 
     // 어세스 토큰 재발행
-    public String refreshAccessToken(String refreshToken) throws ApiException {
+    public String refreshAccessToken(String refreshToken, HttpServletResponse response) throws ApiException {
 
         String email = getEmail(refreshToken);
 
@@ -103,7 +105,9 @@ public class TokenUtil {
 
         // 저장된 리프레시 토큰과 제공된 리프레시 토큰이 동일한지 검사
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
-            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+
+            cookieUtil.delete("", response);
+            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
         }
 
         // 리프레시 토큰의 사용자 정보를 기반으로 새로운 어세스 토큰 발급
