@@ -86,15 +86,13 @@ public class GroupMemberService {
 //            response.setProfileImageUrl(groupMember.getProfileImageUrl());
 //            response.setRole(groupMember.getGroupMemberType().toString());
 
-                GroupMemberResponse response = GroupMemberResponse.builder()
-                        .groupMemberId(groupMember.getId())
-                        .nickname(groupMember.getUserNickname())
-                        .profileImageUrl(groupMember.getProfile().getProfileImgUrl())
-                        .role(groupMember.getGroupMemberType())
-                        .email(groupMember.getEmail())
-                        .build();
-
-                return response;
+            return GroupMemberResponse.builder()
+                    .groupMemberId(groupMember.getId())
+                    .nickname(groupMember.getUserNickname())
+                    .profileImageUrl(groupMember.getProfile().getProfileImgUrl())
+                    .role(groupMember.getGroupMemberType())
+                    .email(groupMember.getEmail())
+                    .build();
 
         }
 
