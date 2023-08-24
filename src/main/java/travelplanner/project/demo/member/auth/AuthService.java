@@ -22,6 +22,7 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 
+import java.time.Duration;
 import java.util.Optional;
 
 
@@ -78,7 +79,6 @@ public class AuthService {
     }
 
 
-
     // 로그인
     @Transactional
     public AuthResponse login(LoginRequest request, HttpServletResponse response) {
@@ -107,7 +107,7 @@ public class AuthService {
 
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
-            redisUtil.setData(member.getEmail(), refreshToken);
+            redisUtil.setDataExpire(member.getEmail(), refreshToken, Duration.ofMinutes(3));
 
         } else { // 레디스에 토큰이 저장되어 있는 경우
 
@@ -123,6 +123,8 @@ public class AuthService {
                 .build();
     }
 
+
+    // 로그아웃
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 

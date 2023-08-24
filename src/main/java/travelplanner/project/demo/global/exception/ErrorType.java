@@ -10,6 +10,14 @@ import org.springframework.http.HttpStatus;
 @ToString
 public enum ErrorType {
 
+    // 어세스 토큰이 만료된 경우
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN-001", "어세스 토큰이 만료되었습니다."),
+
+    // 리프레시 토큰이 만료된 경우
+    REFRESH_TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "TOKEN-002", "리프레시 토큰이 만료되었습니다."),
+
+
+    // ==================================================================================================================
 
     // 권한이 부족한 경우
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "AUTH-001", "권한이 부족하여 접근할 수 없습니다."),
