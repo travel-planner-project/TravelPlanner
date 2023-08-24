@@ -36,16 +36,11 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (Long plannerId, GroupMemberSearchRequest request) {
+    public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
 
-        List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByPlannerId(plannerId);
-
-        // 조회한 그룹멤버 리스트에 일치하는 멤버가 없으면 에러
-        if(groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(request.getEmail()))){
-            throw new ApiException(ErrorType.USER_NOT_FOUND);
-        }else{
-            //그룹 멤버가 존재하면 해당하는 멤버 조회
             Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+                    member.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+
             Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
             GroupMemberSearchResponse response = new GroupMemberSearchResponse();
@@ -54,7 +49,7 @@ public class GroupMemberService {
             response.setUserNickname(member.get().getUserNickname());
 
             return response;
-        }
+
     }
 
 

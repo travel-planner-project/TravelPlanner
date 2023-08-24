@@ -29,10 +29,10 @@ public class GroupMemberController {
     private final GroupMemberService groupMemberService;
     private final TokenUtil tokenUtil;
 
-    @GetMapping("/search-member/{plannerId}")
+    @GetMapping("/search-member")
     @ResponseBody
-    public GroupMemberSearchResponse searchGroupMember( @PathVariable Long plannerId, @RequestBody GroupMemberSearchRequest request){
-        return groupMemberService.searchMember(plannerId, request);
+    public GroupMemberSearchResponse searchGroupMember(@RequestBody GroupMemberSearchRequest request){
+        return groupMemberService.searchMember(request);
       /*  tokenUtil.getJWTTokenFromWebSocket(authorization);
         messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 Map.of("type","search-user", "msg", groupMemberService.searchMember(request)
