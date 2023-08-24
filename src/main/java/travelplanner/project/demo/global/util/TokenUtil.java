@@ -104,6 +104,7 @@ public class TokenUtil {
         String storedRefreshToken = redisUtil.getData(email);
 
         // 저장된 리프레시 토큰과 제공된 리프레시 토큰이 동일한지 검사
+        // 토큰이 만료되었을 경우, 레디스에서 사라지기 때문에 null 일 수 있습니다.
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
 
             cookieUtil.delete("", response);
