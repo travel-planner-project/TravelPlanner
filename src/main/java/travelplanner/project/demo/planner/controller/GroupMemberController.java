@@ -40,7 +40,7 @@ public class GroupMemberController {
     @Operation(summary = "멤버 검색")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "그룹 멤버 검색 성공"),
-            @ApiResponse(responseCode = "404", description = "해당 이메일로 유저를 찾을 수 없는 경우",
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/search/member")

@@ -36,21 +36,53 @@ public class PlannerController {
 
     private final PlannerService plannerService;
 
+
+    @Operation(summary = "플래너 리스트 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "플래너 리스트 조회 성공"),
+            @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없습니.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
+    })
     @GetMapping
     public Page<PlannerListResponse> getPlannerList(Pageable pageable, @RequestParam(required = false) String email, HttpServletRequest request) {
         return plannerService.getPlannerListByUserIdOrEmail(pageable, email, request);
     }
 
+
+    @Operation(summary = "플래너 상세 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "플래너 리스트 조회 성공"),
+            @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
+    })
     @GetMapping("/{plannerId}")
     public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId, HttpServletRequest request) {
         return plannerService.getPlannerDetailByOrderAndEmail(plannerId, request);
     }
 
+
+    @Operation(summary = "플래너 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "플래너 삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "권한이 부족하여 접근할 수 없습니다.",
+                content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "페이지를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
+    })
     @DeleteMapping
     //플래너 삭제
     public void deletePlanner(@RequestBody PlannerDeleteRequest request) {
         plannerService.deletePlanner(request);
     }
+
 
     @Operation(summary = "플래너 생성")
     @ApiResponses(value = {
@@ -70,6 +102,7 @@ public class PlannerController {
 
         return plannerService.createPlanner(request);
     }
+
 
     @Operation(summary = "플래너 수정")
     @ApiResponses(value = {
