@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import styles from './Modal.module.scss'
 import FriendInfo, { FriendType } from './FriendInfo'
-import { getProfile } from '../../../apis/user'
 import { GroupMemberListType } from '../../../types/planDetailTypes'
+import { searchMember } from '../../../apis/planner'
+import { getProfile } from '../../../apis/user'
 
 type InviteModalProp = {
   onClose: () => void
@@ -28,10 +29,8 @@ function InviteModal({
   const [isSearchBtnDirty, setIsSearchBtnDirty] = useState(false)
 
   const handleSearch = async () => {
-    // 친구 검색 api 에 inputValue state 를 넣어서 request 전송하고
-    // api의 응답 데이터를 setFriend(response.data) 로 업데이트
-
-    const response = await getProfile(3)
+    const response = await getProfile(1)
+    // await searchMember(inputValue)
     const { status, data }: { status: number; data: FriendType } = response!
 
     if (status === 200) {
