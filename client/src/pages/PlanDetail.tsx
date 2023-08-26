@@ -252,7 +252,7 @@ function PlanDetail() {
         const res = await getPlanDetail(plannerId)
         if (res) {
           console.log(res.data.calendars)
-          // 스케줄 state 세팅
+          // 스케줄, 채팅 state 세팅
           const schedules = res.data.calendars
           const chattings = res.data.chattings
           setDateListData(schedules)
