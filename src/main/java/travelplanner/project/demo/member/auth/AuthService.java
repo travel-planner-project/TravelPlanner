@@ -126,20 +126,11 @@ public class AuthService {
 
     // 로그아웃
     @Transactional
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
+    public void logout(HttpServletResponse response) {
 
-        String emailFromToken = tokenUtil.getEmail(tokenUtil.getJWTTokenFromHeader(request));
-        log.info(emailFromToken);
-        String currentMemberEmail = authUtil.getCurrentMember().getEmail();
-        log.info(currentMemberEmail);
-
-        if (emailFromToken.equals(currentMemberEmail)) {
-            // 어세스토큰 삭제
-            response.setHeader("Authorization", "");
-
-            // 쿠키 삭제
-            cookieUtil.delete("", response);
-        }
-
+        // 어세스토큰 삭제
+        response.setHeader("Authorization", "");
+        // 쿠키 삭제
+        cookieUtil.delete("", response);
     }
 }
