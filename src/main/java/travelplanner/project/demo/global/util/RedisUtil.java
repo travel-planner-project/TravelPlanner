@@ -21,14 +21,6 @@ public class RedisUtil {
     }
 
 
-    // 레디스에 키:값 저장
-    public void setData(String key, String value) {
-
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key, value);
-    }
-
-
     // 키:값 저장 시 만료기한 설정
     public void setDataExpire(String key, String value, Duration duration) {
 

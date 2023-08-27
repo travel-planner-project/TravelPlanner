@@ -30,7 +30,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         try {
             final LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 
-            log.info("사용자 아이디: " + loginRequest.getEmail() + " 비밀번호: " + loginRequest.getPassword());
+            log.info("------------------------- 사용자 아이디: " + loginRequest.getEmail() + " 비밀번호: " + loginRequest.getPassword());
 
             authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
 
