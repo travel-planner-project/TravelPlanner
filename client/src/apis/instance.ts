@@ -53,10 +53,10 @@ function createAxiosInstance(options: Options) {
             return await axios(config)
           }
         } catch (error) {
-          // sessionStorage.removeItem('userInfo')
-          // removeTokenFromSessionStorage()
-          // location.reload()
-          return Promise.reject({ status: 401, message: '리프레시 토큰 에러' })
+          sessionStorage.removeItem('userInfo')
+          removeTokenFromSessionStorage()
+          location.reload()
+          return Promise.reject({ status: 403, message: '리프레시 토큰 에러' })
         }
       }
       return Promise.reject(error)
