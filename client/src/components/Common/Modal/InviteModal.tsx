@@ -31,6 +31,7 @@ function InviteModal({
   const handleSearch = async () => {
     const response = await getProfile(1)
     // await searchMember(inputValue)
+    // await searchMember(encodeURIComponent(inputValue))
     const { status, data }: { status: number; data: FriendType } = response!
 
     if (status === 200) {
