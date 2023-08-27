@@ -53,9 +53,7 @@ public class AuthController {
 
     @Operation(summary = "로그아웃")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "403", description = "리프레시 토큰이 만료되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
     })
     @PostMapping("/auth/logout")
     public void logout(HttpServletResponse response) {
