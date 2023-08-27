@@ -1,7 +1,6 @@
 package travelplanner.project.demo.global.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import travelplanner.project.demo.global.security.jwt.JwtAuthenticationEntryPoint;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
@@ -35,7 +33,7 @@ public class SecurityConfig {
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 //    @Autowired
 //    private PrincipalOauth2UserService principalOauth2UserService;
@@ -75,7 +73,7 @@ public class SecurityConfig {
 //                .successHandler(oAuth2AuthenticationSuccessHandler);
 
         http
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
