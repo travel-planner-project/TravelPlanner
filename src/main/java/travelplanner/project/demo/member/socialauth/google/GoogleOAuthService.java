@@ -75,11 +75,16 @@ public class GoogleOAuthService {
 
         }
 
-        // 로그인 처리
-        LoginRequest request = new LoginRequest();
-        request.setEmail(googleUserInfoDto.getEmail());
-        request.setPassword("google");
+        LoginRequest builderRequest = LoginRequest.builder()
+                .email(googleUserInfoDto.getEmail())
+                .password("google")
+                .build();
 
-        return authService.login(request, response);
+        // 로그인 처리
+//        LoginRequest request = new LoginRequest();
+//        request.setEmail(googleUserInfoDto.getEmail());
+//        request.setPassword("google");
+
+        return authService.login(builderRequest, response);
     }
 }
