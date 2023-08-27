@@ -1,5 +1,6 @@
 package travelplanner.project.demo.global.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.exception.TokenExpiredException;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 
@@ -24,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (requestURI.equals("/auth/signup") ||
                 requestURI.equals("/auth/login") ||
+                requestURI.equals("/auth/logout") ||
                 requestURI.equals("/auth/token") ||
                 requestURI.startsWith("/oauth") ||
                 requestURI.startsWith("/swagger-ui") ||
@@ -56,24 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             accessToken = authorizationHeader;
         }
 
-        // JWT 토큰 유효성 검사
-        try {
-            if (!tokenUtil.isValidToken(accessToken)) {
-                // 어세스 토큰이 유효하지 않을 경우(만료된 경우 포함), 예외를 던짐
-                throw new AuthenticationException("Invalid or expired access token.") {};
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            // 토큰이 만료된 경우, 예외를 던짐
-            throw new TokenExpiredException();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new AuthenticationException("Error verifying token.") {};
-        }
-
+        // access 토큰 유효성 검사
+        tokenUtil.isValidToken(accessToken);
 
         String principal = tokenUtil.getEmail(accessToken);
-        log.info("유저 정보: " + principal);
+        log.info("-------------------------유저 정보: " + principal);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
