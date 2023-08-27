@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.exception.TokenExpiredException;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -59,11 +61,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             accessToken = authorizationHeader;
         }
 
-        // JWT 토큰 유효성 검사
+        // access 토큰 유효성 검사
         tokenUtil.isValidToken(accessToken);
 
         String principal = tokenUtil.getEmail(accessToken);
         log.info("-------------------------유저 정보: " + principal);
+
+        // refresh 토큰 유효성 검사
+        if (redisUtil.getData(principal) == null) {
+            cookieUtil.delete("", response);
+            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
+        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());

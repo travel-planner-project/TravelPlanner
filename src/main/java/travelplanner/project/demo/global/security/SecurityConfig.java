@@ -20,6 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationEntryPoint;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 //import travelplanner.project.demo.member.socialauth.Oauth2AuthenticationSuccessHandler;
 //import travelplanner.project.demo.member.socialauth.PrincipalOauth2UserService;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 //    @Autowired
@@ -120,7 +122,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenUtil, cookieUtil);
+        return new JwtAuthenticationFilter(tokenUtil, cookieUtil, redisUtil);
     }
 
 }
