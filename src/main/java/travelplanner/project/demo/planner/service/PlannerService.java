@@ -89,6 +89,15 @@ public class PlannerService {
             // 현재 사용자가 그룹 멤버인지 확인
             List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
 
+            // 로그인한 사용자가 속한 모든 그룹의 플래너를 찾음
+            for(GroupMember gm : groupMembers) {
+                Planner planner = gm.getPlanner();
+                // 이 플래너가 이미 사용자의 플래너 리스트에 있는지 확인 후 없다면 추가 (중복 제거)
+                if(!planners.contains(planner)) {
+                    planners.add(planner);
+                }
+            }
+
             // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
             planners = planners.stream()
                     .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
