@@ -76,12 +76,10 @@ public class TokenUtil {
                     .getExpiration()
                     .after(new Date());
 
-        } catch (ExpiredJwtException e) { // 어세스 토큰 만료
-            throw new ApiException(ErrorType.ACCESS_TOKEN_EXPIRED);
-
-        } catch (Exception e) { // 토큰 검증은 되었으나, 유저가 권한이 없는 경우
-            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+        } catch (TokenExpiredException e) { // 어세스 토큰 만료
+            e.printStackTrace();
         }
+        return false;
     }
 
 
@@ -96,20 +94,9 @@ public class TokenUtil {
 
 
     // 어세스 토큰 재발행
-    public String refreshAccessToken(String refreshToken, HttpServletResponse response) throws ApiException {
+    public String refreshAccessToken(String refreshToken) throws ApiException {
 
         String email = getEmail(refreshToken);
-
-        // Redis에서 리프레시 토큰을 가져온다.
-        String storedRefreshToken = redisUtil.getData(email);
-
-        // 저장된 리프레시 토큰과 제공된 리프레시 토큰이 동일한지 검사
-        // 토큰이 만료되었을 경우, 레디스에서 사라지기 때문에 null 일 수 있습니다.
-        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
-
-            cookieUtil.delete("", response);
-            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
-        }
 
         // 리프레시 토큰의 사용자 정보를 기반으로 새로운 어세스 토큰 발급
         return generateAccessToken(email);

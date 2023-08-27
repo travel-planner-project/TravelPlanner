@@ -17,11 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import travelplanner.project.demo.global.security.jwt.JwtAuthenticationEntryPoint;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
-import travelplanner.project.demo.member.socialauth.Oauth2AuthenticationSuccessHandler;
-import travelplanner.project.demo.member.socialauth.PrincipalOauth2UserService;
+//import travelplanner.project.demo.member.socialauth.Oauth2AuthenticationSuccessHandler;
+//import travelplanner.project.demo.member.socialauth.PrincipalOauth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -32,12 +33,12 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
-//    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    private PrincipalOauth2UserService principalOauth2UserService;
-    @Autowired
-    private Oauth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+//    @Autowired
+//    private PrincipalOauth2UserService principalOauth2UserService;
+//    @Autowired
+//    private Oauth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 
     @Bean
@@ -62,20 +63,20 @@ public class SecurityConfig {
                     .requestMatchers("/auth/signup", "/auth/login", "/auth/token").permitAll()
                 .anyRequest().authenticated();
 
-        http    .oauth2Login()
-                .authorizationEndpoint().baseUri("/oauth/authorize")
-                .and()
-                .redirectionEndpoint().baseUri("/oauth/kakao/login")
-                .and()
-                .userInfoEndpoint().userService(principalOauth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler);
-
-//        http
-//                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//        http    .oauth2Login()
+//                .authorizationEndpoint().baseUri("/oauth/authorize")
 //                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .redirectionEndpoint().baseUri("/oauth/kakao/login")
+//                .and()
+//                .userInfoEndpoint().userService(principalOauth2UserService)
+//                .and()
+//                .successHandler(oAuth2AuthenticationSuccessHandler);
+
+        http
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 
         http    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -41,25 +41,27 @@ public class JwtController {
     @Operation(summary = "accessToken 재발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "accessToken 재발급 성공"),
-            @ApiResponse(responseCode = "403", description = "어세스토큰을 재발급 할 수 없습니다.",
+            @ApiResponse(responseCode = "403", description = "리프레시 토큰이 만료되었습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
             @ApiResponse(responseCode = "404", description = "리프레시 토큰이 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/token")
-    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
 
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
-        if (refreshTokenCookie == null) {
-
+        if (refreshTokenCookie == null) { // 쿠키가 존재하지 않는 경우
             throw new ApiException(ErrorType.REFRESH_TOKEN_DOES_NOT_EXIST);
+
+        } else if (refreshTokenCookie.getValue() == null) { // 리프레시 토큰이 만료된 경우
+            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
         }
 
         String refreshToken = refreshTokenCookie.getValue();
 
         // 어세스 토큰 재발급
         String newAccessToken;
-        newAccessToken = tokenUtil.refreshAccessToken(refreshToken, response); // 만약 리프레시 토큰이 만료상태라면 403 에러를 반환.
+        newAccessToken = tokenUtil.refreshAccessToken(refreshToken); // 만약 리프레시 토큰이 만료상태라면 403 에러를 반환.
 
         // 헤더에 추가
         HttpHeaders responseHeaders = new HttpHeaders();
