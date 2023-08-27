@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 
@@ -37,27 +38,30 @@ public class JwtController {
 
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @Operation(summary = "accessToken 재발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "accessToken 재발급 성공"),
             @ApiResponse(responseCode = "403", description = "리프레시 토큰이 만료되었습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
-            @ApiResponse(responseCode = "404", description = "리프레시 토큰이 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/token")
-    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
         if (refreshTokenCookie == null) { // 쿠키가 존재하지 않는 경우
             throw new ApiException(ErrorType.REFRESH_TOKEN_DOES_NOT_EXIST);
 
-        } else if (refreshTokenCookie.getValue() == null) { // 리프레시 토큰이 만료된 경우
-            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
         }
 
         String refreshToken = refreshTokenCookie.getValue();
+        String email = tokenUtil.getEmail(refreshToken);
+
+        if (redisUtil.getData(email) == null) { // 리프레시 토큰이 만료되어 레디스에서 사라진 경우
+            cookieUtil.delete("", response);
+            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
+        }
 
         // 어세스 토큰 재발급
         String newAccessToken;
