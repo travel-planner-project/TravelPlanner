@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (requestURI.equals("/auth/signup") ||
                 requestURI.equals("/auth/login") ||
+                requestURI.equals("/auth/logout") ||
                 requestURI.equals("/auth/token") ||
                 requestURI.startsWith("/oauth") ||
                 requestURI.startsWith("/swagger-ui") ||
@@ -66,12 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String principal = tokenUtil.getEmail(accessToken);
         log.info("-------------------------유저 정보: " + principal);
-
-        // refresh 토큰 유효성 검사
-        if (redisUtil.getData(principal) == null) {
-            cookieUtil.delete("", response);
-            throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
-        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());

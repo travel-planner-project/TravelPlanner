@@ -52,14 +52,12 @@ public class JwtController {
         Cookie refreshTokenCookie = cookieUtil.getCookie(request, "refreshToken");
         if (refreshTokenCookie == null) { // 쿠키가 존재하지 않는 경우
             throw new ApiException(ErrorType.REFRESH_TOKEN_DOES_NOT_EXIST);
-
         }
 
         String refreshToken = refreshTokenCookie.getValue();
         String email = tokenUtil.getEmail(refreshToken);
 
         if (redisUtil.getData(email) == null) { // 리프레시 토큰이 만료되어 레디스에서 사라진 경우
-            cookieUtil.delete("", response);
             throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
         }
 
