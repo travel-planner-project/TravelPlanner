@@ -1,5 +1,8 @@
 package travelplanner.project.demo.planner.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,15 +32,13 @@ public class Planner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "travelGroup_id")
-//    private TravelGroup travelGroup;
-
-    @OneToMany(mappedBy = "planner")
+    @OneToMany(mappedBy = "planner",
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.EAGER)
     @Builder.Default
     private List<GroupMember> groupMembers = new ArrayList<>();
 
@@ -51,13 +52,15 @@ public class Planner {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "planner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "planner",  cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id")
-    private Chatting chatting;
+    @OneToMany (mappedBy = "planner",  cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<Chatting> chattings = new ArrayList<>();
+
+
     public void mappingCalendar(Calendar calendar) {
         calendars.add(calendar);
     }
@@ -66,7 +69,6 @@ public class Planner {
         this.member = member;
         member.mappingPlanner(this);
     }
-
 
 
     public PlannerEditor.PlannerEditorBuilder toEditor() {
@@ -95,5 +97,9 @@ public class Planner {
         groupMembers.add(groupMember);
     }
 
+    // 연관 관계 편의 메서드
+    public void mappingChatting(Chatting chatting) {
+        chattings.add(chatting);
+    }
 
 }

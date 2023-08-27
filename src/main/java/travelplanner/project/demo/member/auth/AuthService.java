@@ -1,14 +1,19 @@
-package travelplanner.project.demo.member.Auth;
+package travelplanner.project.demo.member.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -17,10 +22,12 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 
+import java.time.Duration;
 import java.util.Optional;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -30,6 +37,7 @@ public class AuthService {
     private final TokenUtil tokenUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
+    private final AuthUtil authUtil;
     private final AuthenticationManager authenticationManager;
 
 
@@ -56,20 +64,19 @@ public class AuthService {
                 .role(Role.MEMBER)
                 .build();
 
-        memberRepository.save(user);
+        memberRepository.save(user);  // 변경된 user 저장
 
         // 프로필 생성
         Profile profile = Profile.builder()
                 .keyName("")
                 .profileImgUrl("")
+                .member(user)
                 .build();
-
-        user.setProfile(profile);  // 양방향 연관관계 설정
+//        user.setProfile(profile);  // 양방향 연관관계 설정
 
         profileRepository.save(profile);  // profile 저장
-        memberRepository.save(user);  // 변경된 user 저장
-    }
 
+    }
 
 
     // 로그인
@@ -90,16 +97,23 @@ public class AuthService {
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
         String accessToken = tokenUtil.generateAccessToken(member.getEmail());
-        String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
 
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
-        // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
-        cookieUtil.create(refreshToken, response);
+        if (redisUtil.getData(member.getEmail()) == null) { // 레디스에 토큰이 저장되어 있지 않은 경우
 
-        // 리프레시 토큰을 Redis 에 저장
-        redisUtil.setData(member.getEmail(), refreshToken);
+            String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
+
+            // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
+            cookieUtil.create(refreshToken, response);
+            redisUtil.setDataExpire(member.getEmail(), refreshToken, Duration.ofMinutes(3));
+
+        } else { // 레디스에 토큰이 저장되어 있는 경우
+
+            String refreshToken = redisUtil.getData(member.getEmail());
+            cookieUtil.create(refreshToken, response);
+        }
 
         return AuthResponse.builder()
                 .userId(member.getId())
@@ -107,5 +121,16 @@ public class AuthService {
                 .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .build();
+    }
+
+
+    // 로그아웃
+    @Transactional
+    public void logout(HttpServletResponse response) {
+
+        // 어세스토큰 삭제
+        response.setHeader("Authorization", "");
+        // 쿠키 삭제
+        cookieUtil.delete("", response);
     }
 }

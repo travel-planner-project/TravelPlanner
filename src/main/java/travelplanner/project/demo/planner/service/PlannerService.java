@@ -1,15 +1,18 @@
 package travelplanner.project.demo.planner.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
+import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -19,6 +22,9 @@ import travelplanner.project.demo.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.planner.dto.request.PlannerEditRequest;
 import travelplanner.project.demo.planner.dto.response.*;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailAuthorizedResponse;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailResponse;
+import travelplanner.project.demo.planner.dto.response.plannerdetail.PlannerDetailUnauthorizedResponse;
 import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
@@ -44,20 +50,17 @@ public class PlannerService {
     private final CalendarService calendarService;
     private final ToDoService toDoService;
     private final ValidatingService validatingService;
+    private final ChatService chatService;
+    private final GroupMemberService groupMemberService;
+    private final TokenUtil tokenUtil;
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
-    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email) {
-        String currentEmail = authUtil.getCurrentMember().getEmail();
+    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email, HttpServletRequest request) {
+
+        // [공통] ==============================================
+
         List<Planner> planners;
-
-        /*
-        이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
-        특정 유저의 이메일을 담고 요청: 해당 유저의 플래너만 보여주되, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
-         */
-
-        // 현재 사용자가 그룹 멤버인지 확인
-        List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
 
         if (email == null) {
             // 이메일 값을 보내지 않았을 때, 모든 유저의 플래너 조회
@@ -69,10 +72,39 @@ public class PlannerService {
             planners = plannerRepository.findByMember(member);
         }
 
-        // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
-        planners = planners.stream()
-                .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
-                .collect(Collectors.toList());
+        // ==================================================
+
+        // [로그인 / 비로그인 분기] ===================================
+
+        // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
+        if (authUtil.authenticationUser(request)) {
+
+            String currentEmail = authUtil.getCurrentMember().getEmail();
+
+            /*
+            이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+            특정 유저의 이메일을 담고 요청: 해당 유저의 플래너만 보여주되, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
+             */
+
+            // 현재 사용자가 그룹 멤버인지 확인
+            List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
+
+            // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
+            planners = planners.stream()
+                    .filter(planner -> !planner.getIsPrivate() || groupMembers.stream().anyMatch(gm -> gm.getPlanner().equals(planner)))
+                    .collect(Collectors.toList());
+
+        } else { // 비로그인한 유저의 경우 공개 플래너만 모아서 반환
+
+            // isPrivate = true 인 플래너 제거
+            planners = planners.stream()
+                    .filter(planner -> !planner.getIsPrivate())
+                    .collect(Collectors.toList());
+        }
+
+        // ==================================================
+
+        // [공통] 페이지 처리 ======================================
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), planners.size());
@@ -83,8 +115,9 @@ public class PlannerService {
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
     //
-    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId) {
+    public PlannerDetailResponse getPlannerDetailByOrderAndEmail(Long plannerId, HttpServletRequest request) {
 
+        // ===================================== 공통 =============================================
         // 접근 권한 확인
         // 만약, 플래너가 isPrivate == false 인 경우, 그룹멤버가 아니더라도 모든 사람이 볼 수 있어야 합니다.
         // 만약, 프랠너가 isPrivate == true 인 경우, 그룹멤버만 볼 수 있어야 합니다.
@@ -111,18 +144,54 @@ public class PlannerService {
             updatedCalendarResponses.add(updatedCalendarResponse);
         }
 
-        PlannerDetailResponse response = PlannerDetailResponse.builder()
+        // 플래너에 해당하는 채팅 리스트를 가져옴
+        List<ChatResponse> chatResponses = chatService.getChattingList(planner.getId());
+
+        for (ChatResponse chatRespons : chatResponses) {
+            log.info("------------------ chatRespons.getId() = " + chatRespons.getId());
+            log.info("------------------ chatRespons.getUserNickname() = " + chatRespons.getUserNickname());
+            log.info("------------------ chatRespons.getMessage() = " + chatRespons.getMessage());
+            log.info("------------------ chatRespons.getUserId() = " + chatRespons.getUserId());
+        }
+
+        // 플래너에 해당하는 그룹멤버를 가져옴
+        List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
+
+//        log.info("------------------email : " + authUtil.getCurrentMember().getEmail());
+        // 현재 유저의 이메일을 가져옴 (비회원일 경우 null)
+//      ======================================= 공통 로직 종료 ===================================
+
+//      ========  회원 분기 =========
+
+        // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
+        if (authUtil.authenticationUser(request)) {
+            String currentEmail = authUtil.getCurrentMember().getEmail();
+            if (authUtil.isGroupMember(currentEmail, plannerId)) {
+                log.info("---------------회원이며 그룹 멤버다.");
+                return PlannerDetailAuthorizedResponse.builder()
+                        .plannerId(planner.getId())
+                        .planTitle(planner.getPlanTitle())
+                        .isPrivate(planner.getIsPrivate())
+                        .startDate(planner.getStartDate())
+                        .endDate(planner.getEndDate())
+                        .calendars(updatedCalendarResponses)
+                        .groupMemberList(groupMemberResponses)
+                        .chattings(chatResponses)
+                        .build();
+            }
+            log.info("---------------회원이지만 그룹 멤버에 포함되지 않는다.");
+        }
+        log.info("---------------채팅이 없는 response");
+        return PlannerDetailUnauthorizedResponse.builder()
                 .plannerId(planner.getId())
                 .planTitle(planner.getPlanTitle())
                 .isPrivate(planner.getIsPrivate())
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
                 .calendars(updatedCalendarResponses)
+                .groupMemberList(groupMemberResponses)
                 .build();
-
-        return response;
     }
-
 
     @Transactional
     //플래너 삭제
@@ -178,17 +247,23 @@ public class PlannerService {
         GroupMember groupMember = GroupMember.builder()
                 .email(member.getEmail())
                 .groupMemberType(GroupMemberType.HOST)
-                .profileImageUrl(profile.getProfileImgUrl())
                 .userNickname(member.getUserNickname())
                 .planner(createPlanner)
+                .profile(profile)
                 .build();
 
         groupMemberRepository.save(groupMember);
 
-        PlannerCreateResponse plannerCreateResponse = new PlannerCreateResponse();
-        plannerCreateResponse.setPlannerId(createPlanner.getId());
-        plannerCreateResponse.setPlanTitle(createPlanner.getPlanTitle());
-        plannerCreateResponse.setIsPrivate(createPlanner.getIsPrivate());
+//        PlannerCreateResponse plannerCreateResponse = new PlannerCreateResponse();
+//        plannerCreateResponse.setPlannerId(createPlanner.getId());
+//        plannerCreateResponse.setPlanTitle(createPlanner.getPlanTitle());
+//        plannerCreateResponse.setIsPrivate(createPlanner.getIsPrivate());
+
+        PlannerCreateResponse plannerCreateResponse = PlannerCreateResponse.builder()
+                .plannerId(createPlanner.getId())
+                .planTitle(createPlanner.getPlanTitle())
+                .isPrivate(createPlanner.getIsPrivate())
+                .build();
 
         return plannerCreateResponse;
     }

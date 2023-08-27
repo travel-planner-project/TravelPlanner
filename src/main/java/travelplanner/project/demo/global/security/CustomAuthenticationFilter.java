@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import travelplanner.project.demo.member.Auth.LoginRequest;
+import travelplanner.project.demo.member.auth.LoginRequest;
 
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         try {
             final LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 
-            log.info("사용자 아이디: " + loginRequest.getEmail() + " 비밀번호: " + loginRequest.getPassword());
+            log.info("------------------------- 사용자 아이디: " + loginRequest.getEmail() + " 비밀번호: " + loginRequest.getPassword());
 
             authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
 

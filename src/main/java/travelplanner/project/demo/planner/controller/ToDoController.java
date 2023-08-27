@@ -10,29 +10,36 @@ import org.springframework.stereotype.Controller;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
+import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
+import travelplanner.project.demo.planner.service.CalendarService;
 import travelplanner.project.demo.planner.service.ToDoService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class ToDoController {
 
-    private final ToDoService toDoService;
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final TokenUtil tokenUtil;
+    private final ToDoService toDoService;
+    private final CalendarService calendarService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/create-todo/{plannerId}/{dateId}")
     public void create(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        ToDoCraeteRequest request,
-                       @Header("Authorization") String athorization) {
+                       @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
-        toDoService.createTodo(plannerId, dateId, request);   // 시영지기 ㅇ;ㅂ략힌 toDo
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","add-schedule", "msg", toDoService.createTodo(plannerId, dateId, request) // 사용자가 입력한 todo
+
+                )
+        );
     }
 
     @MessageMapping("/update-todo/{plannerId}/{dateId}/{toDoId}")
@@ -40,23 +47,28 @@ public class ToDoController {
                      @DestinationVariable Long dateId,
                      @DestinationVariable Long toDoId,
                      ToDoEditRequest request,
-                     @Header("Authorization") String athorization) {
+                     @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
-        toDoService.editTodo(plannerId, dateId, toDoId, request);
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        //        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","modify-schedule", "msg", toDoService.editTodo(plannerId, dateId, toDoId, request)
+                )
+        );
     }
 
     @MessageMapping("/delete-todo/{plannerId}/{dateId}/{toDoId}")
     public void delete(@DestinationVariable Long plannerId,
                        @DestinationVariable Long dateId,
                        @DestinationVariable Long toDoId,
-                       @Header("Authorization") String athorization) {
+                       @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         toDoService.delete(plannerId, dateId, toDoId);
-        List<ToDoResponse> scheduleItemList = toDoService.getScheduleItemList();
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, scheduleItemList);
+        List<CalendarResponse> calendarScheduleList = toDoService.getCalendarScheduleList(plannerId);
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","delete-schedule", "msg", calendarScheduleList
+                )
+        );
     }
 }

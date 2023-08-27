@@ -33,7 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new RuntimeException(e);
         }
         if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Password is not matched");
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

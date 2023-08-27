@@ -7,6 +7,7 @@ import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.repository.ChattingRepository;
 import travelplanner.project.demo.planner.domain.Chatting;
 import travelplanner.project.demo.planner.dto.request.ChatRequest;
@@ -14,9 +15,12 @@ import travelplanner.project.demo.planner.dto.response.ChatResponse;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.Planner;
+import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +32,7 @@ public class ChatService {
     private final ProfileRepository profileRepository;
     private final ChattingRepository chattingRepository;
     private final PlannerRepository plannerRepository;
-
+    private final ValidatingService validatingService;
     @Transactional
     public ChatResponse sendChat(ChatRequest request, Long plannerId) {
         
@@ -36,14 +40,16 @@ public class ChatService {
         Member member = memberRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
+        // 플래너와 그룹 멤버 검증 후 플래너 리턴
+        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+
         // 프로필
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
-        // 플래너
-        Planner planner = plannerRepository.findPlannerById(plannerId);
 
         // 새로운 채팅 메시지 생성
         Chatting chatting = Chatting.builder()
+                .userId(member.getId())
                 .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .message(request.getMessage())
@@ -53,14 +59,31 @@ public class ChatService {
 
         chattingRepository.save(chatting);
 
-        // 채팅 리스폰스
-        ChatResponse chatResponse = new ChatResponse();
+        ChatResponse response = ChatResponse.builder()
+                .id(chatting.getId())
+                .userId(chatting.getUserId())
+                .userNickname(chatting.getUserNickname())
+                .profileImgUrl(chatting.getProfileImgUrl())
+                .message(chatting.getMessage())
+                .build();
+        return response;
+    }
 
-        chatResponse.setUserId(member.getId());
-        chatResponse.setMessage(chatting.getMessage());
-        chatResponse.setUserNickname(chatting.getUserNickname());
-        chatResponse.setProfileImgUrl(chatting.getProfileImgUrl());
+    // 플래너 조회 시 해당 채팅 내역 조회
+    public List<ChatResponse> getChattingList(Long plannerId) {
+        List<Chatting> chattings= chattingRepository.findByPlannerId(plannerId);
+        ArrayList<ChatResponse> chatResponses = new ArrayList<>();
 
-        return chatResponse;
+        for(Chatting chatting : chattings){
+            ChatResponse chatResponse = ChatResponse.builder()
+                    .id(chatting.getId())
+                    .userId(chatting.getUserId())
+                    .userNickname(chatting.getUserNickname())
+                    .profileImgUrl(chatting.getProfileImgUrl())
+                    .message(chatting.getMessage())
+                    .build();
+            chatResponses.add(chatResponse);
+        }
+        return chatResponses;
     }
 }

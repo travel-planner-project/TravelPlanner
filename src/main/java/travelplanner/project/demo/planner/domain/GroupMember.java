@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import travelplanner.project.demo.member.profile.Profile;
 
 @Entity
 @NoArgsConstructor
@@ -23,9 +24,6 @@ public class GroupMember {
     // 닉네임
     private String userNickname;
 
-    // 프로필 이미지 url
-    private String profileImageUrl;
-
     // 멤버 유형
     @Enumerated(EnumType.STRING)
     private GroupMemberType groupMemberType;
@@ -36,8 +34,14 @@ public class GroupMember {
     private Planner planner;
 
 
-    public void mappingTravelGroup(Planner planner) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
+
+    public void mappingPlanner(Planner planner) {
         this.planner = planner;
         planner.mappingGroupMember(this);
     }
+
 }

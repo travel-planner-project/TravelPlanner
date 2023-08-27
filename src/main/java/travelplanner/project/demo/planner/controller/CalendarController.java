@@ -15,56 +15,68 @@ import travelplanner.project.demo.planner.dto.request.CalendarCreateRequest;
 import travelplanner.project.demo.planner.dto.request.CalendarEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.service.CalendarService;
+import travelplanner.project.demo.planner.service.ToDoService;
 import travelplanner.project.demo.planner.service.ValidatingService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 public class CalendarController {
 
-    private final CalendarService calendarService;
-    private final SimpMessagingTemplate simpMessagingTemplate;
-    private final ValidatingService validatingService;
     private final TokenUtil tokenUtil;
+    private final ToDoService toDoService;
+    private final CalendarService calendarService;
+    private final ValidatingService validatingService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/create-date/{plannerId}")
-    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String athorization, CalendarCreateRequest request) {
+    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String authorization, CalendarCreateRequest request) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
 
-        calendarService.createDate(plannerId, request);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
-
-        log.info("리스폰스: " + calendarList.toString());
-        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, calendarList);
+//        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+//
+//        log.info("리스폰스: " + calendarList.toString());
+        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request)
+                )
+        );
     }
 
     @MessageMapping("/update-date/{plannerId}/{dateId}")
     public void updateDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
                            CalendarEditRequest request,
-                           @Header("Authorization") String athorization) {
+                           @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
-        calendarService.updateDate(plannerId, dateId, request);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                calendarList);
+                Map.of("type","modify-date", "msg", calendarService.updateDate(plannerId, dateId, request)
+                )
+        );
     }
 
     @MessageMapping("/delete-date/{plannerId}/{dateId}")
     public void deleteDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
-                           @Header("Authorization") String athorization) {
+                           @Header("Authorization") String authorization) {
 
-        tokenUtil.getJWTTokenFromWebSocket(athorization);
+        tokenUtil.getJWTTokenFromWebSocket(authorization);
         calendarService.deleteDate(plannerId, dateId);
-        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+//        기존 로직
+//        List<CalendarResponse> calendarList = calendarService.getCalendarList();
+//        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);
+        List<CalendarResponse> calendarScheduleList = toDoService.getCalendarScheduleList(plannerId);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                calendarList);
+                Map.of("type","delete-schedule", "msg", calendarScheduleList
+                )
+        );
     }
+
+
 
 }

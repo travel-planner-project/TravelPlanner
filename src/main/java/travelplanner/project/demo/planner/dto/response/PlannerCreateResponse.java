@@ -2,11 +2,12 @@ package travelplanner.project.demo.planner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+//@NoArgsConstructor
+@Getter
+@Builder
+@AllArgsConstructor
 public class PlannerCreateResponse {
 
     @Schema(description = "플래너 인덱스", example = "1")

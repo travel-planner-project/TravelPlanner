@@ -10,6 +10,7 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.member.Member;
+import travelplanner.project.demo.member.MemberEditor;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
@@ -47,13 +48,17 @@ public class UserService {
     // 비밀번호 변경
     @Transactional
     public void updatePassword(PasswordUpdateRequest request) {
-
         Member currentMember = authUtil.getCurrentMember();
         String encodedPassword = encoder.encode(request.getPassword());
-        currentMember.setPassword(encodedPassword);
 
+        MemberEditor memberEditor = MemberEditor.builder()
+                .password(encodedPassword)
+                .build();
+
+        currentMember.edit(memberEditor); // MemberEditor를 사용하여 비밀번호 수정
         memberRepository.save(currentMember);
     }
+
 
     // 회원탈퇴
     @Transactional
