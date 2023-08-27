@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieUtil {
 
+    // 리프레시 토큰 생성
     public static void create(String value, HttpServletResponse response) {
 
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", value)
@@ -22,6 +23,8 @@ public class CookieUtil {
         response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
+
+    // 쿠키 삭제
     public static void delete(String value, HttpServletResponse response) {
 
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", value)
@@ -35,10 +38,14 @@ public class CookieUtil {
         response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
+
+    // 쿠키에서 리프레시 토큰 얻기
     public Cookie getRefreshTokenCookie(HttpServletRequest request) {
         return getCookie(request, "refreshToken");
     }
 
+
+    // 특정 이름의 쿠기 얻기
     public Cookie getCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
 

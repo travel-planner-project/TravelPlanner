@@ -49,7 +49,7 @@ public class GroupMemberController {
         return groupMemberService.searchMember(request);
     }
 
-    @MessageMapping("/add-m가ember/{plannerId}")
+    @MessageMapping("/add-member/{plannerId}")
     public void addGroupMember(
             @DestinationVariable Long plannerId,
             GroupMemberCreateRequest request,
