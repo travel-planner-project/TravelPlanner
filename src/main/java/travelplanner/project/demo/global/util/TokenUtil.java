@@ -2,7 +2,6 @@ package travelplanner.project.demo.global.util;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.exception.TokenExpiredException;
+import travelplanner.project.demo.global.security.jwt.TokenExpiredException;
 
 import java.time.Duration;
 import java.util.ArrayList;
