@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.exception.TokenExpiredException;
+import travelplanner.project.demo.global.security.jwt.TokenExpiredException;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;

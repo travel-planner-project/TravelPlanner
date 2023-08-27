@@ -1,4 +1,4 @@
-package travelplanner.project.demo.global.exception;
+package travelplanner.project.demo.global.security.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 
