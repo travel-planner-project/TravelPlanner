@@ -1,6 +1,5 @@
-package travelplanner.project.demo.global.security.jwt;
+package travelplanner.project.demo.global.security;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final CookieUtil cookieUtil;
     private final TokenUtil tokenUtil;
@@ -39,29 +38,17 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             ErrorType errorType = ErrorType.ACCESS_TOKEN_EXPIRED;
             setResponse(response, errorType);
 
-        }else if(authException instanceof UsernameNotFoundException){
+        } else if (authException instanceof UsernameNotFoundException) { // 로그인시 유저 아이디가 일치하지 않는 경우의 에러 커스텀
             ErrorType errorType = ErrorType.CHECK_EMAIL_AGAIN;
             setResponse(response, errorType);
 
-        }else if(authException instanceof BadCredentialsException){
+        } else if (authException instanceof BadCredentialsException) { // 로그인시 유저 비밀번호가 일치하지 않는 경우의 에러 커스텀
             ErrorType errorType = ErrorType.CHECK_PASSWORD_AGAIN;
             setResponse(response, errorType);
-        }
-        else {
 
-             Cookie refreshTokenCookie = cookieUtil.getRefreshTokenCookie(request);
-             String refreshToken = refreshTokenCookie.getValue();
-             String email = tokenUtil.getEmail(refreshToken);
-
-             if (redisUtil.getData(email) == null) { // 리프레시 토큰 만료
-                 ErrorType errorType = ErrorType.REFRESH_TOKEN_EXPIRED;
-                 setResponse(response, errorType);
-                 cookieUtil.delete("", response); // 쿠키 삭제
-
-             } else { // 어세스토큰 만료로 인해 유저인증 못함
-                 ErrorType errorType = ErrorType.TOKEN_USER_DOES_NOT_AUTHORIZED;
-                 setResponse(response, errorType);
-             }
+        } else {
+            ErrorType errorType = ErrorType.TOKEN_USER_DOES_NOT_AUTHORIZED;
+            setResponse(response, errorType);
         }
     }
 
