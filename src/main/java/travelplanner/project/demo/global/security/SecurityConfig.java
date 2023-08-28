@@ -20,8 +20,8 @@ import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
-//import travelplanner.project.demo.member.socialauth.Oauth2AuthenticationSuccessHandler;
-//import travelplanner.project.demo.member.socialauth.PrincipalOauth2UserService;
+import travelplanner.project.demo.member.socialauth.OAuth2AuthenticationSuccessHandler;
+import travelplanner.project.demo.member.socialauth.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -34,11 +34,8 @@ public class SecurityConfig {
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-//    @Autowired
-//    private PrincipalOauth2UserService principalOauth2UserService;
-//    @Autowired
-//    private Oauth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 
     @Bean
@@ -53,7 +50,7 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .authorizeRequests()
-                    .requestMatchers("/ws/**").permitAll()
+                    .requestMatchers("/ws/**", "/error/**").permitAll()
                     .requestMatchers("/feed/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/planner/**").permitAll()
                     .requestMatchers("/oauth/**", "/favicon.ico", "/login/**").permitAll()
@@ -63,14 +60,15 @@ public class SecurityConfig {
                     .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated();
 
-//        http    .oauth2Login()
-//                .authorizationEndpoint().baseUri("/oauth/authorize")
-//                .and()
-//                .redirectionEndpoint().baseUri("/oauth/kakao/login")
-//                .and()
-//                .userInfoEndpoint().userService(principalOauth2UserService)
-//                .and()
-//                .successHandler(oAuth2AuthenticationSuccessHandler);
+        http    .oauth2Login()
+                .authorizationEndpoint().baseUri("/oauth/authorize")
+                .and()
+                .redirectionEndpoint()
+                .and()
+                .userInfoEndpoint() // oauth2 로그인 성공후에 사용자 정보를 바로 가져온다.
+                .userService(customOAuth2UserService)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler);
 
 
         http

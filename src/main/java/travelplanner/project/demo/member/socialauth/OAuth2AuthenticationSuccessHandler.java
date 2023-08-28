@@ -1,18 +1,12 @@
 package travelplanner.project.demo.member.socialauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,31 +16,45 @@ import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.auth.AuthResponse;
+import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
 import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.Duration;
-import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String redirectUrl;
+    private String kakaoRedirectUri;
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    private String googleRedirectUri;
+
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final TokenUtil tokenUtil;
     private final RedisUtil redisUtil;
     private final CookieUtil cookieUtil;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String oauthType = principalDetails.getUser().getProvider();
+        String email = null;
+
+        if (principalDetails.getUser().getProvider().equals("kakao")) {
+            KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(principalDetails.getAttributes());
+            email = kakaoUserInfo.getEmail();
+
+        } else if (principalDetails.getUser().getProvider().equals("google")) {
+            GoogleUserInfo googleUserInfo = new GoogleUserInfo(principalDetails.getAttributes());
+            email = googleUserInfo.getEmail();
+        }
 
         String targetUrl = determineTargetUrl(request, response, authentication);
         log.info(targetUrl+"------------------targetUrl");
@@ -54,19 +62,10 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             log.debug("------------------ Response 전송 완료");
         }
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(principalDetails.getAttributes());
-
-        // Oauth 로그인에 사용할 email 가져오기
-        String email = kakaoUserInfo.getEmail();
-
-        // 반환할 userId 세팅
-        Optional<Member> kakaoUser = memberRepository.findByEmail(email);
-        Long userId = kakaoUser.get().getId();
+        log.info("------------------------- 소셜 로그인 성공: " + email + "소셜 타입: " + oauthType);
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
         String accessToken = tokenUtil.generateAccessToken(email);
-
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
@@ -75,17 +74,16 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String refreshToken = tokenUtil.generateRefreshToken(email);
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
-            redisUtil.setDataExpire(email, refreshToken, Duration.ofMinutes(3)); // 현재 테스트 기간이라 3분으로 지정
         }
 
+        Optional<Member> member = memberRepository.findByEmail(email);
 
         AuthResponse authResponse = AuthResponse.builder()
-                .userId(userId)
-                .email(kakaoUserInfo.getEmail())
-                .userNickname(kakaoUserInfo.getName())
-                .profileImgUrl(kakaoUserInfo.getProfile())
+                .userId(member.get().getId())
+                .email(member.get().getEmail())
+                .userNickname(member.get().getUserNickname())
+                .profileImgUrl(member.get().getProfile().getProfileImgUrl())
                 .build();
-
 
         // JSON 형태로 변환하여 응답 보내기
         response.setContentType("application/json;charset=UTF-8");
@@ -93,13 +91,23 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         writer.write(objectMapper.writeValueAsString(authResponse));
         writer.flush();
 
-
         // 리다이렉트 수행
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
+    // 소셜 종류에 따른 리다이렉트 결정
     @Override
-    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response) {
-        return redirectUrl;
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        if (principalDetails.getUser().getProvider().equals("kakao")) {
+            return kakaoRedirectUri;
+
+        } else if (principalDetails.getUser().getProvider().equals("google")) {
+            return googleRedirectUri;
+        }
+
+        return null;
     }
 }
