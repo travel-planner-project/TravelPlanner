@@ -2,14 +2,14 @@ package travelplanner.project.demo.planner.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Schema(description = "플래너 생성 요청 DTO")
-@Data
-@NoArgsConstructor
+@Getter
+@Builder
+@AllArgsConstructor
 public class PlannerCreateRequest {
 
     @Schema(description = "플래너 제목", example = "제주도 여행")
