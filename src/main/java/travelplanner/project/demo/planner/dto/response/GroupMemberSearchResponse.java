@@ -1,12 +1,12 @@
 package travelplanner.project.demo.planner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Schema(description = "그룹멤버 검색 응답 DTO")
-@Data
-@NoArgsConstructor
+@Getter
+@Builder
+@AllArgsConstructor
 public class GroupMemberSearchResponse {
 
     @Schema(description = "이메일", example = "user1@gmail.com")
