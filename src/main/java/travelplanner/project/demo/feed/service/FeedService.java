@@ -40,7 +40,7 @@ public class FeedService {
             page = plannerRepository.findAll(pageable);
         } else {
             // 제목으로 필터링된 결과를 가져오는 로직
-            page = plannerRepository.findByPlanTitleContaining(planTitle, pageable);
+            page = plannerRepository.findByIsPrivateFalseAndPlanTitleContaining(planTitle, pageable);
         }
 
         // 현재 사용자가 그룹 멤버가 아닌 경우 isPrivate이 true인 플래너를 제거
