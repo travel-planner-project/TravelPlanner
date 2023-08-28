@@ -1,12 +1,15 @@
 package travelplanner.project.demo.planner.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Schema(description = "날짜 수정 요청 DTO")
-@Data
-@NoArgsConstructor
+@Getter
+@AllArgsConstructor
+
 public class CalendarEditRequest {
 
     @Schema(description = "날짜 인덱스", example = "1")
