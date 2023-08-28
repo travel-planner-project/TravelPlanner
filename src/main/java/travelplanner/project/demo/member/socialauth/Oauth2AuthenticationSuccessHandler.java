@@ -13,11 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -30,8 +28,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -50,7 +46,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                          Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException, ServletException {
 
         String targetUrl = determineTargetUrl(request, response, authentication);
         log.info(targetUrl+"------------------targetUrl");
