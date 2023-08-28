@@ -2,14 +2,14 @@ package travelplanner.project.demo.planner.dto.request;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Schema(description = "플래너 수정 요청 DTO")
-@Data
-@NoArgsConstructor
+@Getter
+@Builder
+@AllArgsConstructor
 public class PlannerEditRequest {
 
     @Schema(description = "플래너 인덱스", example = "1")
