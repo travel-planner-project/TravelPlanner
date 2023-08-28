@@ -37,6 +37,7 @@ public class StompHandler implements ChannelInterceptor {
         log.info("Incoming message type: " + accessor.getMessageType());
 
         // websocket 연결 시 헤더의 JWT 토큰 유효성 검증
+
         if (SimpMessageType.CONNECT.equals(accessor.getMessageType())
         || SimpMessageType.MESSAGE.equals(accessor.getMessageType())) {
             log.info("accessor: " + accessor.getMessageType());
@@ -56,27 +57,8 @@ public class StompHandler implements ChannelInterceptor {
                 String username = authentication.getName(); // 현재 사용자의 email 얻기
                 log.info("authentication: " + authentication);
                 log.info("username: " + username);
-            }else{
-                throw new TokenExpiredException();
             }
-        }/*else{
-            if(SimpMessageType.DISCONNECT.equals(accessor.getMessageType())) {
-                try {
-                    // 에러 정보 생성
-                    TokenExpiredException tokenExpiredException = new TokenExpiredException("Token expired");
-
-                    // 에러 정보를 메시지로 래핑하여 반환
-                   Message<String> errorMessage = MessageBuilder.withPayload("WebSocket Token Expired")
-                            .setHeader("stompErrorCode", "tokenExpired")
-                            .setHeader("subscription", "/send")
-                            .build();
-                   return errorMessage;
-                } catch (Exception e) {
-                    // 에러 처리 중에 예외 발생 시 로그 출력
-                    log.error("Error handling disconnect: " + e.getMessage(), e);
-                }
-            }
-        }*/
+        }
         return message;
     }
 }
