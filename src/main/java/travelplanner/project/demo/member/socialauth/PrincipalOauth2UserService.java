@@ -16,6 +16,7 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.auth.Role;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
+import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
 import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
 
 import java.util.Map;
@@ -26,34 +27,24 @@ import java.util.Optional;
 @Slf4j
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
-    @Value("${secret.key}")
-    private String SECRET_KEY;
-
-    // Access 토큰 유효시간 15 분
-    static final long AccessTokenValidTime = 5 * 60 * 1000L;
-
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private  ProfileRepository profileRepository;
-    @Autowired
-    private @Lazy PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException{
         OAuth2User oAuth2User = super.loadUser(request);
-        log.info("getAttributes : {}", oAuth2User.getAttributes());
+        log.info("------------------ getAttributes : {}", oAuth2User.getAttributes());
 
         OAuth2UserInfo oAuth2UserInfo = null;
 
         String provider = request.getClientRegistration().getRegistrationId();
-/*
+
         if(provider.equals("google")) {
-            log.info("구글 로그인 요청");
-            oAuth2UserInfo = new GoogleUserInfo( oAuth2User.getAttributes() );
-        }*/  if(provider.equals("kakao")) {
-            log.info("카카오 로그인 요청");
-            oAuth2UserInfo = new KakaoUserInfo( (Map)oAuth2User.getAttributes() );
+            log.info("------------------ 구글 로그인 요청");
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        } else  if(provider.equals("kakao")) {
+            log.info("------------------ 카카오 로그인 요청");
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         } /*else if(provider.equals("naver")) {
             log.info("네이버 로그인 요청");
             oAuth2UserInfo = new NaverUserInfo( (Map)oAuth2User.getAttributes().get("response") );
@@ -64,34 +55,40 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String nickname = oAuth2UserInfo.getName();
 
         // 회원가입 유무 확인
-        Optional<Member> optionalUser = memberRepository.findByEmail(email);
-        Member member = null;
+        Optional<Member> member = memberRepository.findByEmail(email);
 
         // 없다면 회원가입
-        if(optionalUser.isEmpty()) {
-            Member.MemberBuilder memberBuilder = Member.builder()
+        if(member.isEmpty()) {
+
+            String password;
+
+            if (provider.equals("google")) {
+                password = "google";
+            } else if (provider.equals("kakao")) {
+                password = "kakao";
+            } else {
+                password = "naver";
+            }
+
+            Member newMember = Member.builder()
                     .email(email)
                     .userNickname(nickname)
-                    .password(passwordEncoder.encode("kakao"))
-                    .role(Role.MEMBER);
-
-           /* memberRepository.save(member);*/
-
-            Profile profile = Profile.builder()
-                    .keyName("")
-                    .profileImgUrl(profileUrl)
+                    .password(passwordEncoder.encode(password))
+                    .role(Role.MEMBER)
+                    .provider(provider)
+                    .providerId(providerId)
+                    .profile(Profile.builder()
+                            .keyName("")
+                            .profileImgUrl(profileUrl)
+                            .build())
                     .build();
 
-            member = memberBuilder.profile(profile)
-                    .build();
-            /*member.setProfile(profile);*/
-            profileRepository.save(profile);
-            memberRepository.save(member);
-        }else{
-            member = optionalUser.get();
+            memberRepository.save(newMember);
+
+            return new PrincipalDetails(newMember, oAuth2User.getAttributes());
         }
 
-        return new PrincipalDetails(member, oAuth2User.getAttributes());
+        return new PrincipalDetails(member.get(), oAuth2User.getAttributes());
     }
 
 }
