@@ -1,15 +1,11 @@
 package travelplanner.project.demo.member.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Schema(description = "로그인 요청 DTO")
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
+@Schema(description = "로그인 요청 DTO")
 @AllArgsConstructor
 public class LoginRequest {
 

@@ -43,12 +43,11 @@ public class GroupMemberService {
 
             Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
-            GroupMemberSearchResponse response = new GroupMemberSearchResponse();
-            response.setProfileImageUrl(profile.getProfileImgUrl());
-            response.setEmail(member.get().getEmail());
-            response.setUserNickname(member.get().getUserNickname());
-
-            return response;
+        return GroupMemberSearchResponse.builder()
+                .profileImageUrl(profile.getProfileImgUrl())
+                .email(member.get().getEmail())
+                .userNickname(member.get().getUserNickname())
+                .build();
 
     }
 

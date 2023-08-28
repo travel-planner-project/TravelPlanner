@@ -1,15 +1,13 @@
 package travelplanner.project.demo.member.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Schema(description = "회원가입 요청 DTO")
-@Data
+//@Data
+@Getter
 @Builder
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
 
