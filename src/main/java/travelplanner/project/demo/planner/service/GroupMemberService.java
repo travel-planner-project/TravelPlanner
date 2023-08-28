@@ -36,9 +36,9 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
+    public GroupMemberSearchResponse searchMember (String email) {
 
-            Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+            Optional<Member> member = memberRepository.findByEmail(email);
                     member.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
             Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
