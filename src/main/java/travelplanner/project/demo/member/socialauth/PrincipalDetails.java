@@ -46,6 +46,9 @@ public class PrincipalDetails implements OAuth2User {
 
         } else if (user.getProvider().equals("google")){
             return attributes.get("name").toString();
+
+        } else if (user.getProvider().equals("naver")) {
+            return ((Map<?, ?>) attributes.get("response")).get("nickname").toString();
         }
 
         return null;

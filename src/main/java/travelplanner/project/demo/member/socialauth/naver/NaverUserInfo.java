@@ -21,17 +21,18 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getProfile() {
-        return (String) ((Map) attributes.get("properties")).get("profile_image");
+        return (String) ((Map) attributes.get("response")).get("profile_image");
     }
 
     @Override
     public String getEmail() {
-        return null;
+        return (String) ((Map) attributes.get("response")).get("email");
     }
 
     @Override
     public String getName() {
-        return null;
+        return (String) ((Map) attributes.get("response")).get("name");
+        // nickname이 아닌 사용자 이름
     }
 
     @Override
