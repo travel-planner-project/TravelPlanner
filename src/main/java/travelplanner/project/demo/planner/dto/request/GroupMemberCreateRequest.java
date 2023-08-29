@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class GroupMemberCreateRequest {
 
     @Schema(description = "이메일", example = "user1@gmail.com")

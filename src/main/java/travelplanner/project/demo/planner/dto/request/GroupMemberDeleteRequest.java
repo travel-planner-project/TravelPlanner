@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class GroupMemberDeleteRequest {
 
     @Schema(description = "그룹멤버 인덱스")
