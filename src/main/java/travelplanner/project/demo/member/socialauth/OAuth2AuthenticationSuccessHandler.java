@@ -18,8 +18,10 @@ import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.auth.AuthResponse;
 import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
 import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
+import travelplanner.project.demo.member.socialauth.naver.NaverUserInfo;
 
 import java.io.IOException;
+import java.io.PipedReader;
 import java.io.PrintWriter;
 import java.util.Optional;
 
@@ -32,6 +34,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private String kakaoRedirectUri;
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String googleRedirectUri;
+
+    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    private String naverRedirectUri;
 
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
@@ -54,6 +59,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         } else if (principalDetails.getUser().getProvider().equals("google")) {
             GoogleUserInfo googleUserInfo = new GoogleUserInfo(principalDetails.getAttributes());
             email = googleUserInfo.getEmail();
+        } else if (principalDetails.getUser().getProvider().equals("naver")) {
+            NaverUserInfo naverUserInfo = new NaverUserInfo(principalDetails.getAttributes());
+            email = naverUserInfo.getEmail();
         }
 
         String targetUrl = determineTargetUrl(request, response, authentication);
@@ -106,6 +114,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         } else if (principalDetails.getUser().getProvider().equals("google")) {
             return googleRedirectUri;
+
+        } else if (principalDetails.getUser().getProvider().equals("naver")) {
+            return naverRedirectUri;
         }
 
         return null;
