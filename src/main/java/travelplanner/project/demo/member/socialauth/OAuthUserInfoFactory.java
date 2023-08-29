@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
 import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
+import travelplanner.project.demo.member.socialauth.naver.NaverUserInfo;
 
 import java.util.Map;
 
@@ -18,6 +19,10 @@ public class OAuthUserInfoFactory {
         } else if (provider.equals("kakao")) {
             log.info("------------------ 카카오 로그인 요청");
             return new KakaoUserInfo(attributes);
+
+        } else if (provider.equals("naver")) {
+            log.info("------------------ 네이버 로그인 요청");
+            return new NaverUserInfo(attributes);
         }
 
         return null;

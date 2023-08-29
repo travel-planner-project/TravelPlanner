@@ -11,17 +11,17 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getProviderId() {
-        return null;
+        return attributes.get("id").toString();
     }
 
     @Override
     public String getProvider() {
-        return null;
+        return "naver";
     }
 
     @Override
     public String getProfile() {
-        return null;
+        return (String) ((Map) attributes.get("properties")).get("profile_image");
     }
 
     @Override
@@ -36,6 +36,6 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getPassword() {
-        return null;
+        return "naver";
     }
 }
