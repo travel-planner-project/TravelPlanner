@@ -18,12 +18,11 @@ import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.auth.AuthResponse;
-import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
-import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
-import travelplanner.project.demo.member.socialauth.naver.NaverUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.GoogleUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.KakaoUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.NaverUserInfo;
 
 import java.io.IOException;
-import java.io.PipedReader;
 import java.io.PrintWriter;
 import java.util.Optional;
 

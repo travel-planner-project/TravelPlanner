@@ -1,4 +1,4 @@
-package travelplanner.project.demo.member.socialauth.naver;
+package travelplanner.project.demo.member.socialauth.userInfo;
 
 import lombok.AllArgsConstructor;
 import travelplanner.project.demo.member.socialauth.OAuth2UserInfo;

@@ -1,10 +1,9 @@
 package travelplanner.project.demo.member.socialauth;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import travelplanner.project.demo.member.socialauth.google.GoogleUserInfo;
-import travelplanner.project.demo.member.socialauth.kakao.KakaoUserInfo;
-import travelplanner.project.demo.member.socialauth.naver.NaverUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.GoogleUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.KakaoUserInfo;
+import travelplanner.project.demo.member.socialauth.userInfo.NaverUserInfo;
 
 import java.util.Map;
 
