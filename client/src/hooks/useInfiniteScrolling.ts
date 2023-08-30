@@ -40,8 +40,11 @@ const useInfiniteScrolling = (page = 0, query = '') => {
     getPlanners(options)
       .then(res => {
         const { content, currentPageNumber, totalPageNumber } = res?.data as DataType
-        setResults(prev => [...prev, ...content])
-        setHasNextPage(currentPageNumber < totalPageNumber - 1)
+        console.log()
+        if (content) {
+          setResults(prev => [...prev, ...content])
+          setHasNextPage(currentPageNumber < totalPageNumber - 1)
+        }
         setIsLoading(false)
         setIsError(false)
       })
