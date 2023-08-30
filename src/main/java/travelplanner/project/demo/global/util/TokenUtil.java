@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.security.jwt.TokenExpiredException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class TokenUtil {
                     .getExpiration()
                     .after(new Date());
 
-        } catch (TokenExpiredException e) { // 어세스 토큰 만료
+        } catch (ExpiredJwtException e) { // 어세스 토큰 만료
             e.printStackTrace();
         }
         return false;

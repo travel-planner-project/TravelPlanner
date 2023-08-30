@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .authorizeRequests()
-                    .requestMatchers("/ws/**", "/error/**").permitAll()
+                    .requestMatchers("/ws/**").permitAll()
                     .requestMatchers("/feed/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/planner/**").permitAll()
                     .requestMatchers("/oauth/**", "/favicon.ico", "/login/**").permitAll()
@@ -58,7 +58,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
 
         http    .oauth2Login()
                 .authorizationEndpoint().baseUri("/oauth/authorize")
@@ -72,8 +74,6 @@ public class SecurityConfig {
 
 
         http
-                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
