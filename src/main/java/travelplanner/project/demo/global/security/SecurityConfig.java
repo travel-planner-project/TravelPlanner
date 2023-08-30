@@ -63,7 +63,7 @@ public class SecurityConfig {
         http    .oauth2Login()
                 .authorizationEndpoint().baseUri("/oauth/authorize")
                 .and()
-                .redirectionEndpoint().baseUri("/oauth/naver/login")
+                .redirectionEndpoint().baseUri("/oauth/callback")
                 .and()
                 .userInfoEndpoint() // oauth2 로그인 성공후에 사용자 정보를 바로 가져온다.
                 .userService(customOAuth2UserService)
