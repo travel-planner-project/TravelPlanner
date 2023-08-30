@@ -26,15 +26,15 @@ function InviteModal({
   const [inputValue, setInputValue] = useState('')
   const [friend, setFriend] = useState<FriendType>({})
   const [isSearchBtnDirty, setIsSearchBtnDirty] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   const handleSearch = async () => {
-    console.log(inputValue)
     const response = await searchMember(inputValue)
     const { status, data }: { status: number; data: FriendType } = response!
 
     if (status === 200) {
       setIsSearchBtnDirty(true)
-      setFriend({ ...data, isChecked: false })
+      setFriend(data)
     }
   }
 
@@ -43,7 +43,7 @@ function InviteModal({
     if (!isSearchBtnDirty) {
       return alert('이메일로 친구 검색을 먼저 해주세요')
     }
-    if (!friend.isChecked) {
+    if (!isChecked) {
       return alert('초대하실 친구를 선택 후 초대 버튼을 눌러주세요')
     }
     if (groupMember.find(member => member.email === friend.email)) {
@@ -76,10 +76,7 @@ function InviteModal({
         </button>
       </div>
       {isSearchBtnDirty && (
-        <FriendInfo
-          friend={friend}
-          onChecked={(isChecked: boolean) => setFriend({ ...friend, isChecked })}
-        />
+        <FriendInfo friend={friend} onChecked={(isChecked: boolean) => setIsChecked(isChecked)} />
       )}
       <div className={styles.btnBox}>
         <button type='submit' className={styles.submitBtn} onClick={handleSubmit}>

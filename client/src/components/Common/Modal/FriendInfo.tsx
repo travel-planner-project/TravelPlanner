@@ -5,7 +5,6 @@ export type FriendType = {
   profileImgUrl?: string
   userNickname?: string
   email?: string
-  isChecked?: boolean
 }
 
 type FriendInfoProps = {
