@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -24,6 +26,8 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PrintWriter;
 import java.util.Optional;
+
+import static travelplanner.project.demo.global.exception.ErrorType.USER_ALREADY_AUTHORIZED;
 
 @Slf4j
 @Component
@@ -81,6 +85,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String refreshToken = tokenUtil.generateRefreshToken(email);
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
+        }
+
+        // 가입한 아이디가 이미 존재한다면
+        boolean exists = memberRepository.existsByEmail(email);
+
+        if (exists) {
+            throw new ApiException(ErrorType.USER_ALREADY_AUTHORIZED);
         }
 
         Optional<Member> member = memberRepository.findByEmail(email);

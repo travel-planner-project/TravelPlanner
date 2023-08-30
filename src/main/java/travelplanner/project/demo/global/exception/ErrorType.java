@@ -28,6 +28,9 @@ public enum ErrorType {
     // 권한이 부족한 경우
     USER_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "AUTH-001", "권한이 부족하여 접근할 수 없습니다."),
 
+    // 소셜 로그인 회원가입시 이메일이 같을 경우
+    USER_ALREADY_AUTHORIZED(HttpStatus.FORBIDDEN, "AUTH-002", "소셜 로그인으로 이미 가입한 아이디가 존재합니다."),
+
     // 이메일이 일치하지 않은 경우
     CHECK_EMAIL_AGAIN(HttpStatus.BAD_REQUEST, "USER-001", "이메일을 다시한번 확인해주세요"),
 
