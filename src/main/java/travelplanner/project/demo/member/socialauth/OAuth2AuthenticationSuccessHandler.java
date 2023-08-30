@@ -52,14 +52,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String oauthType = principalDetails.getUser().getProvider();
         String email = null;
 
-        if (principalDetails.getUser().getProvider().equals("kakao")) {
+        if (oauthType.equals("kakao")) {
             KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(principalDetails.getAttributes());
             email = kakaoUserInfo.getEmail();
-
-        } else if (principalDetails.getUser().getProvider().equals("google")) {
+        } else if (oauthType.equals("google")) {
             GoogleUserInfo googleUserInfo = new GoogleUserInfo(principalDetails.getAttributes());
             email = googleUserInfo.getEmail();
-        } else if (principalDetails.getUser().getProvider().equals("naver")) {
+        } else if (oauthType.equals("naver")) {
             NaverUserInfo naverUserInfo = new NaverUserInfo(principalDetails.getAttributes());
             email = naverUserInfo.getEmail();
         }
