@@ -5,8 +5,6 @@ import lombok.*;
 
 @Schema(description = "그룹멤버 검색 요청 DTO")
 @Getter
-@Builder
-@AllArgsConstructor
 public class GroupMemberSearchRequest {
 
     @Schema(description = "이메일", example = "user1@gmail.com")

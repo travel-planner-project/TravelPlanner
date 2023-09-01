@@ -25,6 +25,7 @@ import travelplanner.project.demo.planner.dto.response.GroupMemberSearchResponse
 import travelplanner.project.demo.planner.service.GroupMemberService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Planner", description = "플래너 API")
@@ -45,7 +46,7 @@ public class GroupMemberController {
     })
     @GetMapping("/search/member")
     @ResponseBody
-    public GroupMemberSearchResponse searchGroupMember(@RequestBody GroupMemberSearchRequest request){
+    public List<GroupMemberSearchResponse> searchGroupMember(@RequestBody GroupMemberSearchRequest request){
         return groupMemberService.searchMember(request);
     }
 

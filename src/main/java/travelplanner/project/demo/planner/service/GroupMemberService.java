@@ -36,18 +36,27 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
+    public List<GroupMemberSearchResponse> searchMember (GroupMemberSearchRequest request) {
 
-            Optional<Member> member = memberRepository.findByEmail(request.getEmail());
-                    member.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+        List<Member> memberList = memberRepository.findMemberByEmail(request.getEmail());
+        if (memberList.isEmpty()) {
+            throw  new ApiException(ErrorType.USER_NOT_FOUND);
+        }
 
-            Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
+        List<GroupMemberSearchResponse> groupMemberSearchResponses = new ArrayList<>();
 
-        return GroupMemberSearchResponse.builder()
-                .profileImageUrl(profile.getProfileImgUrl())
-                .email(member.get().getEmail())
-                .userNickname(member.get().getUserNickname())
-                .build();
+        for (Member searchMember : memberList) {
+
+            GroupMemberSearchResponse groupMemberResponse = GroupMemberSearchResponse.builder()
+                    .email(searchMember.getEmail())
+                    .userNickname(searchMember.getUserNickname())
+                    .profileImageUrl(searchMember.getProfile().getProfileImgUrl())
+                    .build();
+
+            groupMemberSearchResponses.add(groupMemberResponse);
+        }
+
+        return groupMemberSearchResponses;
 
     }
 
@@ -66,18 +75,18 @@ public class GroupMemberService {
 
         if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(member.get().getEmail()))) {
 
-                // 그룹 멤버에 저장할 플래너 조회
-                Planner planner = plannerRepository.findPlannerById(plannerId);
+            // 그룹 멤버에 저장할 플래너 조회
+            Planner planner = plannerRepository.findPlannerById(plannerId);
 
-                GroupMember groupMember = GroupMember.builder()
-                        .email(member.get().getEmail())
-                        .userNickname(member.get().getUserNickname())
-                        .groupMemberType(GroupMemberType.MEMBER)
-                        .profile(profile)
-                        .planner(planner)
-                        .build();
+            GroupMember groupMember = GroupMember.builder()
+                    .email(member.get().getEmail())
+                    .userNickname(member.get().getUserNickname())
+                    .groupMemberType(GroupMemberType.MEMBER)
+                    .profile(profile)
+                    .planner(planner)
+                    .build();
 
-                groupMemberRepository.save(groupMember);
+            groupMemberRepository.save(groupMember);
 
 //            GroupMemberResponse response = new GroupMemberResponse();
 //            response.setGroupMemberId(groupMember.getId());
