@@ -86,14 +86,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             cookieUtil.create(refreshToken, response);
         }
 
-        // 가입한 아이디가 이미 존재한다면
-        boolean exists = memberRepository.existsByEmail(email);
-
-        if (exists) {
-            throw new ApiException(ErrorType.USER_ALREADY_AUTHORIZED);
-        }
-
-        Optional<Member> member = memberRepository.findByEmail(email);
+        Optional<Member> member = memberRepository.findMemberByEmailAndProvider(email, oauthType);
 
         AuthResponse authResponse = AuthResponse.builder()
                 .userId(member.get().getId())

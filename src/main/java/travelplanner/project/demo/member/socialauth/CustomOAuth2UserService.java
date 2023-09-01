@@ -42,7 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuthUserInfoFactory.getOAuthUserInfo(provider, oAuth2User.getAttributes());
 
         // 회원가입 유무 확인
-        Optional<Member> member = memberRepository.findByEmail(oAuth2UserInfo.getEmail());
+        Optional<Member> member = memberRepository.findMemberByEmailAndProvider(oAuth2UserInfo.getEmail(), provider);
 
         // 없다면 회원가입
         if(member.isEmpty()) {
