@@ -33,8 +33,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
 
-        config.enableSimpleBroker("/sub"); // subscription
-        config.setApplicationDestinationPrefixes("/pub"); // publish
+        config.enableSimpleBroker("/sub", "/error"); // subscription
+        config.setApplicationDestinationPrefixes("/pub"); // p
     }
 
     // 웹소켓 핸들러 등록

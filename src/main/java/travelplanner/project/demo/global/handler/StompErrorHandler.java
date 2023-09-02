@@ -16,32 +16,35 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
-public class StompErrorHandler extends StompSubProtocolErrorHandler {
+public class  StompErrorHandler extends StompSubProtocolErrorHandler {
     public StompErrorHandler(){
         super();
     }
 
+    /***
+     *
+     * 웹소켓 에러 핸들러
+     * 웹소켓 통신 엔드포인트의 에러를 처리합니다.
+     * 토큰 만료로 인한 메세지 전송 실패 및 메시지 인코딩 오류 등
+     * 테스트 도중 새로운 에러가 발견된다면 추후 리팩토링 에정입니다.
+     * 
+     */
+
     @Override
     public Message<byte[]> handleClientMessageProcessingError(Message<byte[]> clientMessage, Throwable ex) {
         Throwable exception = ex;
-        System.out.println("--------------ex:"+ex);
-        System.out.println("--------------ex:"+clientMessage);
+
         if(exception instanceof MalformedInputException){
             log.info("잘못된 양식에 의한 에러");
             return handleUnauthorizedException(clientMessage, exception);
         }
-        /*if(exception instanceof TokenExpiredException){
-            log.info("토큰 만료 익셉션");
-            return handleUnauthorizedException(clientMessage, exception);
-        }*/
+
         if (exception instanceof MessageDeliveryException)
         {
-            log.info("예외 = {}", exception.getMessage());
-            log.info("세부내용 = {}", exception.getCause().getMessage());
-
-
+            // 메세지 전송 도중 토큰 만료
             return handleUnauthorizedException(clientMessage, exception);
         }
+
         return super.handleClientMessageProcessingError(clientMessage, ex);
     }
 
@@ -49,7 +52,7 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
     {
         ErrorType errorType;
 
-        if (ex.equals("Token expired")){
+        if (ex.getCause().getMessage().equals("Token expired")){
             errorType = ErrorType.ACCESS_TOKEN_EXPIRED;
         }else{
             errorType = ErrorType.INVALID_MESSAGE_FORMAT;
@@ -59,6 +62,14 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
 
     }
 
+
+    /***
+     *
+     * 웹소켓 에러 메세지를 프론트로 내려주는 코드
+     * StompCommand 형식을 error로 지정
+     * 에러 코드, 메세지, 상태를 내려줍니다.
+     *
+     */
     private Message<byte[]> prepareErrorMessage(Message<byte[]> clientMessage, ErrorType apiError, String errorCode)
     {
 
@@ -72,16 +83,4 @@ public class StompErrorHandler extends StompSubProtocolErrorHandler {
         return MessageBuilder.createMessage(message.getBytes(StandardCharsets.UTF_8), accessor.getMessageHeaders());
     }
 
-    public Message<byte[]> errorMessage(ErrorType errorType)
-    {
-
-        String message = errorType.getMessage();
-
-        StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
-
-        accessor.setMessage(String.valueOf(errorType));
-        accessor.setLeaveMutable(true);
-
-        return MessageBuilder.createMessage(message.getBytes(StandardCharsets.UTF_8), accessor.getMessageHeaders());
-    }
 }
