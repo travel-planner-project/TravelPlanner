@@ -219,6 +219,7 @@ public class PlannerService {
         } else {
             // 플래너를 생성한 사람이 아닐 경우
             // 플래너를 만든사람 /= currentUser: 삭제 권한 없음
+
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
     }

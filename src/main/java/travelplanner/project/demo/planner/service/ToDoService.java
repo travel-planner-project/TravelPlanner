@@ -4,17 +4,12 @@ package travelplanner.project.demo.planner.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
-import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
 
 import java.util.ArrayList;
