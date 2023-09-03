@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import styles from './ElementEditor.module.scss'
 import DropDown from './DropDown'
 
