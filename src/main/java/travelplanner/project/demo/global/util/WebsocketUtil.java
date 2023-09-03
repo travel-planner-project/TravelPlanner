@@ -8,7 +8,8 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.exception.TokenExpiredException;
+import travelplanner.project.demo.global.security.jwt.TokenExpiredException;
+
 
 import java.util.Date;
 

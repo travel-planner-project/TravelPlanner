@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import travelplanner.project.demo.global.exception.TokenExpiredException;
 import travelplanner.project.demo.global.util.WebsocketUtil;
 
 import java.util.ArrayList;

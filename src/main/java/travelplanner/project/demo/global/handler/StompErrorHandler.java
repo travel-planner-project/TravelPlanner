@@ -9,7 +9,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.StompSubProtocolErrorHandler;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.exception.TokenExpiredException;
+
 
 import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
