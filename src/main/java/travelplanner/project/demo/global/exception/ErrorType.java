@@ -67,10 +67,14 @@ public enum ErrorType {
 
     TODO_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "TODO-001", "데이트에 포함된 투두가 아니기때문에 접근할 수 없습니다."),
 
-    GROUP_MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "PLANNER-05", "그룹 멤버가 이미 존재합니다.");
+    GROUP_MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "PLANNER-05", "그룹 멤버가 이미 존재합니다."),
 
     // ==================================================================================================================
 
+    // 메세지 형식이 잘못된 경우(웹소켓)
+    INVALID_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "MESSAGE-001", "메세지 형식이 올바르지 않습니다.");
+
+    // ==================================================================================================================
 
     private final HttpStatus status;
     private final String errorCode;

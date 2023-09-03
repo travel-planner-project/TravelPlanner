@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.exception.WebSocket.WebSocketErrorController;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.planner.domain.Calendar;
 import travelplanner.project.demo.planner.domain.GroupMember;
@@ -27,17 +28,24 @@ public class ValidatingService {
     private final GroupMemberRepository groupMemberRepository;
     private final ToDoRepository toDoRepository;
     private final AuthUtil authUtil;
+    private final WebSocketErrorController webSocketErrorController;
 
     // 플래너와 사용자에 대한 검증
     public Planner validatePlannerAndUserAccess(Long plannerId) {
         Planner planner = plannerRepository.findById(plannerId)
-                .orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));
+                /*.orElseThrow(() -> new ApiException(ErrorType.PLANNER_NOT_FOUND));*/
+                .orElse(null);
+        if(planner == null){
+            webSocketErrorController.handleChatMessage(ErrorType.PLANNER_NOT_FOUND);
+            throw new ApiException(ErrorType.PLANNER_NOT_FOUND);
+        }
 
         String currentEmail = authUtil.getCurrentMember().getEmail();
         List<GroupMember> groupMembers =
                 groupMemberRepository.findGroupMemberByPlannerId(plannerId);
 
         if (groupMembers.stream().noneMatch(gm -> gm.getEmail().equals(currentEmail))) {
+            webSocketErrorController.handleChatMessage(ErrorType.USER_NOT_FOUND);
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
         return planner;
@@ -47,9 +55,16 @@ public class ValidatingService {
     public Calendar validateCalendarAccess(Planner planner, Long updateId) {
 
         Calendar calendar = calendarRepository.findById(updateId)
-                .orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));
+                /*.orElseThrow(() -> new ApiException(ErrorType.DATE_NOT_FOUND));*/
+                .orElse(null);
+
+        if(calendar == null){
+            webSocketErrorController.handleChatMessage(ErrorType.DATE_NOT_FOUND);
+            throw new ApiException(ErrorType.DATE_NOT_FOUND);
+        }
 
         if (!planner.getCalendars().contains(calendar)) {
+            webSocketErrorController.handleChatMessage(ErrorType.DATE_NOT_AUTHORIZED);
             throw new ApiException(ErrorType.DATE_NOT_AUTHORIZED);
         }
         return calendar;
@@ -59,9 +74,14 @@ public class ValidatingService {
     public ToDo validateToDoAccess(Calendar calendar, Long updateId) {
 
         ToDo toDo = toDoRepository.findById(updateId)
-                .orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));
-
+                /*.orElseThrow(() -> new ApiException(ErrorType.TODO_NOT_FOUND));*/
+                .orElse(null);
+        if(toDo == null){
+            webSocketErrorController.handleChatMessage(ErrorType.TODO_NOT_FOUND);
+            throw new ApiException(ErrorType.TODO_NOT_FOUND);
+        }
         if (!calendar.getScheduleItemList().contains(toDo)) {
+            webSocketErrorController.handleChatMessage(ErrorType.TODO_NOT_AUTHORIZED);
             throw new ApiException(ErrorType.TODO_NOT_AUTHORIZED);
         }
         return toDo;
