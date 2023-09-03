@@ -41,7 +41,7 @@ function PlanDetailView({
   onScheduleCategoryChange,
   onScheduleSubmit,
   handleOpenScheduleEditor,
-  handleCloseScheduleEditor,
+  // handleCloseScheduleEditor,
   handleAddDateBtnClick,
   handleEditDate,
   currentDateId,
@@ -112,7 +112,7 @@ function PlanDetailView({
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
                     <ul className={styles.schedules}>
-                      {item.scheduleItemList?.map((el, idx) => {
+                      {item.scheduleItemList?.map(el => {
                         return (
                           <li className={styles.scheduleItem} key={el.itemId}>
                             <Element data={el} />
@@ -329,7 +329,8 @@ function PlanDetail() {
         try {
           const res = await getPlanDetail(plannerId)
           if (res) {
-            const { calendars, groupMemberList, chattings } = res.data
+            const { calendars, groupMemberList } = res.data
+            console.log('calendars', calendars)
             const schedules = calendars.map(el => ({
               ...el, // Keep the other properties unchanged
               dateContent: dateFormat(new Date(el.dateTitle)),
