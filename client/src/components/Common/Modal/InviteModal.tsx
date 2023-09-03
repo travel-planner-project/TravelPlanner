@@ -10,7 +10,7 @@ type InviteModalProp = {
   description: string
   placeholder: string
   submitButton: string
-  groupMember: GroupMemberListType
+  groupMember?: GroupMemberListType
   onSubmit: (email: string) => void
 }
 
@@ -46,7 +46,7 @@ function InviteModal({
     if (!isChecked) {
       return alert('초대하실 친구를 선택 후 초대 버튼을 눌러주세요')
     }
-    if (groupMember.find(member => member.email === friend.email)) {
+    if (groupMember?.find(member => member.email === friend.email)) {
       return alert('이미 그룹에 속해있는 친구는 초대할 수 없습니다.')
     }
 
