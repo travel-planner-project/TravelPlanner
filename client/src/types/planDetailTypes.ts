@@ -1,4 +1,5 @@
 export type Chat = {
+  id: number
   userId: number
   userNickname: string
   profileImgUrl: string

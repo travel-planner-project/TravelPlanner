@@ -26,7 +26,7 @@ import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
 import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
 import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
 import { initialScheduleData, usePlanDetailManagement } from '../utils/usePlanDetailManagement'
-import PlanPeriodBox from '../components/PlanDetail/planPeriodBox'
+import PlanPeriodBox from '../components/PlanDetail/PlanPeriodBox'
 
 // 높이 수정중
 
@@ -252,9 +252,11 @@ function PlanDetail() {
         const res = await getPlanDetail(plannerId)
         if (res) {
           console.log(res.data.calendars)
-          // 스케줄 state 세팅
+          // 스케줄, 채팅 state 세팅
           const schedules = res.data.calendars
+          const chattings = res.data.chattings
           setDateListData(schedules)
+          setChatList(chattings)
           return res.data.calendars
         }
       }
