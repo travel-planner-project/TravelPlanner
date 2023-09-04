@@ -4,7 +4,6 @@ import {
   removeTokenFromSessionStorage,
   saveTokenToSessionStorage,
 } from '../utils/tokenHandler'
-import { removeRefreshToken } from './user'
 
 type Options = {
   baseURL: string

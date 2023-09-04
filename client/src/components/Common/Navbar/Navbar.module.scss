@@ -6,6 +6,7 @@
   @include U.flex-c(column, space-between, center);
   background-color: C.$gray100;
   padding: 40px;
+  min-width: 200px;
 }
 
 .active {
