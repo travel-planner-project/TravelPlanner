@@ -12,7 +12,10 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
@@ -42,8 +45,8 @@ public class GroupMemberController {
     })
     @GetMapping("/search/member")
     @ResponseBody
-    public GroupMemberSearchResponse searchGroupMember(@RequestParam String email){
-        return groupMemberService.searchMember(email);
+    public GroupMemberSearchResponse searchGroupMember(@RequestBody GroupMemberSearchRequest request){
+        return groupMemberService.searchMember(request);
     }
 
     @MessageMapping("/add-member/{plannerId}")

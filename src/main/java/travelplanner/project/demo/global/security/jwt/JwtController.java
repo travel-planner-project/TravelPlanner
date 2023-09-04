@@ -67,7 +67,7 @@ public class JwtController {
 
         // 헤더에 추가
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Authorization", newAccessToken);
+        responseHeaders.set("------------------------- Authorization", newAccessToken);
 
         String principal = tokenUtil.getEmail(newAccessToken);
 

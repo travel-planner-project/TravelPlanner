@@ -1,4 +1,4 @@
-package travelplanner.project.demo.member.socialauth.kakao;
+package travelplanner.project.demo.member.socialauth.userInfo;
 
 import lombok.AllArgsConstructor;
 import travelplanner.project.demo.member.socialauth.OAuth2UserInfo;
@@ -22,7 +22,10 @@ public class KakaoUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getProfile() {
-        return (String) ((Map) attributes.get("properties")).get("profile_image");
+        Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+
+        return (String) kakaoProfile.get("profile_image_url");
     }
 
     @Override
@@ -32,7 +35,10 @@ public class KakaoUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getName() {
-        return  (String) ((Map) attributes.get("properties")).get("nickname");
+        Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
+        Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+
+        return   (String) kakaoProfile.get("nickname");
     }
 
     @Override

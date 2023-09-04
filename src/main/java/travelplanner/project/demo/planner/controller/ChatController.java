@@ -26,7 +26,7 @@ public class ChatController {
     public void sendChat(
             @DestinationVariable Long plannerId,
             ChatRequest request,
-            @Header("Authorization") String athorization){
+            @Header("Authorization") String athorization) throws Exception{
 
         tokenUtil.getJWTTokenFromWebSocket(athorization);
         messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,

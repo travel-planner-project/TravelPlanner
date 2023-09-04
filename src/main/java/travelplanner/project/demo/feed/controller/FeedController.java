@@ -22,7 +22,6 @@ import travelplanner.project.demo.global.util.PageUtil;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Feed", description = "피드 API")
-
 public class FeedController {
 
     private final FeedService feedService;

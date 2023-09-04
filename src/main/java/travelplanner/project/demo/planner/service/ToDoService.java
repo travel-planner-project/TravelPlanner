@@ -24,27 +24,6 @@ public class ToDoService {
     private final CalendarRepository calendarRepository;
     private final ValidatingService validatingService;
 
-
-    public List<ToDoResponse> getScheduleItemList() {
-        List<ToDo> scheduleItemList = toDoRepository.findAll();
-        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
-        for (ToDo toDo : scheduleItemList){
-            ToDoResponse toDoResponse = ToDoResponse.builder()
-                    .itemId(toDo.getId())
-                    .dateId(toDo.getCalendar().getId())
-                    .itemTitle(toDo.getItemTitle())
-                    .category(toDo.getCategory())
-                    .itemTime(toDo.getItemTime())
-                    .itemContent(toDo.getItemContent())
-                    .isPrivate(toDo.getIsPrivate())
-                    .budget(toDo.getBudget())
-                    .itemAddress(toDo.getItemAddress())
-                    .build();
-            toDoResponses.add(toDoResponse);
-        }
-        return toDoResponses;
-    }
-
     // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
     public List<ToDoResponse> getScheduleItemList(Long calendarId) {
 
