@@ -1,4 +1,4 @@
-import styles from './planPeriodBox.module.scss'
+import styles from './PlanPeriodBox.module.scss'
 import Icon from '../Common/Icon'
 import { dateFormatDash } from '../../utils/date'
 import { DateListType } from '../../types/planDetailTypes'
