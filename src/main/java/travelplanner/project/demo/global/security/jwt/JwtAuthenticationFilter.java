@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 requestURI.startsWith("/feed") ||
                 (requestURI.startsWith("/planner") && method.equals("GET")) ||
                 requestURI.startsWith("/login")) {
+
             filterChain.doFilter(request, response);
             return;
         }

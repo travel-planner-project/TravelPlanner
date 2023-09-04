@@ -7,14 +7,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageType;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import travelplanner.project.demo.global.util.TokenUtil;
+import travelplanner.project.demo.global.util.WebsocketUtil;
 
 import java.util.ArrayList;
 
@@ -24,8 +23,7 @@ import java.util.ArrayList;
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class StompHandler implements ChannelInterceptor {
 
-    private final TokenUtil tokenUtil;
-
+    private final WebsocketUtil websocketUtil;
     // websocket을 통해 들어온 요청이 처리되기 전 실행됨
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -37,14 +35,15 @@ public class StompHandler implements ChannelInterceptor {
         log.info("Access Token: " + accessToken);
         log.info("Incoming message type: " + accessor.getMessageType());
 
-
         // websocket 연결 시 헤더의 JWT 토큰 유효성 검증
+
         if (SimpMessageType.CONNECT.equals(accessor.getMessageType())
         || SimpMessageType.MESSAGE.equals(accessor.getMessageType())) {
             log.info("accessor: " + accessor.getMessageType());
 
-            if (tokenUtil.isValidToken(accessToken)) {
-                String principal = tokenUtil.getEmail(accessToken);
+            if (websocketUtil.isValidToken(accessToken)) {
+
+                String principal = websocketUtil.getEmail(accessToken);
                 log.info("어세스토큰: " + accessToken);
                 log.info("유저 이메일: " + principal);
 
@@ -59,7 +58,6 @@ public class StompHandler implements ChannelInterceptor {
                 log.info("username: " + username);
             }
         }
-
         return message;
     }
 }
