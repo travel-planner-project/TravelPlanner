@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.exception.WebSocket.WebSocketErrorController;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.member.profile.Profile;
@@ -33,12 +34,13 @@ public class GroupMemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final PlannerRepository plannerRepository;
+    private final WebSocketErrorController webSocketErrorController;
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (GroupMemberSearchRequest request) {
+    public GroupMemberSearchResponse searchMember (String email) {
 
-            Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+            Optional<Member> member = memberRepository.findByEmail(email);
                     member.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
             Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
@@ -94,7 +96,7 @@ public class GroupMemberService {
                     .build();
 
         }
-
+        webSocketErrorController.handleChatMessage(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
         throw new ApiException(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
     }
 

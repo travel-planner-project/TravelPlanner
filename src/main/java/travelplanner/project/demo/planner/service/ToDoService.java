@@ -4,17 +4,12 @@ package travelplanner.project.demo.planner.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
 import travelplanner.project.demo.planner.domain.*;
 import travelplanner.project.demo.planner.dto.request.ToDoCraeteRequest;
 import travelplanner.project.demo.planner.dto.request.ToDoEditRequest;
 import travelplanner.project.demo.planner.dto.response.CalendarResponse;
 import travelplanner.project.demo.planner.dto.response.ToDoResponse;
 import travelplanner.project.demo.planner.repository.CalendarRepository;
-import travelplanner.project.demo.planner.repository.GroupMemberRepository;
 import travelplanner.project.demo.planner.repository.ToDoRepository;
 
 import java.util.ArrayList;
@@ -28,27 +23,6 @@ public class ToDoService {
     private final ToDoRepository toDoRepository;
     private final CalendarRepository calendarRepository;
     private final ValidatingService validatingService;
-
-
-    public List<ToDoResponse> getScheduleItemList() {
-        List<ToDo> scheduleItemList = toDoRepository.findAll();
-        ArrayList<ToDoResponse> toDoResponses = new ArrayList<>();
-        for (ToDo toDo : scheduleItemList){
-            ToDoResponse toDoResponse = ToDoResponse.builder()
-                    .itemId(toDo.getId())
-                    .dateId(toDo.getCalendar().getId())
-                    .itemTitle(toDo.getItemTitle())
-                    .category(toDo.getCategory())
-                    .itemTime(toDo.getItemTime())
-                    .itemContent(toDo.getItemContent())
-                    .isPrivate(toDo.getIsPrivate())
-                    .budget(toDo.getBudget())
-                    .itemAddress(toDo.getItemAddress())
-                    .build();
-            toDoResponses.add(toDoResponse);
-        }
-        return toDoResponses;
-    }
 
     // 플래너 서비스에서 특정 플래너에 포함된 캘린더 및 투두를 갖고오기 위해 오버로딩
     public List<ToDoResponse> getScheduleItemList(Long calendarId) {

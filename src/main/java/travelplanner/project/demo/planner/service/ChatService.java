@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.exception.WebSocket.WebSocketErrorController;
 import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.domain.GroupMember;
 import travelplanner.project.demo.planner.repository.ChattingRepository;
 import travelplanner.project.demo.planner.domain.Chatting;
 import travelplanner.project.demo.planner.dto.request.ChatRequest;
@@ -15,8 +15,6 @@ import travelplanner.project.demo.planner.dto.response.ChatResponse;
 import travelplanner.project.demo.member.profile.Profile;
 import travelplanner.project.demo.member.profile.ProfileRepository;
 import travelplanner.project.demo.planner.domain.Planner;
-import travelplanner.project.demo.planner.repository.GroupMemberRepository;
-import travelplanner.project.demo.planner.repository.PlannerRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,14 +29,19 @@ public class ChatService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final ChattingRepository chattingRepository;
-    private final PlannerRepository plannerRepository;
+    private final WebSocketErrorController webSocketErrorController;
     private final ValidatingService validatingService;
     @Transactional
     public ChatResponse sendChat(ChatRequest request, Long plannerId) {
         
         // 유저 정보
         Member member = memberRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+                /*.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));*/
+                .orElse(null);
+        if(member == null){
+            webSocketErrorController.handleChatMessage(ErrorType.USER_NOT_FOUND);
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
+        }
 
         // 플래너와 그룹 멤버 검증 후 플래너 리턴
         Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
