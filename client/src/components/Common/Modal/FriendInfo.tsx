@@ -1,21 +1,19 @@
+import Icon from '../Icon'
 import styles from './FriendInfo.module.scss'
 
 export type FriendType = {
-  id?: number
-  profileImg?: string
+  profileImgUrl?: string
   userNickname?: string
   email?: string
-  isChecked?: boolean
 }
 
 type FriendInfoProps = {
   friend: FriendType
   onChecked: (isChecked: boolean) => void
-  // setFriend: React.Dispatch<React.SetStateAction<FriendType>>
 }
 
 function FriendInfo({ friend, onChecked }: FriendInfoProps) {
-  return friend.id ? (
+  return friend.email ? (
     <label htmlFor='friend' className={styles.infoContainer}>
       <input
         id='friend'
@@ -23,7 +21,11 @@ function FriendInfo({ friend, onChecked }: FriendInfoProps) {
         className={styles.checkbox}
         onChange={event => onChecked(event.target.checked)}
       />
-      <img src={friend.profileImg} alt='profile' className={styles.profile} />
+      {friend.profileImgUrl ? (
+        <img src={friend.profileImgUrl} alt='profile' className={styles.profileImg} />
+      ) : (
+        <Icon name='profile' size={20} className={styles.profileIcon} />
+      )}
       <div>{friend.userNickname}</div>
       <div>{friend.email}</div>
     </label>

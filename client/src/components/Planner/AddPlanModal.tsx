@@ -5,7 +5,7 @@ type AddPlanModalProps = {
 }
 
 function AddPlanModal({ modalClose }: AddPlanModalProps) {
-  const today = new Date().toISOString().split('T')[0]
+  // const today = new Date().toISOString().split('T')[0]
 
   const addPlanHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

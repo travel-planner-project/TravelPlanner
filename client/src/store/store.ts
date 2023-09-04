@@ -1,4 +1,5 @@
 import { atom, RecoilState, DefaultValue } from 'recoil'
+import { GroupMemberListType } from '../types/planDetailTypes'
 
 type UserInfoType = {
   userId: number
@@ -51,7 +52,8 @@ type ModalType = {
   placeholder: string
   submitButton: string
   isSearchBtn?: boolean
-  onSubmit: (modalSubmitData: ModalSubmitDataType) => void
+  groupMember?: GroupMemberListType
+  onSubmit: (modalSubmitData: ModalSubmitDataType | string) => void
 }
 
 export const modalState = atom<ModalType>({

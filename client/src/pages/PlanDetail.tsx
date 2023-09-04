@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import * as StompJs from '@stomp/stompjs'
 import Icon from '../components/Common/Icon'
 import Element from '../components/PlanDetail/PlanElement/Element'
@@ -10,18 +10,21 @@ import {
   ChattingProps,
   PlanDetailViewProps,
   ScheduleProps,
+  GroupMemberListType,
   DateListType,
   ScheduleType,
   DateType,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
-import { userInfo } from '../store/store'
+import { ModalSubmitDataType, userInfo } from '../store/store'
 import { saveTokenToSessionStorage } from '../utils/tokenHandler'
 import { getPlanDetail } from '../apis/planner'
 import { refreshAccessToken } from '../apis/user'
 import useRouter from '../hooks/useRouter'
 import { dateFormat } from '../utils/date'
+import useModal from '../hooks/useModal'
+import Modal from '../components/Common/Modal/Modal'
 import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
 import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
 import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
@@ -45,7 +48,7 @@ function PlanDetailView({
   onScheduleCategoryChange,
   onScheduleSubmit,
   handleOpenScheduleEditor,
-  handleCloseScheduleEditor,
+  // handleCloseScheduleEditor,
   handleAddDateBtnClick,
   isEditingDate,
   isEditingDateList,
@@ -58,6 +61,8 @@ function PlanDetailView({
   handleDeleteDate,
   currentDateId,
   isScheduleEditorOpened,
+  onInviteModalOpen,
+  groupMember,
   handleDeleteSchedule,
   handleEditScheduleBtnClick,
   handleEditSchedule,
@@ -73,32 +78,26 @@ function PlanDetailView({
       <div className={styles.planBody}>
         <div className={styles.userList}>
           <div className={styles.users}>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>시은</div>
-            </div>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>설화</div>
-            </div>
-            <div className={styles.user}>
-              <div className={styles.userProfileBox}>
-                {/* <img src='' alt='' /> */}
-                <Icon name='profile' size={42} />
-              </div>
-              <div className={styles.userName}>예슬</div>
-            </div>
+            {groupMember.map(member => {
+              return (
+                <div className={styles.user} key={member.email}>
+                  <div className={styles.userProfileBox}>
+                    {member.profileImageUrl ? (
+                      <img src={member.profileImageUrl} alt='프로필 이미지' />
+                    ) : (
+                      <Icon name='profile' size={42} />
+                    )}
+                  </div>
+                  <div className={styles.userName}>{member.nickname}</div>
+                </div>
+              )
+            })}
           </div>
           <div className={styles.addUserBtnBox}>
-            <button type='button' className={styles.addPerson}>
+            <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
               <Icon name='add-person' size={42} />
             </button>
+            <Modal type='invite' />
           </div>
         </div>
         <div className={styles.planner}>
@@ -244,6 +243,31 @@ function PlanDetail() {
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
 
+  //친구 초대 관련
+  const [groupMember, setGroupMember] = useState<GroupMemberListType>([])
+  const { openModal } = useModal()
+  const InviteModalObj = useMemo(
+    () => ({
+      title: '친구초대',
+      description: '여행을 함께할 친구를 초대해보세요',
+      placeholder: '친구의 이메일을 입력하세요',
+      submitButton: '초대',
+      groupMember: groupMember,
+      onSubmit: (email: string | ModalSubmitDataType) => {
+        if (clientRef.current) {
+          clientRef.current.publish({
+            destination: `/pub/add-member/${plannerId}`,
+            headers: {
+              Authorization: `${token}`,
+            },
+            body: JSON.stringify({ email }),
+          })
+        }
+      },
+    }),
+    [token, groupMember]
+  )
+
   // 플래너 관련
   const [dateListData, setDateListData] = useState<DateListType>([])
   const fetchPlanDetailData = async () => {
@@ -255,8 +279,10 @@ function PlanDetail() {
           // 스케줄, 채팅 state 세팅
           const schedules = res.data.calendars
           const chattings = res.data.chattings
+          const groupMembersList = res.data.groupMembersList
           setDateListData(schedules)
           setChatList(chattings)
+          setGroupMember(groupMembersList)
           return res.data.calendars
         }
       }
@@ -561,7 +587,9 @@ function PlanDetail() {
   const planDetailProps: PlanDetailProps = {
     userId,
     chatModal,
+    groupMember,
     onChatModalTrue: () => setChatModal(true),
+    onInviteModalOpen: () => openModal(InviteModalObj),
   }
 
   const chattingProps: ChattingProps = {

@@ -117,7 +117,7 @@ export const routerData: RouterElement[] = [
       </Suspense>
     ),
     onNavBar: false,
-    withAuth: true,
+    withAuth: false,
   },
   {
     id: 8,

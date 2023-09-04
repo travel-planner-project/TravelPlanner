@@ -65,3 +65,14 @@ export const getPlanners = async (options: optionsType) => {
     return axiosError.response
   }
 }
+
+export const searchMember = async (email: string) => {
+  try {
+    const response = await axiosInstance.get(`/search/member`, { params: { email } })
+    return response
+  } catch (error: unknown) {
+    if (axios.isCancel(error)) return
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
