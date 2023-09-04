@@ -38,9 +38,9 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public List<GroupMemberSearchResponse> searchMember (GroupMemberSearchRequest request) {
+    public List<GroupMemberSearchResponse> searchMember (String email) {
 
-        List<Member> memberList = memberRepository.findMemberByEmail(request.getEmail());
+        List<Member> memberList = memberRepository.findMemberByEmail(email);
         if (memberList.isEmpty()) {
             throw new ApiException(ErrorType.USER_NOT_FOUND);
         }
@@ -102,6 +102,7 @@ public class GroupMemberService {
                     .build();
 
         }
+
         webSocketErrorController.handleChatMessage(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
         throw new ApiException(ErrorType.GROUP_MEMBER_ALREADY_EXIST);
     }

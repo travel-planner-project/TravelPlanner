@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "날짜 생성 요청 DTO")
 //@Data
 @Getter
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class CalendarCreateRequest {
 

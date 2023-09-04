@@ -1,6 +1,8 @@
 package travelplanner.project.demo.planner.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,10 +14,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.planner.dto.request.GroupMemberCreateRequest;
@@ -46,8 +45,10 @@ public class GroupMemberController {
     })
     @GetMapping("/search/member")
     @ResponseBody
-    public List<GroupMemberSearchResponse> searchGroupMember(@RequestBody GroupMemberSearchRequest request){
-        return groupMemberService.searchMember(request);
+    public List<GroupMemberSearchResponse> searchGroupMember(
+            @Parameter(name = "email", description = "이메일", in = ParameterIn.QUERY)
+            @RequestParam String email){
+        return groupMemberService.searchMember(email);
     }
 
     @MessageMapping("/add-member/{plannerId}")

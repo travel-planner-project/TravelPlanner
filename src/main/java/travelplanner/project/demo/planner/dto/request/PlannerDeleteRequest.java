@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class PlannerDeleteRequest {
 
     @Schema(description = "플래너 인덱스", example = "1")

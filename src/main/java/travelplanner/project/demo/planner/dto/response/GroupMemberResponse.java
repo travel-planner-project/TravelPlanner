@@ -8,6 +8,7 @@ import travelplanner.project.demo.planner.domain.GroupMemberType;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class GroupMemberResponse {
 
     @Schema(description = "그룹멤버 인덱스", example = "1")

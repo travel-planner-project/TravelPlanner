@@ -32,7 +32,7 @@ public class Profile {
 
     private String keyName;
 
-    @OneToMany(mappedBy = "profile")
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<GroupMember> groupMembers  = new ArrayList<>();
     public ProfileEditor.ProfileEditorBuilder toEditor() {

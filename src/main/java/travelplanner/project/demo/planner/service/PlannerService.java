@@ -131,9 +131,6 @@ public class PlannerService {
         // 만약, 플래너가 isPrivate == false 인 경우, 그룹멤버가 아니더라도 모든 사람이 볼 수 있어야 합니다.
         // 만약, 프랠너가 isPrivate == true 인 경우, 그룹멤버만 볼 수 있어야 합니다.
         Planner planner = plannerRepository.findPlannerById(plannerId);
-        if (planner.getIsPrivate()) {
-            validatingService.validatePlannerAndUserAccess(plannerId); // 그룹멤버만 볼 수 있도록 하는 메서드
-        }
 
         // Planner에 해당하는 캘린더 리스트를 가져옴
         List<CalendarResponse> calendarResponses = calendarService.getCalendarList(planner.getId());
@@ -174,9 +171,13 @@ public class PlannerService {
 
         // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
         if (authUtil.authenticationUser(request)) {
-            String currentEmail = authUtil.getCurrentMember().getEmail();
-            if (authUtil.isGroupMember(currentEmail, plannerId)) {
-                log.info("---------------회원이며 그룹 멤버다.");
+//            String currentEmail = authUtil.getCurrentMember().getEmail();
+            if (planner.getIsPrivate()) {
+                planner = validatingService.validatePlannerAndUserAccess(plannerId); // 그룹멤버만 볼 수 있도록 하는 메서드
+            }
+
+//            if (authUtil.isGroupMember(currentEmail, plannerId)) {
+//                log.info("---------------회원이며 그룹 멤버다.");
                 return PlannerDetailAuthorizedResponse.builder()
                         .plannerId(planner.getId())
                         .planTitle(planner.getPlanTitle())
@@ -187,8 +188,8 @@ public class PlannerService {
                         .groupMemberList(groupMemberResponses)
                         .chattings(chatResponses)
                         .build();
-            }
-            log.info("---------------회원이지만 그룹 멤버에 포함되지 않는다.");
+//            }
+//            log.info("---------------회원이지만 그룹 멤버에 포함되지 않는다.");
         }
         log.info("---------------채팅이 없는 response");
         return PlannerDetailUnauthorizedResponse.builder()
