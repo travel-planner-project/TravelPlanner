@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import static travelplanner.project.demo.global.exception.ErrorType.USER_ALREADY_AUTHORIZED;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor

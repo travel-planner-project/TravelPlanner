@@ -23,10 +23,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         ErrorType errorType = null;
         String requestURI = request.getRequestURI();
 
-        if (requestURI.startsWith("/error") && authException instanceof InsufficientAuthenticationException) { // 소셜 로그인에서 인증에 실패한 경우
-            setResponse(response, ErrorType.USER_ALREADY_AUTHORIZED);
-
-        } else if (authException instanceof UsernameNotFoundException) { // 로그인시 유저 아이디가 일치하지 않는 경우의 에러 커스텀
+        if (authException instanceof UsernameNotFoundException) { // 로그인시 유저 아이디가 일치하지 않는 경우의 에러 커스텀
             setResponse(response, ErrorType.CHECK_EMAIL_AGAIN);
 
         } else if (authException instanceof BadCredentialsException) { // 로그인시 유저 비밀번호가 일치하지 않는 경우의 에러 커스텀

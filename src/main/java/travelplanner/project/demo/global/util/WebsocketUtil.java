@@ -8,7 +8,6 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.global.security.jwt.TokenExpiredException;
 
 
 import java.util.Date;
@@ -29,7 +28,7 @@ public class WebsocketUtil extends StompSessionHandlerAdapter {
                     .after(new Date());
 
         } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException();
+            throw  e;
         } catch (Exception e) {
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }

@@ -38,19 +38,25 @@ public class GroupMemberService {
 
 
     // 그룹 멤버 검색
-    public GroupMemberSearchResponse searchMember (String email) {
+    public List<GroupMemberSearchResponse> searchMember (GroupMemberSearchRequest request) {
 
-            Optional<Member> member = memberRepository.findByEmail(email);
-                    member.orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+        List<Member> memberList = memberRepository.findMemberByEmail(request.getEmail());
+        if (memberList.isEmpty()) {
+            throw new ApiException(ErrorType.USER_NOT_FOUND);
+        }
 
-            Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
+        List<GroupMemberSearchResponse> groupMemberSearchResponses = new ArrayList<>();
+        for (Member searchMember : memberList) {
+            GroupMemberSearchResponse groupMemberResponse = GroupMemberSearchResponse.builder()
+                    .profileImageUrl(searchMember.getProfile().getProfileImgUrl())
+                    .email(searchMember.getEmail())
+                    .userNickname(searchMember.getUserNickname())
+                    .build();
 
-        return GroupMemberSearchResponse.builder()
-                .profileImageUrl(profile.getProfileImgUrl())
-                .email(member.get().getEmail())
-                .userNickname(member.get().getUserNickname())
-                .build();
+            groupMemberSearchResponses.add(groupMemberResponse);
+        }
 
+        return groupMemberSearchResponses;
     }
 
 
