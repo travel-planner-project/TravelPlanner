@@ -12,8 +12,6 @@ import {
   ScheduleProps,
   GroupMemberListType,
   DateListType,
-  ScheduleType,
-  DateType,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
@@ -48,7 +46,7 @@ function PlanDetailView({
   onScheduleCategoryChange,
   onScheduleSubmit,
   handleOpenScheduleEditor,
-  // handleCloseScheduleEditor,
+  handleCloseScheduleEditor,
   handleAddDateBtnClick,
   isEditingDate,
   isEditingDateList,
@@ -279,10 +277,11 @@ function PlanDetail() {
           // 스케줄, 채팅 state 세팅
           const schedules = res.data.calendars
           const chattings = res.data.chattings
-          const groupMembersList = res.data.groupMembersList
+          const groupMemberList = res.data.groupMemberList
+          console.log(groupMemberList)
           setDateListData(schedules)
           setChatList(chattings)
-          setGroupMember(groupMembersList)
+          setGroupMember(groupMemberList)
           return res.data.calendars
         }
       }
@@ -559,7 +558,7 @@ function PlanDetail() {
       // 액세스 토큰 만료시
       if (
         frame.headers.message ===
-        'Failed to send message to ExecutorSubscribableChannel[clientInboundChannel]'
+        'ErrorType.ACCESS_TOKEN_EXPIRED(status=401 UNAUTHORIZED, errorCode=TOKEN-001, message=어세스 토큰이 만료되었습니다.)'
       ) {
         refreshAccessToken().then(response => {
           if (response?.status === 200) {
