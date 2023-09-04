@@ -107,7 +107,7 @@ public class AuthService {
 
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
-            redisUtil.setDataExpire(member.getEmail(), refreshToken, Duration.ofMinutes(3));
+            redisUtil.setDataExpire(member.getEmail(), refreshToken, Duration.ofDays(7));
 
         } else { // 레디스에 토큰이 저장되어 있는 경우
 
