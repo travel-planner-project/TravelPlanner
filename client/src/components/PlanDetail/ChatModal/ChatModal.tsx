@@ -33,10 +33,10 @@ function ChatModal({
           </button>
         </div>
         <div className={styles.chatBody} ref={scrollContainerRef}>
-          {chatList.map(chat => (
+          {chatList?.map(chat => (
             <div
               className={chat.userId === userId ? styles.loggedInUser : styles.notLoggedInUser}
-              key={crypto.randomUUID()}
+              key={chat.id}
             >
               {chat.userId === userId ? (
                 <span>{chat.message}</span>

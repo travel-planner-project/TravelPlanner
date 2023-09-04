@@ -1,5 +1,10 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { getTokenFromSessionStorage, saveTokenToSessionStorage } from '../utils/tokenHandler'
+import {
+  getTokenFromSessionStorage,
+  removeTokenFromSessionStorage,
+  saveTokenToSessionStorage,
+} from '../utils/tokenHandler'
+import { removeRefreshToken } from './user'
 
 type Options = {
   baseURL: string
@@ -48,7 +53,10 @@ function createAxiosInstance(options: Options) {
             return await axios(config)
           }
         } catch (error) {
-          return Promise.reject(error)
+          sessionStorage.removeItem('userInfo')
+          removeTokenFromSessionStorage()
+          location.reload()
+          return Promise.reject({ status: 403, message: '리프레시 토큰 에러' })
         }
       }
       return Promise.reject(error)

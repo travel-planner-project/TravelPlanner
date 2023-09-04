@@ -1,0 +1,15 @@
+@use '../../../styles/color' as C;
+@use '../../../styles/utils' as U;
+@use '../../../styles/typography' as T;
+
+.addDayBtn {
+  @include U.flex-c(column, flex-start, flex-start);
+  width: fit-content;
+  color: C.$blue500;
+  font-size: 2rem;
+  // border-bottom: 1px solid C.$blue500;
+  // background-color: C.$blue500;
+  padding: 12px;
+  // border-radius: 4px;
+  margin-right: -24px;
+}

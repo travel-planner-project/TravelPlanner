@@ -32,6 +32,7 @@ type responseDataType = {
   userNickname: string
   email: string
   profileImgUrl: string
+  message?: string
 }
 
 function SignIn() {
@@ -54,8 +55,8 @@ function SignIn() {
         profileImgUrl: data.profileImgUrl,
       })
       routeTo('/')
-    } else if (status === 403) {
-      alert('이메일 또는 비밀번호를 확인해 주세요')
+    } else if (status === 400) {
+      alert(data.message)
     } else {
       alert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요')
     }

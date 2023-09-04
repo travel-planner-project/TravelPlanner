@@ -10,8 +10,10 @@ import {
   ChattingProps,
   PlanDetailViewProps,
   ScheduleProps,
-  PlanDetailDataType,
   GroupMemberListType,
+  DateListType,
+  ScheduleType,
+  DateType,
 } from '../types/planDetailTypes'
 import ElementEditor from '../components/PlanDetail/PlanElement/ElementEditor'
 import { useRecoilValue } from 'recoil'
@@ -23,6 +25,11 @@ import useRouter from '../hooks/useRouter'
 import { dateFormat } from '../utils/date'
 import useModal from '../hooks/useModal'
 import Modal from '../components/Common/Modal/Modal'
+import DateInputBox from '../components/PlanDetail/PlanElement/DateInputBox'
+import EditingDateButtonBox from '../components/PlanDetail/PlanElement/EditingDateButtonBox'
+import DateAddEditBtnBox from '../components/PlanDetail/PlanElement/DateAddEditBtnBox'
+import { initialScheduleData, usePlanDetailManagement } from '../utils/usePlanDetailManagement'
+import PlanPeriodBox from '../components/PlanDetail/PlanPeriodBox'
 
 // 높이 수정중
 
@@ -35,7 +42,7 @@ function PlanDetailView({
   onChatModalFalse,
   onChatChange,
   onChatSubmit,
-  planDetailData,
+  dateListData,
   scheduleData,
   onScheduleInputChange,
   onScheduleCategoryChange,
@@ -43,26 +50,30 @@ function PlanDetailView({
   handleOpenScheduleEditor,
   // handleCloseScheduleEditor,
   handleAddDateBtnClick,
+  isEditingDate,
+  isEditingDateList,
+  editingDateId,
+  handleEditDateBtnClick,
+  handleEditDateListBtnClick,
   handleEditDate,
+  handleCancelEditingDate,
+  handleCancelEditingDateList,
+  handleDeleteDate,
   currentDateId,
   isScheduleEditorOpened,
   onInviteModalOpen,
   groupMember,
+  handleDeleteSchedule,
+  handleEditScheduleBtnClick,
+  handleEditSchedule,
+  editingScheduleId,
+  handleCancelEditingScheduleBtnClick,
 }: PlanDetailViewProps) {
   return (
     <div className={styles.planContainer}>
       <div className={styles.planHeader}>
         <div className={styles.planTitle}>제주 여행</div>
-        <div className={styles.planPeriodBox}>
-          <div className={styles.planPeriod}>
-            <Icon name='calendar' size={16} />
-            <div className={styles.dateBox}>
-              <div className={styles.startDate}>2023-07-14</div>
-              <span> ~ </span>
-              <div className={styles.endDate}>2023-07-16</div>
-            </div>
-          </div>
-        </div>
+        <PlanPeriodBox dateListData={dateListData} />
       </div>
       <div className={styles.planBody}>
         <div className={styles.userList}>
@@ -92,22 +103,26 @@ function PlanDetailView({
         <div className={styles.planner}>
           <ul className={styles.planList}>
             {/* map으로 day 별로 묶인 큰 박스 맵핑 */}
-            {planDetailData?.map((item, idx) => {
+            {dateListData?.map(item => {
               return (
                 <li className={styles.plan} key={item.dateId}>
-                  {/* state 이용해서 input type date 혹은 날짜 보여주기*/}
-                  {/* input type date는 idx가 0일 때만 */}
-                  {idx === 0 && item.dateTitle === 'none' ? (
-                    <input
-                      type='date'
-                      className={styles.dateInput}
-                      required
-                      // aria-required='true'
-                      data-placeholder='여행 시작일을 입력하세요.'
-                      onChange={e => handleEditDate(item.dateId, e.target.value)}
+                  {isEditingDate && item.dateId === editingDateId ? (
+                    <DateInputBox
+                      item={item}
+                      handleEdit={handleEditDate}
+                      handleCancel={handleCancelEditingDate}
                     />
                   ) : (
-                    <div className={styles.dateTitle}>{item.dateContent}</div>
+                    <>
+                      <div className={styles.dateTitle}>{dateFormat(new Date(item.dateTitle))}</div>
+                      {isEditingDateList ? (
+                        <EditingDateButtonBox
+                          handleEdit={handleEditDateBtnClick}
+                          handleDelete={handleDeleteDate}
+                          dateId={item.dateId}
+                        />
+                      ) : null}
+                    </>
                   )}
                   <div className={styles.scheduleBox}>
                     {/* map으로 엘리먼트 맵핑. 넘겨주는 id에 day의 id 넣기? */}
@@ -115,18 +130,39 @@ function PlanDetailView({
                       {item.scheduleItemList?.map(el => {
                         return (
                           <li className={styles.scheduleItem} key={el.itemId}>
-                            <Element data={el} />
+                            {editingScheduleId === el.itemId ? (
+                              <ElementEditor
+                                scheduleData={scheduleData}
+                                handleChange={onScheduleInputChange}
+                                handleOptionChange={onScheduleCategoryChange}
+                                handleEdit={handleEditSchedule}
+                                handleCancel={handleCancelEditingScheduleBtnClick}
+                                dateId={item.dateId}
+                                type='edit'
+                              />
+                            ) : (
+                              <Element
+                                data={el}
+                                handleDelete={handleDeleteSchedule}
+                                handleEditBtnClick={handleEditScheduleBtnClick}
+                                dateId={item.dateId}
+                              />
+                            )}
                           </li>
                         )
                       })}
 
-                      {currentDateId === item.dateId && isScheduleEditorOpened ? (
+                      {currentDateId === item.dateId &&
+                      isScheduleEditorOpened &&
+                      editingScheduleId === -1 ? (
                         <ElementEditor
                           scheduleData={scheduleData}
                           handleChange={onScheduleInputChange}
                           handleOptionChange={onScheduleCategoryChange}
                           handleSubmit={onScheduleSubmit}
+                          handleCancel={handleCloseScheduleEditor}
                           dateId={item.dateId}
+                          type='add'
                         />
                       ) : (
                         <button
@@ -142,9 +178,12 @@ function PlanDetailView({
               )
             })}
           </ul>
-          <button type='button' className={styles.addDayBtn} onClick={handleAddDateBtnClick}>
-            추가하기
-          </button>
+          <DateAddEditBtnBox
+            handleAdd={handleAddDateBtnClick}
+            handleEdit={handleEditDateListBtnClick}
+            handleCancelEditing={handleCancelEditingDateList}
+            isEditingDateList={isEditingDateList}
+          />
         </div>
       </div>
       {chatModal ? (
@@ -166,30 +205,44 @@ function PlanDetailView({
 }
 
 function PlanDetail() {
-  const initialScheduleData = {
-    // dateId: -1,
-    itemTitle: '',
-    category: '',
-    itemDate: '',
-    itemAddress: '',
-    budget: 0,
-    itemContent: '',
-    isPrivate: false,
-  }
+  const clientRef = useRef<StompJs.Client | null>(null)
+
+  const {
+    scheduleData,
+    isScheduleEditorOpened,
+    editingScheduleId,
+    currentDateId,
+    isEditingDateList,
+    isEditingDate,
+    editingDateId,
+    setIsScheduleEditorOpened,
+    setEditingScheduleId,
+    setIsEditingDateList,
+    setIsEditingDate,
+    setEditingDateId,
+    handleEditDateListBtnClick,
+    handleEditDateBtnClick,
+    handleCancelEditingDate,
+    handleCancelEditingDateList,
+    handleOpenScheduleEditor,
+    handleCloseScheduleEditor,
+    handleCancelEditingScheduleBtnClick,
+    onScheduleCategoryChange,
+    onScheduleInputChange,
+    setScheduleData,
+  } = usePlanDetailManagement()
 
   const { params } = useRouter()
   const { plannerId } = params
   const { userId } = useRecoilValue(userInfo)
+
   const [token, setToken] = useState(sessionStorage.getItem('token'))
-  const clientRef = useRef<StompJs.Client | null>(null)
+
   // 채팅 관련
   const [chatModal, setChatModal] = useState(false)
   const [chatList, setChatList] = useState<Chat[]>([])
   const [newChat, setNewChat] = useState('')
-  // 플래너 관련
-  const [currentDateId, setCurrentDateId] = useState(-1)
-  const [isScheduleEditorOpened, setIsScheduleEditorOpened] = useState(false)
-  const [planDetailData, setPlanDetailData] = useState<PlanDetailDataType>([])
+
   //친구 초대 관련
   const [groupMember, setGroupMember] = useState<GroupMemberListType>([])
   const { openModal } = useModal()
@@ -215,24 +268,43 @@ function PlanDetail() {
     [token, groupMember]
   )
 
-  // console.log(planDetailData)
+  // 플래너 관련
+  const [dateListData, setDateListData] = useState<DateListType>([])
+  const fetchPlanDetailData = async () => {
+    try {
+      if (plannerId) {
+        const res = await getPlanDetail(plannerId)
+        if (res) {
+          console.log(res.data.calendars)
+          // 스케줄, 채팅 state 세팅
+          const schedules = res.data.calendars
+          const chattings = res.data.chattings
+          const groupMembersList = res.data.groupMembersList
+          setDateListData(schedules)
+          setChatList(chattings)
+          setGroupMember(groupMembersList)
+          return res.data.calendars
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching plan detail data:', error)
+      return false
+    }
+  }
 
-  // const [dateList, setDateList] = useState([])
-  const [scheduleData, setScheduleData] = useState(initialScheduleData)
-
+  // '일정 추가' 버튼 클릭 시 실행
   const handleAddDateBtnClick = () => {
-    console.log('add-date')
-
     if (clientRef.current) {
       let requestBody = {}
+      const currentDate = new Date()
 
-      if (planDetailData.length === 0) {
-        requestBody = { dateTitle: 'none' }
+      if (dateListData.length === 0) {
+        requestBody = { dateTitle: currentDate }
       } else {
-        if (planDetailData[planDetailData.length - 1].dateTitle === 'none') {
+        if (dateListData[dateListData.length - 1].dateTitle === 'none') {
           alert('먼저 여행 시작일을 입력하세요.')
         }
-        const lastDate = new Date(planDetailData[planDetailData.length - 1].dateTitle)
+        const lastDate = new Date(dateListData[dateListData.length - 1].dateTitle)
         lastDate.setDate(lastDate.getDate() + 1)
         requestBody = { dateTitle: lastDate.toISOString() }
       }
@@ -247,6 +319,7 @@ function PlanDetail() {
     }
   }
 
+  // 여행 날짜 수정 시 실행
   const handleEditDate = (id: number, date: string) => {
     const convertedDate = new Date(date).toISOString()
     if (clientRef.current) {
@@ -258,38 +331,28 @@ function PlanDetail() {
         body: JSON.stringify({ dateId: id, dateTitle: convertedDate }),
       })
     }
+    setEditingDateId(-1)
   }
 
-  const handleOpenScheduleEditor = (id: number) => {
-    setCurrentDateId(id)
-    setIsScheduleEditorOpened(true)
+  // 여행 날짜 삭제 시 실행
+  // 전체 스케줄이 함께 삭제되기 때문에 확인 절차 거침
+  const handleDeleteDate = (id: number) => {
+    if (window.confirm('OK 버튼을 누르면 해당 날짜의 모든 스케줄이 지워집니다.')) {
+      if (clientRef.current) {
+        clientRef.current.publish({
+          destination: `/pub/delete-date/${plannerId}/${id}`,
+          headers: {
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ dateId: id }),
+        })
+      }
+    } else return
   }
 
-  const handleCloseScheduleEditor = () => {
-    setCurrentDateId(-1)
-    setIsScheduleEditorOpened(false)
-  }
-
-  const onScheduleInputChange = (field: string, value: string) => {
-    setScheduleData(prevData => ({
-      ...prevData,
-      [field]: value,
-    }))
-  }
-  const onScheduleCategoryChange = (selectedOption: string) => {
-    setScheduleData(prevData => ({
-      ...prevData,
-      category: selectedOption,
-    }))
-  }
-
+  // 스케줄 생성 버튼 클릭 시 실행
   const onScheduleSubmit = (e: React.FormEvent, dateId: number) => {
     e.preventDefault()
-    setScheduleData(prevData => ({
-      ...prevData,
-      // dateId,
-    }))
-
     if (clientRef.current) {
       clientRef.current.publish({
         destination: `/pub/create-todo/${plannerId}/${dateId}`,
@@ -299,9 +362,53 @@ function PlanDetail() {
         body: JSON.stringify(scheduleData),
       })
     }
-    setScheduleData(initialScheduleData)
   }
 
+  // 스케줄 삭제 버튼 클릭 시 실행
+  const handleDeleteSchedule = (dateId: number, itemId: number) => {
+    if (isEditingDate || isEditingDateList) {
+      alert('일정 편집을 종료한 후에 다시 시도해주세요.')
+      return
+    }
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/delete-todo/${plannerId}/${dateId}/${itemId}`,
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+    }
+  }
+
+  // 스케줄 수정 버튼 클릭 시 실행 (에디터로 바뀌는 과정)
+  const handleEditScheduleBtnClick = (dateId: number, itemId: number) => {
+    if (isEditingDate || isEditingDateList) {
+      alert('일정 편집을 종료한 후에 다시 시도해주세요.')
+      return
+    }
+    const targetDateIndex = dateListData.findIndex(el => el.dateId === dateId)
+    const currentList = dateListData[targetDateIndex].scheduleItemList
+    const targetScheduleIndex = currentList.findIndex(el => el.itemId === itemId)
+    setScheduleData(currentList[targetScheduleIndex])
+    setEditingScheduleId(itemId)
+  }
+
+  // 스케줄 수정 시 실행
+  const handleEditSchedule = (e: React.FormEvent, dateId: number, itemId: number) => {
+    e.preventDefault()
+    console.log(scheduleData)
+    if (clientRef.current) {
+      clientRef.current.publish({
+        destination: `/pub/update-todo/${plannerId}/${dateId}/${itemId}`,
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(scheduleData),
+      })
+    }
+  }
+
+  // 채팅 전송 시 실행
   const onChatSubmit = (event: any) => {
     event.preventDefault()
     if (newChat.trim() !== '') {
@@ -325,23 +432,6 @@ function PlanDetail() {
 
   useEffect(() => {
     if (plannerId) {
-      const fetchPlanDetailData = async () => {
-        try {
-          const res = await getPlanDetail(plannerId)
-          if (res) {
-            const { calendars, groupMemberList } = res.data
-            console.log('calendars', calendars)
-            const schedules = calendars.map(el => ({
-              ...el, // Keep the other properties unchanged
-              dateContent: dateFormat(new Date(el.dateTitle)),
-            }))
-            setPlanDetailData(schedules)
-            setGroupMember(groupMemberList)
-          }
-        } catch (error) {
-          console.error('Error fetching plan detail data:', error)
-        }
-      }
       fetchPlanDetailData()
     }
   }, [])
@@ -365,32 +455,95 @@ function PlanDetail() {
     // 3. 클라이언트가 메시지 브로커에 연결(커넥트)되었을 때 호출되는 함수
     client.onConnect = function () {
       // 메시지 받는 함수
-      const callback = function (message: any) {
+      const callback = async function (message: any) {
         if (message.body) {
+          // 아예 message.body를 받지 못하는 경우의 에러 처리는 어떻게 할 것인가?
           const resBody = JSON.parse(message.body)
-          console.log('웹소켓 리스폰스: ', resBody)
           if (resBody.type === 'chat') {
             setChatList(prev => [...prev, resBody.msg])
           } else if (resBody.type === 'add-date') {
-            const newDate = resBody.msg[resBody.msg.length - 1]
-            newDate.dateContent = dateFormat(new Date(newDate.dateTitle))
-            setPlanDetailData(prev => [...prev, newDate])
+            const newDate = resBody.msg
+            if (newDate) {
+              setDateListData(prev => [...prev, newDate])
+            } else {
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            }
           } else if (resBody.type === 'modify-date') {
-            console.log(resBody.msg)
-            const modifiedDate = resBody.msg[0]
-            modifiedDate.dateContent = dateFormat(new Date(modifiedDate.dateTitle))
-            setPlanDetailData(modifiedDate)
+            const newDate = resBody.msg
+            const { dateId, dateTitle } = newDate
+
+            const modifiedData = dateListData.map(el => {
+              if (el.dateId === dateId) {
+                return { ...el, dateTitle }
+              }
+              return { ...el }
+            })
+            setDateListData(modifiedData)
+            setIsEditingDate(false)
+            setIsEditingDateList(false)
+          } else if (resBody.type === 'delete-date') {
+            const schedules = resBody.msg
+            setDateListData(schedules)
           } else if (resBody.type === 'add-schedule') {
-            const newData = resBody.msg[resBody.msg.length - 1]
-            const newDateId = newData.dateId
-            const copyData = planDetailData
-            const targetDateIndex = copyData.findIndex(
-              (el: { dateId: number }) => el.dateId === newDateId
-            )
-            copyData[targetDateIndex].scheduleItemList.push(newData)
-            setPlanDetailData(copyData)
-          } else if (resBody.type === 'add-user') {
-            setGroupMember(pre => [...pre, resBody.msg])
+            // const newData = resBody.msg
+            // const newDateId = newData.dateId
+            const fetchRes = await fetchPlanDetailData()
+            if (fetchRes) {
+              setDateListData(fetchRes)
+            } else {
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            }
+            // const updatedDateList = fetchRes.map((date: DateType) => {
+            //   if (date.dateId === newDateId) {
+            //     return {
+            //       ...date,
+            //       scheduleItemList: [...date.scheduleItemList, newData], // 스케줄 추가
+            //     }
+            //   }
+            //   return { ...date }
+            // })
+            setScheduleData(initialScheduleData)
+            setIsScheduleEditorOpened(false)
+          } else if (resBody.type === 'delete-schedule') {
+            const schedules = resBody.msg
+            setDateListData(schedules)
+          } else if (resBody.type === 'modify-schedule') {
+            // const editedData = resBody.msg
+            // if (dateListData.length === 0) {
+            //   const fetchRes = await fetchPlanDetailData()
+            //   if (fetchRes === 'success') {
+            //     const copyData = JSON.parse(JSON.stringify(dateListData))
+            //     const targetDateIndex = copyData.findIndex(
+            //       (date: DateType) => date.dateId === editedData.dateId
+            //     )
+            //     const targetScheduleIndex = copyData[targetDateIndex].scheduleItemList.findIndex(
+            //       (schedule: ScheduleType) => schedule.itemId === editedData.itemId
+            //     )
+            //     copyData[targetDateIndex].scheduleItemList[targetScheduleIndex] = editedData
+            //     setDateListData(copyData)
+            //   } else {
+            //     alert('문제가 발생했습니다. 페이지를 새로고침해주세요.')
+            //   }
+            // } else {
+            //   const copyData = JSON.parse(JSON.stringify(dateListData))
+            //   const targetDateIndex = copyData.findIndex(
+            //     (date: DateType) => date.dateId === editedData.dateId
+            //   )
+            //   const targetScheduleIndex = copyData[targetDateIndex].scheduleItemList.findIndex(
+            //     (schedule: ScheduleType) => schedule.itemId === editedData.itemId
+            //   )
+            //   copyData[targetDateIndex].scheduleItemList[targetScheduleIndex] = editedData
+            //   setDateListData(copyData)
+            // }
+            const fetchRes = await fetchPlanDetailData()
+            if (fetchRes) {
+              setDateListData(fetchRes)
+            } else {
+              alert('문제가 발생했습니다. 페이지를 새로고침해주세요!')
+            }
+            setEditingScheduleId(-1)
+            setScheduleData(initialScheduleData)
+            setIsScheduleEditorOpened(false)
           }
         }
       }
@@ -448,17 +601,30 @@ function PlanDetail() {
   }
 
   const scheduleProps: ScheduleProps = {
-    planDetailData,
+    dateListData,
     currentDateId,
     isScheduleEditorOpened,
+    isEditingDate,
+    isEditingDateList,
+    editingDateId,
+    editingScheduleId,
+    scheduleData,
     handleAddDateBtnClick,
+    handleEditDateBtnClick,
+    handleEditDateListBtnClick,
     handleEditDate,
+    handleCancelEditingDate,
+    handleCancelEditingDateList,
+    handleDeleteDate,
     handleOpenScheduleEditor,
     handleCloseScheduleEditor,
     onScheduleInputChange,
     onScheduleCategoryChange,
     onScheduleSubmit,
-    scheduleData,
+    handleDeleteSchedule,
+    handleEditScheduleBtnClick,
+    handleEditSchedule,
+    handleCancelEditingScheduleBtnClick,
   }
 
   const props = { ...planDetailProps, ...chattingProps, ...scheduleProps }

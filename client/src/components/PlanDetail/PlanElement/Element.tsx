@@ -1,7 +1,7 @@
 import styles from './Element.module.scss'
 
 type ElementViewProps = ElementProps
-function ElementView({ data }: ElementViewProps) {
+function ElementView({ data, handleDelete, dateId, handleEditBtnClick }: ElementViewProps) {
   return (
     <div className={styles.container}>
       <div className={styles.itemBox}>
@@ -22,8 +22,22 @@ function ElementView({ data }: ElementViewProps) {
         <div className={styles.itemDetail}>{data.itemContent}</div>
       </div>
       <div className={styles.buttons}>
-        <div className={styles.okBtn}>수정</div>
-        <div className={styles.deleteBtn}>삭제</div>
+        <button
+          type='button'
+          className={styles.okBtn}
+          onClick={() => {
+            handleEditBtnClick(dateId, data.itemId)
+          }}
+        >
+          수정
+        </button>
+        <button
+          type='button'
+          className={styles.deleteBtn}
+          onClick={() => handleDelete(dateId, data.itemId)}
+        >
+          삭제
+        </button>
       </div>
     </div>
   )
@@ -40,9 +54,19 @@ type ElementProps = {
     budget: number | null
     itemAddress: string
   }
+  handleDelete: (dateId: number, itemId: number) => void
+  dateId: number
+  handleEditBtnClick: (dateId: number, itemId: number) => void
 }
-function Element({ data }: ElementProps) {
-  return <ElementView data={data} />
+function Element({ data, handleDelete, dateId, handleEditBtnClick }: ElementProps) {
+  return (
+    <ElementView
+      data={data}
+      handleDelete={handleDelete}
+      dateId={dateId}
+      handleEditBtnClick={handleEditBtnClick}
+    />
+  )
 }
 
 export default Element
