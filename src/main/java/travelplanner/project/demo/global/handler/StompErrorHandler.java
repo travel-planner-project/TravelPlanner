@@ -1,5 +1,6 @@
 package travelplanner.project.demo.global.handler;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageDeliveryException;
@@ -8,6 +9,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.StompSubProtocolErrorHandler;
+import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 
 
@@ -51,10 +53,15 @@ public class  StompErrorHandler extends StompSubProtocolErrorHandler {
     private Message<byte[]> handleUnauthorizedException(Message<byte[]> clientMessage, Throwable ex)
     {
         ErrorType errorType;
-
-        if (ex.getCause().getMessage().equals("Token expired")){
+        
+        if (ex.getCause() instanceof ExpiredJwtException){
+            //토큰 만료 시
             errorType = ErrorType.ACCESS_TOKEN_EXPIRED;
+        }else if(ex.getCause() instanceof ApiException){
+            //권한 없을 시
+            errorType = ErrorType.USER_NOT_AUTHORIZED;
         }else{
+            //이외 메세지 데이터 타입 에러
             errorType = ErrorType.INVALID_MESSAGE_FORMAT;
         }
 
