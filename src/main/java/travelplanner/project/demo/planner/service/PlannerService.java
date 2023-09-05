@@ -260,6 +260,7 @@ public class PlannerService {
                 .email(member.getEmail())
                 .groupMemberType(GroupMemberType.HOST)
                 .userNickname(member.getUserNickname())
+                .userId(member.getId())
                 .planner(createPlanner)
                 .profile(profile)
                 .build();
