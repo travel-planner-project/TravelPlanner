@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class GroupMemberCreateRequest {
 
-    @Schema(description = "이메일", example = "user1@gmail.com")
-    private String email;
+    @Schema(description = "유저아이디", example = "1")
+    private Long userId;
 }

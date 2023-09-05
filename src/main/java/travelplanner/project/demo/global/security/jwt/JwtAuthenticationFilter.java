@@ -59,13 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // access 토큰 유효성 검사
         tokenUtil.isValidToken(accessToken);
-
-        String principal = tokenUtil.getEmail(accessToken);
-        log.info("-------------------------유저 정보: " + principal);
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        // 토큰 인증
+        tokenUtil.getAuthenticationFromToken(accessToken);
 
         filterChain.doFilter(request, response);
     }

@@ -1,6 +1,8 @@
 package travelplanner.project.demo.planner.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,8 +50,11 @@ public class PlannerController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping
-    public Page<PlannerListResponse> getPlannerList(Pageable pageable, @RequestParam(required = false) String email, HttpServletRequest request) {
-        return plannerService.getPlannerListByUserIdOrEmail(pageable, email, request);
+    public Page<PlannerListResponse> getPlannerList(
+            Pageable pageable,
+            @Parameter(name = "userId", description = "유저 인덱스", in = ParameterIn.QUERY) // swagger
+            @RequestParam(required = false) Long userId, HttpServletRequest request) {
+        return plannerService.getPlannerListByUserIdOrEmail(pageable, userId, request);
     }
 
 
@@ -79,8 +84,8 @@ public class PlannerController {
     })
     @DeleteMapping
     //플래너 삭제
-    public void deletePlanner(@RequestBody PlannerDeleteRequest request) {
-        plannerService.deletePlanner(request);
+    public void deletePlanner(HttpServletRequest request, @RequestBody PlannerDeleteRequest plannerDeleteRequest) {
+        plannerService.deletePlanner(request, plannerDeleteRequest);
     }
 
 
@@ -92,7 +97,7 @@ public class PlannerController {
     })
     @PostMapping
     public PlannerCreateResponse createPlanner(
-            @RequestBody @Validated PlannerCreateRequest request, BindingResult result) {
+            @RequestBody @Validated PlannerCreateRequest plannerCreateRequest, BindingResult result, HttpServletRequest request) {
 
         if (result.hasErrors()) {
             System.out.println("PlannerController.createPlanner");
@@ -100,7 +105,7 @@ public class PlannerController {
 //            return ResponseEntity.badRequest().body("Planner 생성에 실패했습니다. Invalid request입니다. ");
         }
 
-        return plannerService.createPlanner(request);
+        return plannerService.createPlanner(request, plannerCreateRequest);
     }
 
 
@@ -113,14 +118,14 @@ public class PlannerController {
     })
     @PatchMapping
     public ResponseEntity updatePlanner(
-            @RequestBody @Validated PlannerEditRequest request, BindingResult result) {
+            HttpServletRequest request, @RequestBody @Validated PlannerEditRequest plannerEditRequest, BindingResult result) {
 
         if (result.hasErrors()) {
             throw  new ApiException(ErrorType.INVALID_REQUEST);
 //            return ResponseEntity.badRequest().body("Planner 업데이트 실패했습니다. Invalid request입니다. ");
         }
 
-        plannerService.updatePlanner (request);
+        plannerService.updatePlanner (request, plannerEditRequest);
         return ResponseEntity.ok().body("플래너 수정 성공");
     }
 }

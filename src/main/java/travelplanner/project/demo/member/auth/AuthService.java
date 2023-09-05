@@ -62,6 +62,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.MEMBER)
+                .provider("local")
                 .build();
 
         memberRepository.save(user);  // 변경된 user 저장
@@ -90,34 +91,35 @@ public class AuthService {
                 )
         );
 
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmailAndProvider(request.getEmail(), "local")
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
-        String accessToken = tokenUtil.generateAccessToken(member.getEmail());
+        String accessToken = tokenUtil.generateAccessToken(String.valueOf(member.getId()));
 
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
-        if (redisUtil.getData(member.getEmail()) == null) { // 레디스에 토큰이 저장되어 있지 않은 경우
+        if (redisUtil.getData(String.valueOf(member.getId())) == null) { // 레디스에 토큰이 저장되어 있지 않은 경우
 
-            String refreshToken = tokenUtil.generateRefreshToken(member.getEmail());
+            String refreshToken = tokenUtil.generateRefreshToken(String.valueOf(member.getId()));
 
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
-            redisUtil.setDataExpire(member.getEmail(), refreshToken, Duration.ofDays(7));
+            redisUtil.setDataExpire(String.valueOf(member.getId()), refreshToken, Duration.ofDays(7));
 
         } else { // 레디스에 토큰이 저장되어 있는 경우
 
-            String refreshToken = redisUtil.getData(member.getEmail());
+            String refreshToken = redisUtil.getData(String.valueOf(member.getId()));
             cookieUtil.create(refreshToken, response);
         }
 
         return AuthResponse.builder()
                 .userId(member.getId())
                 .email(member.getEmail())
+                .provider(member.getProvider())
                 .userNickname(member.getUserNickname())
                 .profileImgUrl(profile.getProfileImgUrl())
                 .build();

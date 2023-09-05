@@ -1,5 +1,6 @@
 package travelplanner.project.demo.member.profile.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,12 +33,12 @@ public class UserService {
 
 
     // 비밀번호 체크
-    public boolean checkUserPassword(PasswordCheckRequest request) throws ApiException {
+    public boolean checkUserPassword(HttpServletRequest request, PasswordCheckRequest passwordCheckRequest) throws ApiException {
 
-        Member currentMember = authUtil.getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember(request);
         String encodedPassword = currentMember.getPassword();
 
-        if (encoder.matches(request.getPassword(), encodedPassword)) {
+        if (encoder.matches(passwordCheckRequest.getPassword(), encodedPassword)) {
             return true;
 
         } else {
@@ -47,9 +48,9 @@ public class UserService {
 
     // 비밀번호 변경
     @Transactional
-    public void updatePassword(PasswordUpdateRequest request) {
-        Member currentMember = authUtil.getCurrentMember();
-        String encodedPassword = encoder.encode(request.getPassword());
+    public void updatePassword(HttpServletRequest request, PasswordUpdateRequest passwordUpdateRequest) {
+        Member currentMember = authUtil.getCurrentMember(request);
+        String encodedPassword = encoder.encode(passwordUpdateRequest.getPassword());
 
         MemberEditor memberEditor = MemberEditor.builder()
                 .password(encodedPassword)
@@ -62,9 +63,9 @@ public class UserService {
 
     // 회원탈퇴
     @Transactional
-    public void deleteUser() {
+    public void deleteUser(HttpServletRequest request) {
 
-        Member currentMember = authUtil.getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember(request);
 
         Profile profile = profileRepository.findProfileByMemberId(currentMember.getId());
 

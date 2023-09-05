@@ -25,9 +25,9 @@ public class CalendarService {
     private final ValidatingService validatingService;
     private final ToDoService toDoService;
 
-    public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest) {
+    public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest, String authorization) {
 
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(authorization, plannerId);
 
         Calendar buildRequest = Calendar.builder()
                 .dateTitle(createRequest.getDateTitle())
@@ -49,10 +49,10 @@ public class CalendarService {
     }
 
     @Transactional
-    public void deleteDate(Long plannerId, Long deleteId){
+    public void deleteDate(Long plannerId, Long deleteId, String accessToken){
 
         // 반환값 무시하고 검증만 함
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
         Calendar calendar = validatingService.validateCalendarAccess(planner, deleteId);
 
         // 캘린더에서 플래너를 갖고 옴
@@ -64,9 +64,9 @@ public class CalendarService {
         calendarRepository.delete(calendar);
     }
 
-    public CalendarResponse updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest) {
+    public CalendarResponse updateDate(Long plannerId, Long updateId, CalendarEditRequest updateRequest, String accessToken) {
 
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
         Calendar calendar = validatingService.validateCalendarAccess(planner, updateId);
         CalendarEditor.CalendarEditorBuilder editorBuilder = calendar.toEditor();
         CalendarEditor calendarEditor = editorBuilder

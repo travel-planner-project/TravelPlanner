@@ -50,6 +50,7 @@ public class GroupMemberService {
             GroupMemberSearchResponse groupMemberResponse = GroupMemberSearchResponse.builder()
                     .profileImageUrl(searchMember.getProfile().getProfileImgUrl())
                     .email(searchMember.getEmail())
+                    .userId(searchMember.getId())
                     .userNickname(searchMember.getUserNickname())
                     .build();
 
@@ -65,7 +66,7 @@ public class GroupMemberService {
     public GroupMemberResponse addGroupMember(GroupMemberCreateRequest request, Long plannerId) {
 
         // 그룹멤버 찾기
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+        Optional<Member> member = memberRepository.findById(request.getUserId());
         Profile profile = profileRepository.findProfileByMemberId(member.get().getId());
 
         // 플래너 아이디에 해당하는 그룹 멤버 리스트 조회

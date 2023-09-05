@@ -80,8 +80,8 @@ public class ProfileController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @PostMapping("/user/check")
-    public boolean checkUserPassword(@RequestBody PasswordCheckRequest request) {
-        return userService.checkUserPassword(request);
+    public boolean checkUserPassword(HttpServletRequest request, @RequestBody PasswordCheckRequest passwordCheckRequest) {
+        return userService.checkUserPassword(request, passwordCheckRequest);
     }
 
     @Operation(summary = "회원 수정 : 비밀번호 변경")
@@ -93,8 +93,8 @@ public class ProfileController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @PatchMapping("/user/updateInfo")
-    public void updateUserPassword(@RequestBody PasswordUpdateRequest request) {
-        userService.updatePassword(request);
+    public void updateUserPassword(HttpServletRequest request, @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        userService.updatePassword(request, passwordUpdateRequest);
     }
 
 
@@ -109,10 +109,10 @@ public class ProfileController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @DeleteMapping("/user/delete")
-    public void deleteUser(@RequestBody PasswordCheckRequest request) throws ApiException{
+    public void deleteUser(HttpServletRequest request, @RequestBody PasswordCheckRequest passwordCheckRequest) throws ApiException{
 
-        if (userService.checkUserPassword(request)) {
-            userService.deleteUser();
+        if (userService.checkUserPassword(request, passwordCheckRequest)) {
+            userService.deleteUser(request);
 
         } else {
             throw new ApiException(ErrorType.CHECK_PASSWORD_AGAIN);

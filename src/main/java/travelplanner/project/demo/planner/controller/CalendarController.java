@@ -36,13 +36,13 @@ public class CalendarController {
     @MessageMapping("/create-date/{plannerId}")
     public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String authorization, CalendarCreateRequest request) {
 
-        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        tokenUtil.getAuthenticationFromToken(authorization);
 
 //        List<CalendarResponse> calendarList = calendarService.getCalendarList();
 //
 //        log.info("리스폰스: " + calendarList.toString());
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request)
+                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request, authorization)
                 )
         );
     }
@@ -51,11 +51,11 @@ public class CalendarController {
     public void updateDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
                            CalendarEditRequest request,
-                           @Header("Authorization") String authorization) {
+                           @Header("Authorization") String accessToken) {
 
-        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        tokenUtil.getAuthenticationFromToken(accessToken);
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","modify-date", "msg", calendarService.updateDate(plannerId, dateId, request)
+                Map.of("type","modify-date", "msg", calendarService.updateDate(plannerId, dateId, request, accessToken)
                 )
         );
     }
@@ -63,10 +63,10 @@ public class CalendarController {
     @MessageMapping("/delete-date/{plannerId}/{dateId}")
     public void deleteDate(@DestinationVariable Long plannerId,
                            @DestinationVariable Long dateId,
-                           @Header("Authorization") String authorization) {
+                           @Header("Authorization") String accessToken) {
 
-        tokenUtil.getJWTTokenFromWebSocket(authorization);
-        calendarService.deleteDate(plannerId, dateId);
+        tokenUtil.getAuthenticationFromToken(accessToken);
+        calendarService.deleteDate(plannerId, dateId, accessToken);
 //        기존 로직
 //        List<CalendarResponse> calendarList = calendarService.getCalendarList();
 //        simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId);

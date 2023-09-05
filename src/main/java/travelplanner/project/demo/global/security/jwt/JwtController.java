@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,9 +56,11 @@ public class JwtController {
         }
 
         String refreshToken = refreshTokenCookie.getValue();
-        String email = tokenUtil.getEmail(refreshToken);
+        log.info("refreshToken: " + refreshToken);
+        String userId = tokenUtil.getUserIdFromToken(refreshToken);
+        log.info("userId: " + userId);
 
-        if (redisUtil.getData(email) == null) { // 리프레시 토큰이 만료되어 레디스에서 사라진 경우
+        if (redisUtil.getData(userId) == null) { // 리프레시 토큰이 만료되어 레디스에서 사라진 경우
             throw new ApiException(ErrorType.REFRESH_TOKEN_EXPIRED);
         }
 
@@ -67,15 +70,15 @@ public class JwtController {
 
         // 헤더에 추가
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("------------------------- Authorization", newAccessToken);
+        responseHeaders.set("Authorization", newAccessToken);
 
-        String principal = tokenUtil.getEmail(newAccessToken);
+        tokenUtil.getAuthenticationFromToken(newAccessToken);
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(principal, newAccessToken, new ArrayList<>());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-        log.info("------------------------- SecurityContextHolder: " + principal + " newAccessToken: " + newAccessToken);
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//                new UsernamePasswordAuthenticationToken(principal, newAccessToken, new ArrayList<>());
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//
+//        log.info("------------------------- SecurityContextHolder: " + principal + " newAccessToken: " + newAccessToken);
 
         return ResponseEntity.ok().headers(responseHeaders).build();
     }

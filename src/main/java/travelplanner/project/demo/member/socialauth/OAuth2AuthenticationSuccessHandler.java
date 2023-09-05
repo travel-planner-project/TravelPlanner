@@ -50,16 +50,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                         Authentication authentication) throws IOException, ServletException {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String oauthType = principalDetails.getUser().getProvider();
+        String provider = principalDetails.getUser().getProvider();
         String email = null;
 
-        if (oauthType.equals("kakao")) {
+        if (provider.equals("kakao")) {
             KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(principalDetails.getAttributes());
             email = kakaoUserInfo.getEmail();
-        } else if (oauthType.equals("google")) {
+        } else if (provider.equals("google")) {
             GoogleUserInfo googleUserInfo = new GoogleUserInfo(principalDetails.getAttributes());
             email = googleUserInfo.getEmail();
-        } else if (oauthType.equals("naver")) {
+        } else if (provider.equals("naver")) {
             NaverUserInfo naverUserInfo = new NaverUserInfo(principalDetails.getAttributes());
             email = naverUserInfo.getEmail();
         }
@@ -70,22 +70,23 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             log.debug("------------------ Response 전송 완료");
         }
 
-        log.info("------------------------- 소셜 로그인 성공: " + email + "소셜 타입: " + oauthType);
+        log.info("------------------------- 소셜 로그인 성공: " + email + "소셜 타입: " + provider);
+
+        Optional<Member> member = memberRepository.findMemberByEmailAndProvider(email, provider);
+        String userId = String.valueOf(member.get().getId());
 
         // 인증이 성공했을 때, 어세스 토큰과 리프레시 토큰 발급
-        String accessToken = tokenUtil.generateAccessToken(email);
+        String accessToken = tokenUtil.generateAccessToken(userId);
         // 어세스 토큰은 헤더에 담아서 응답으로 보냄
         response.setHeader("Authorization", accessToken);
 
         // 리프레시 토큰을 Redis 에 저장
-        if (redisUtil.getData(email) == null) {
-            String refreshToken = tokenUtil.generateRefreshToken(email);
+        if (redisUtil.getData(userId) == null) {
+            String refreshToken = tokenUtil.generateRefreshToken(userId);
             // 리프레시 토큰은 쿠키에 담아서 응답으로 보냄
             cookieUtil.create(refreshToken, response);
         }
-
-        Optional<Member> member = memberRepository.findMemberByEmailAndProvider(email, oauthType);
-
+        
         AuthResponse authResponse = AuthResponse.builder()
                 .userId(member.get().getId())
                 .email(member.get().getEmail())
