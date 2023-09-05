@@ -69,7 +69,7 @@ public class PlannerService {
             // 특정 사용자의 플래너 조회
             Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
-            planners = plannerRepository.findByMember(member);
+            planners = plannerRepository.findByMemberOrderByIdDesc(member);
         }
 
         // ==================================================

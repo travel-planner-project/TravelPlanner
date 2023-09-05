@@ -12,7 +12,7 @@ import java.util.List;
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
     Page<Planner> findPlannerByMemberId(Long userId, Pageable pageable);
     Planner findPlannerById(Long plannerId);
-    List<Planner> findByMember(Member member);
+    List<Planner> findByMemberOrderByIdDesc(Member member);
     Page<Planner> findByIsPrivateFalseOrderByIdDesc(Pageable pageable);
     Page<Planner> findByIsPrivateFalseAndPlanTitleContainingOrderByIdDesc(String planTitle, Pageable pageable);
 
