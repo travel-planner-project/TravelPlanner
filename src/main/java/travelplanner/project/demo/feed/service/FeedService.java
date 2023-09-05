@@ -32,10 +32,10 @@ public class FeedService {
 
         if (planTitle == null) {
             // 전체 리스트를 가져오는 로직
-            page = plannerRepository.findByIsPrivateFalse(pageable);
+            page = plannerRepository.findByIsPrivateFalseOrderByIdDesc(pageable);
         } else {
             // 제목으로 필터링된 결과를 가져오는 로직
-            page = plannerRepository.findByIsPrivateFalseAndPlanTitleContaining(planTitle, pageable);
+            page = plannerRepository.findByIsPrivateFalseAndPlanTitleContainingOrderByIdDesc(planTitle, pageable);
         }
 
         List<FeedResponse> feedResponses = page.getContent()
