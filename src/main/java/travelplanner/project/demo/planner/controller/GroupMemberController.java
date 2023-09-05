@@ -45,7 +45,7 @@ public class GroupMemberController {
     })
     @GetMapping("/search/member")
     @ResponseBody
-    public List<GroupMemberSearchResponse> searchGroupMember(
+    public GroupMemberSearchResponse searchGroupMember(
             @Parameter(name = "email", description = "이메일", in = ParameterIn.QUERY)
             @RequestParam String email){
         return groupMemberService.searchMember(email);
