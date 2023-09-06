@@ -91,6 +91,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .userId(member.get().getId())
                 .email(member.get().getEmail())
                 .userNickname(member.get().getUserNickname())
+                .provider(provider)
                 .profileImgUrl(member.get().getProfile().getProfileImgUrl())
                 .build();
 
