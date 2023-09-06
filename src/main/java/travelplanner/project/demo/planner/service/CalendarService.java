@@ -25,9 +25,9 @@ public class CalendarService {
     private final ValidatingService validatingService;
     private final ToDoService toDoService;
 
-    public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest, String authorization) {
+    public CalendarResponse createDate(Long plannerId, CalendarCreateRequest createRequest, String accessToken) {
 
-        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(authorization, plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
 
         Calendar buildRequest = Calendar.builder()
                 .dateTitle(createRequest.getDateTitle())
