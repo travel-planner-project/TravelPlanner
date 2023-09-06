@@ -24,6 +24,9 @@ public class GroupMember {
     // 닉네임
     private String userNickname;
 
+    // 유저 인덱스
+    private Long userId;
+
     // 멤버 유형
     @Enumerated(EnumType.STRING)
     private GroupMemberType groupMemberType;

@@ -56,20 +56,20 @@ public class PlannerService {
 
     // 플래너 리스트
     // ** 여행 그룹의 프로필 사진도 같이 줘야 합니당
-    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, String email, HttpServletRequest request) {
+    public Page<PlannerListResponse> getPlannerListByUserIdOrEmail(Pageable pageable, Long userId, HttpServletRequest request) {
 
         // [공통] ==============================================
 
         List<Planner> planners;
 
-        if (email == null) {
-            // 이메일 값을 보내지 않았을 때, 모든 유저의 플래너 조회
+        if (userId == null) {
+            // 유저 아이디 값을 보내지 않았을 때, 모든 유저의 플래너 조회
             planners = plannerRepository.findAll();
         } else {
             // 특정 사용자의 플래너 조회
-            Member member = memberRepository.findByEmail(email)
+            Member member = memberRepository.findById(userId)
                     .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
-            planners = plannerRepository.findByMember(member);
+            planners = plannerRepository.findByMemberOrderByIdDesc(member);
         }
 
         // ==================================================
@@ -79,7 +79,8 @@ public class PlannerService {
         // 로그인한 경우여서 인증을 받을 수 있는 경우에는 아래와 같이 진행
         if (authUtil.authenticationUser(request)) {
 
-            String currentEmail = authUtil.getCurrentMember().getEmail();
+            Long currentUserId = authUtil.getCurrentMember(request).getId();
+            log.info("userId: " + currentUserId);
 
             /*
             이메일을 담지 않고 요청: 모든 유저의 플래너를 보여줘야 하며, 현재 로그인한 사용자가 그룹 멤버에 포함된다면 isPrivate가 true여도 보이게 해야 함.
@@ -87,7 +88,7 @@ public class PlannerService {
              */
 
             // 현재 사용자가 그룹 멤버인지 확인
-            List<GroupMember> groupMembers = groupMemberRepository.findByEmail(currentEmail);
+            List<GroupMember> groupMembers = groupMemberRepository.findByUserId(currentUserId);
 
             // 로그인한 사용자가 속한 모든 그룹의 플래너를 찾음
             for(GroupMember gm : groupMembers) {
@@ -173,21 +174,21 @@ public class PlannerService {
         if (authUtil.authenticationUser(request)) {
 //            String currentEmail = authUtil.getCurrentMember().getEmail();
             if (planner.getIsPrivate()) {
-                planner = validatingService.validatePlannerAndUserAccess(plannerId); // 그룹멤버만 볼 수 있도록 하는 메서드
+                planner = validatingService.validatePlannerAndUserAccess(request, plannerId); // 그룹멤버만 볼 수 있도록 하는 메서드
             }
 
 //            if (authUtil.isGroupMember(currentEmail, plannerId)) {
 //                log.info("---------------회원이며 그룹 멤버다.");
-                return PlannerDetailAuthorizedResponse.builder()
-                        .plannerId(planner.getId())
-                        .planTitle(planner.getPlanTitle())
-                        .isPrivate(planner.getIsPrivate())
-                        .startDate(planner.getStartDate())
-                        .endDate(planner.getEndDate())
-                        .calendars(updatedCalendarResponses)
-                        .groupMemberList(groupMemberResponses)
-                        .chattings(chatResponses)
-                        .build();
+            return PlannerDetailAuthorizedResponse.builder()
+                    .plannerId(planner.getId())
+                    .planTitle(planner.getPlanTitle())
+                    .isPrivate(planner.getIsPrivate())
+                    .startDate(planner.getStartDate())
+                    .endDate(planner.getEndDate())
+                    .calendars(updatedCalendarResponses)
+                    .groupMemberList(groupMemberResponses)
+                    .chattings(chatResponses)
+                    .build();
 //            }
 //            log.info("---------------회원이지만 그룹 멤버에 포함되지 않는다.");
         }
@@ -205,7 +206,7 @@ public class PlannerService {
 
     @Transactional
     //플래너 삭제
-    public void deletePlanner(PlannerDeleteRequest plannerDeleteRequest) {
+    public void deletePlanner(HttpServletRequest request, PlannerDeleteRequest plannerDeleteRequest) {
 
 
         Long plannerId = plannerDeleteRequest.getPlannerId();
@@ -215,7 +216,7 @@ public class PlannerService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        Member currentMember = authUtil.getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember(request);
 
 
         // 플래너를 생성한 사람일 경우
@@ -235,16 +236,16 @@ public class PlannerService {
     }
 
     @Transactional
-    public PlannerCreateResponse createPlanner(PlannerCreateRequest request) {
+    public PlannerCreateResponse createPlanner(HttpServletRequest request, PlannerCreateRequest plannerCreateRequest) {
 
-        log.info("request.getPlanTitle() = {}", request.getPlanTitle());
-        log.info("request.getIsPrivate() = {}", request.getIsPrivate());
-        log.info("request.getPlanTitle().getClass() = {}", request.getPlanTitle().getClass());
+        log.info("request.getPlanTitle() = {}", plannerCreateRequest.getPlanTitle());
+        log.info("request.getIsPrivate() = {}", plannerCreateRequest.getIsPrivate());
+        log.info("request.getPlanTitle().getClass() = {}", plannerCreateRequest.getPlanTitle().getClass());
 
         Planner createPlanner = Planner.builder()
-                .planTitle(request.getPlanTitle())
-                .isPrivate(request.getIsPrivate())
-                .member(authUtil.getCurrentMember())
+                .planTitle(plannerCreateRequest.getPlanTitle())
+                .isPrivate(plannerCreateRequest.getIsPrivate())
+                .member(authUtil.getCurrentMember(request))
                 // todo 이곳 말고 캘린더를 생성하는 서비스에서 플래너 sratdate, enddate 업데이트해주기
                 .build();
 
@@ -252,13 +253,14 @@ public class PlannerService {
 
         // 플래너 만든 사람은 HOST 로 처음에 들어가 있어야 함
         // 플래너 만든 사람은 현재 로그인 한 사람
-        Member member = authUtil.getCurrentMember();
+        Member member = authUtil.getCurrentMember(request);
         Profile profile = profileRepository.findProfileByMemberId(member.getId());
 
         GroupMember groupMember = GroupMember.builder()
                 .email(member.getEmail())
                 .groupMemberType(GroupMemberType.HOST)
                 .userNickname(member.getUserNickname())
+                .userId(member.getId())
                 .planner(createPlanner)
                 .profile(profile)
                 .build();
@@ -280,15 +282,15 @@ public class PlannerService {
     }
 
     @Transactional
-    public void updatePlanner(PlannerEditRequest request) {
+    public void updatePlanner(HttpServletRequest request, PlannerEditRequest plannerEditRequest) {
 
-        Long plannerId = request.getPlannerId();
+        Long plannerId = plannerEditRequest.getPlannerId();
 
         // 조회했을 때 플래너가 존재하지 않을 경우
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new ApiException(ErrorType.PAGE_NOT_FOUND));
 
-        Member currentMember = authUtil.getCurrentMember();
+        Member currentMember = authUtil.getCurrentMember(request);
 
         // 플래너를 생성한 사람이 아닐 경우
         if (!planner.getMember().getId().equals(currentMember.getId())) {
@@ -298,8 +300,8 @@ public class PlannerService {
 
         PlannerEditor.PlannerEditorBuilder editorBuilder = planner.toEditor();
         PlannerEditor plannerEditor = editorBuilder
-                .planTitle(request.getPlanTitle())
-                .isPrivate(request.getIsPrivate())
+                .planTitle(plannerEditRequest.getPlanTitle())
+                .isPrivate(plannerEditRequest.getIsPrivate())
                 .build();
         planner.edit(plannerEditor);
     }

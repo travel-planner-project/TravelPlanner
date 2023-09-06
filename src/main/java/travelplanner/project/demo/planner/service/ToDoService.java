@@ -48,10 +48,10 @@ public class ToDoService {
 
 
 
-    public ToDoResponse createTodo(Long plannerId, Long dateId,
+    public ToDoResponse createTodo(String accessToken, Long plannerId, Long dateId,
                            ToDoCraeteRequest request) {
         // 플래너와 사용자에 대한 검증
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
         // 캘린더에 대한 검증
         Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
 
@@ -82,12 +82,12 @@ public class ToDoService {
 
     @Transactional
     public ToDoResponse editTodo(
-            Long plannerId, Long dateId, Long toDoId,
+            String accessToken, Long plannerId, Long dateId, Long toDoId,
             ToDoEditRequest editRequest
     ) {
 
         // 플래너와 사용자에 대한 검증
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
         // 캘린더에 대한 검증
         Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
         // 투두에 대한 검증
@@ -120,10 +120,10 @@ public class ToDoService {
     }
 
     @Transactional
-    public void delete(Long plannerId, Long dateId, Long toDoId) {
+    public void delete(String accessToken, Long plannerId, Long dateId, Long toDoId) {
 
         // 플래너와 사용자에 대한 검증
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
         // 캘린더에 대한 검증
         Calendar calendar = validatingService.validateCalendarAccess(planner, dateId);
         // 투두에 대한 검증

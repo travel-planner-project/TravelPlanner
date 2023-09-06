@@ -65,7 +65,7 @@ public class ProfileService {
     @Transactional
     public ProfileUpdateResponse updateUserProfileImg(ProfileUpdateRequest profileUpdateRequest, MultipartFile profileImg,  HttpServletRequest request) throws Exception, IOException {
 
-        Member member = authUtil.getCurrentMember();
+        Member member = authUtil.getCurrentMember(request);
 
         // 회원 닉네임 수정
         MemberEditor memberEditor = MemberEditor.builder()

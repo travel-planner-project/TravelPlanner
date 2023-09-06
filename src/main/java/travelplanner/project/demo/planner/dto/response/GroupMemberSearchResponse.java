@@ -18,4 +18,7 @@ public class GroupMemberSearchResponse {
 
     @Schema(description = "유저 닉네임", example = "시니")
     private String userNickname;
+
+    @Schema(description = "유저 인덱스", example = "1")
+    private Long userId;
 }

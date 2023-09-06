@@ -28,11 +28,18 @@ public class AuthUtil {
     private final MemberRepository memberRepository;
     private final GroupMemberRepository groupMemberRepository;
 
-    public Member getCurrentMember() {
+    public Member getCurrentMember(HttpServletRequest request) {
+        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
+        String userId = tokenUtil.getUserIdFromToken(accessToken);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
+        return memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+    }
+
+    public Member getCurrentMemberForWebSocket(String accessToken) {
+        String userId = tokenUtil.getUserIdFromToken(accessToken);
+
+        return memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
     }
 
@@ -53,14 +60,7 @@ public class AuthUtil {
         String accessToken = tokenUtil.getJWTTokenFromHeader(request);
 
         if (accessToken != null) {
-
-            String tokenUtilEmail = tokenUtil.getEmail(accessToken);
-            log.info("------------------------- 유저 정보: " + tokenUtilEmail);
-
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(tokenUtilEmail, accessToken, new ArrayList<>());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+            tokenUtil.getAuthenticationFromToken(accessToken);
             return true;
         }
 

@@ -55,11 +55,11 @@ public class GroupMemberController {
     public void addGroupMember(
             @DestinationVariable Long plannerId,
             GroupMemberCreateRequest request,
-            @Header("Authorization") String authorization
+            @Header("Authorization") String accessToken
     ) throws Exception{
 
         // 리스트를 반환해줘야 하나..?
-        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        tokenUtil.getAuthenticationFromToken(accessToken);
         messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
                 Map.of("type","add-user", "msg", groupMemberService.addGroupMember(request, plannerId)
                 )
@@ -70,10 +70,10 @@ public class GroupMemberController {
     public void deleteGroupMember(
             @DestinationVariable Long plannerId,
             GroupMemberDeleteRequest request,
-            @Header("Authorization") String authorization
+            @Header("Authorization") String accessToken
     ) throws Exception {
 
-        tokenUtil.getJWTTokenFromWebSocket(authorization);
+        tokenUtil.getUserIdFromToken(accessToken);
         groupMemberService.deleteGroupMember(request);
         messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, Collections.emptyMap());
     }

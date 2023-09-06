@@ -24,4 +24,7 @@ public class AuthResponse {
 
     @Schema(description = "프로필 이미지 주소")
     private String profileImgUrl;
+
+    @Schema(description = "로그인 유형", example = "google")
+    private String provider;
 }

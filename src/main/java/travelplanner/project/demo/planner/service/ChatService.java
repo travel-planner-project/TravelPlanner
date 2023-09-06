@@ -32,7 +32,7 @@ public class ChatService {
     private final WebSocketErrorController webSocketErrorController;
     private final ValidatingService validatingService;
     @Transactional
-    public ChatResponse sendChat(ChatRequest request, Long plannerId) {
+    public ChatResponse sendChat(String accessToken, ChatRequest request, Long plannerId) {
         
         // 유저 정보
         Member member = memberRepository.findById(request.getUserId())
@@ -44,7 +44,7 @@ public class ChatService {
         }
 
         // 플래너와 그룹 멤버 검증 후 플래너 리턴
-        Planner planner = validatingService.validatePlannerAndUserAccess(plannerId);
+        Planner planner = validatingService.validatePlannerAndUserAccessForWebSocket(accessToken, plannerId);
 
         // 프로필
         Profile profile = profileRepository.findProfileByMemberId(member.getId());

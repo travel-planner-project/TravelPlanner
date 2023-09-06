@@ -20,6 +20,9 @@ public class GroupMemberResponse {
     @Schema(description = "유저 닉네임", example = "시니")
     private String nickname;
 
+    @Schema(description = "유저 인덱스", example = "1")
+    private Long userId;
+
     @Schema(description = "프로필 이미지 주소")
     private String profileImageUrl;
 
