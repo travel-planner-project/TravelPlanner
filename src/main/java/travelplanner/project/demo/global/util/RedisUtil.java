@@ -10,6 +10,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Component
 public class RedisUtil {
+    // 배포시에는 devKey 를 제거해주세요
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -17,7 +18,8 @@ public class RedisUtil {
     public String getData(String key) {
 
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        return valueOperations.get(key);
+        String devKey = "dev:" + key;
+        return valueOperations.get(devKey);
     }
 
 
@@ -25,12 +27,14 @@ public class RedisUtil {
     public void setDataExpire(String key, String value, Duration duration) {
 
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key, value, duration);
+        String devKey = "dev:" + key;
+        valueOperations.set(devKey, value, duration);
     }
 
 
     // 레디스에서 특정 키를 가진 값 삭제
     public void deleteData(String key) {
-        stringRedisTemplate.delete(key);
+        String devKey = "dev:" + key;
+        stringRedisTemplate.delete(devKey);
     }
 }
