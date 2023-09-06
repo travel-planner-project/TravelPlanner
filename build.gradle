@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'travelplanner.project'
-version = 'ROOT'
+version = 'SPRINT2'
 
 java {
 	sourceCompatibility = '17'
