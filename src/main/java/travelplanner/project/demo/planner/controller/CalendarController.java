@@ -34,15 +34,15 @@ public class CalendarController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/create-date/{plannerId}")
-    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String authorization, CalendarCreateRequest request) {
+    public void createDate(@DestinationVariable Long plannerId, @Header("Authorization") String accessToken, CalendarCreateRequest request) {
 
-        tokenUtil.getAuthenticationFromToken(authorization);
+        tokenUtil.getAuthenticationFromToken(accessToken);
 
 //        List<CalendarResponse> calendarList = calendarService.getCalendarList();
 //
 //        log.info("리스폰스: " + calendarList.toString());
         simpMessagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
-                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request, authorization)
+                Map.of("type","add-date", "msg", calendarService.createDate(plannerId, request, accessToken)
                 )
         );
     }
