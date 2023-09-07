@@ -20,8 +20,8 @@ public class ForgotPasswordService {
     private final RedisUtil redisUtil;
 
     // 임시 토큰 생성
-    public String generateTempToken(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public String generateTempToken(String email, String nickName) {
+        Member member = memberRepository.findByEmailAndUserNickname(email, nickName)
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         String tempToken = tokenUtil.generateTempToken(member);  // TokenUtil에 임시 토큰 생성 메서드 추가

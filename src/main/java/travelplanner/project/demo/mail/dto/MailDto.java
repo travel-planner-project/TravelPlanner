@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class MailDto {
-    private String toAddress;
-    private String uri;
+    private String email;
+    private String nickName;
 }
