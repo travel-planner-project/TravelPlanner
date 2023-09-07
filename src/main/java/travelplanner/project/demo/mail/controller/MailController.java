@@ -32,7 +32,7 @@ public class MailController {
     @PostMapping("/change")
     public String getUriMailToken(@RequestBody ChangePasswordDto changePasswordDto) {
 
-        if (!tokenUtil.isValidToken(token)) {
+        if (!tokenUtil.isValidToken(changePasswordDto.getToken())) {
             throw new ApiException(ErrorType.TOKEN_NOT_VALID);
         }
 
