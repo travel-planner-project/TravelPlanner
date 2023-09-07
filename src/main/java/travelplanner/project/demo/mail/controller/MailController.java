@@ -32,6 +32,8 @@ public class MailController {
             throw new ApiException(ErrorType.TOKEN_NOT_VALID);
         }
 
+        String email = tokenUtil.getEmailFromToken(token);
+
 
         return null;
     }

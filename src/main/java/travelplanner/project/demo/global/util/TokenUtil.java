@@ -149,4 +149,13 @@ public class TokenUtil extends StompSessionHandlerAdapter {
                 .compact();
     }
 
+    // 토큰으로 claim에서 이메일 추출
+    public String getEmailFromToken(String token) {
+        String email = Jwts.parser().setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody().getSubject();
+        return email;
+    }
+
+
 }
