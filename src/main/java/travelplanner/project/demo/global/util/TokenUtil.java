@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.member.Member;
 import travelplanner.project.demo.member.MemberRepository;
 
 import java.time.Duration;
@@ -134,4 +135,18 @@ public class TokenUtil extends StompSessionHandlerAdapter {
 //        log.info("-------------------------authentication: " + authentication);
 //        log.info("-------------------------username: " + username);
     }
+
+    // 임시 토큰 발급
+    public String generateTempToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getEmail()); // Subject를 이메일로 설정
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // 임시 토큰은 30분 동안 유효
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
 }

@@ -18,18 +18,15 @@ public class ForgotPasswordService {
     private final MemberRepository memberRepository;
     private final TokenUtil tokenUtil;
     private final RedisUtil redisUtil;
+
+    // 임시 토큰 생성
     public String generateTempToken(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(null);
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
-        if (member == null) {
-            throw new ApiException(ErrorType.USER_NOT_FOUND);
-        }
+        String tempToken = tokenUtil.generateTempToken(member);  // TokenUtil에 임시 토큰 생성 메서드 추가
+        redisUtil.setDataExpireWithPrefix("temp", email, tempToken, Duration.ofMinutes(30));
 
-//        String tempToken = tokenUtil.generateTempToken(user);  // TokenUtil에 임시 토큰 생성 메서드 추가
-//        redisUtil.setDataExpire("temp", email, tempToken, Duration.ofMinutes(30));
-
-//        return tempToken;
-        return null;
+        return tempToken;
     }
 }
