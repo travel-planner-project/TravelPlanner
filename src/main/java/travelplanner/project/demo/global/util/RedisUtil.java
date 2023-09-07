@@ -37,4 +37,12 @@ public class RedisUtil {
         String devKey = "dev:" + key;
         stringRedisTemplate.delete(devKey);
     }
+
+    // 임시 토큰을 리프레시 토큰과 충돌이 일어나지 않게하기 위해 키를 하나 더 받습니다.
+    public void setDataExpireWithPrefix(String prefix, String key, String value, Duration duration) {
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        String fullKey = prefix + ":" + key;
+        valueOperations.set(fullKey, value, duration);
+    }
+
 }

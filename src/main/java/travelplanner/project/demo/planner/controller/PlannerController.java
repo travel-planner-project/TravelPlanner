@@ -113,7 +113,7 @@ public class PlannerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "플래너 수정 성공"),
             @ApiResponse(responseCode = "422", description = "페이지를 찾을 수 없습니다."),
-            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
+            @ApiResponse(responseCode = "500", description = "입력하지  ₩않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping
@@ -122,7 +122,6 @@ public class PlannerController {
 
         if (result.hasErrors()) {
             throw  new ApiException(ErrorType.INVALID_REQUEST);
-//            return ResponseEntity.badRequest().body("Planner 업데이트 실패했습니다. Invalid request입니다. ");
         }
 
         plannerService.updatePlanner (request, plannerEditRequest);
