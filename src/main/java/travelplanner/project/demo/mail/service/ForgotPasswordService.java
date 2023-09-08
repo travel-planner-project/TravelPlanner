@@ -19,9 +19,10 @@ import java.time.Duration;
 public class ForgotPasswordService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder encoder;
+    private final MailService mailService;
     private final TokenUtil tokenUtil;
     private final RedisUtil redisUtil;
-    private final PasswordEncoder encoder;
 
     // 임시 토큰 생성
     public String generateTempToken(String email, String nickName) {
@@ -30,7 +31,8 @@ public class ForgotPasswordService {
 
         String tempToken = tokenUtil.generateTempToken(member);  // TokenUtil에 임시 토큰 생성 메서드 추가
         redisUtil.setDataExpireWithPrefix("temp", email, tempToken, Duration.ofMinutes(30));
-
+        String resetLink = "https://localhost:8080/reset-password?token=" + tempToken;
+        mailService.sendSimpleMessage(email, "비밀번호 변경", "비밀번호를 변경하려면 다음 링크를 클릭하세요: " + resetLink);
         return tempToken;
     }
 
