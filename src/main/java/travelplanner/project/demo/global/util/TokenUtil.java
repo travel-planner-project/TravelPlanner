@@ -137,8 +137,8 @@ public class TokenUtil extends StompSessionHandlerAdapter {
     }
 
     // 임시 토큰 발급
-    public String generateTempToken(Member member) {
-        Claims claims = Jwts.claims().setSubject(member.getEmail()); // Subject를 이메일로 설정
+    public String generateTempToken(Long userId) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userId)); // Subject를 이메일로 설정
         Date now = new Date();
 
         return Jwts.builder()

@@ -25,18 +25,21 @@ public class ForgotPasswordService {
     private final RedisUtil redisUtil;
 
     // 임시 토큰 생성
-    public String generateTempToken(String email, String nickName) {
+    public void generateTempToken(String email, String nickName) {
         Member member = memberRepository.findByEmailAndUserNickname(email, nickName)
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
-        String tempToken = tokenUtil.generateTempToken(member);  // TokenUtil에 임시 토큰 생성 메서드 추가
+        String tempToken = tokenUtil.generateTempToken(member.getId());  // TokenUtil에 임시 토큰 생성 메서드 추가
         redisUtil.setDataExpireWithPrefix("temp", email, tempToken, Duration.ofMinutes(30));
         String resetLink = "https://localhost:8080/reset-password?token=" + tempToken;
         mailService.sendSimpleMessage(email, "비밀번호 변경", "비밀번호를 변경하려면 다음 링크를 클릭하세요: " + resetLink);
-        return tempToken;
     }
 
     public void changePassword(ChangePasswordDto changePasswordDto) {
+
+        // 제외해야함
+        // "https://localhost:8080/reset-password?token="
+
         if (!tokenUtil.isValidToken(changePasswordDto.getToken())) {
             throw new ApiException(ErrorType.TOKEN_NOT_VALID);
         }
