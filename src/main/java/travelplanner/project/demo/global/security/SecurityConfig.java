@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import travelplanner.project.demo.global.filter.CustomHeaderFilter;
 import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
@@ -123,14 +122,6 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenUtil, cookieUtil, redisUtil);
-    }
-
-    @Bean
-    public FilterRegistrationBean<CustomHeaderFilter> customHeaderFilter() {
-        FilterRegistrationBean<CustomHeaderFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new CustomHeaderFilter());
-        registrationBean.addUrlPatterns("/*");
-        return registrationBean;
     }
 
 }
