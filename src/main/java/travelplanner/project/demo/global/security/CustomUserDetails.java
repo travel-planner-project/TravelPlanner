@@ -3,7 +3,7 @@ package travelplanner.project.demo.global.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import travelplanner.project.demo.member.Member;
+import travelplanner.project.demo.domain.member.domain.Member;
 
 import java.util.Collection;
 import java.util.Collections;
