@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.member.MemberRepository;
 
 import java.time.Duration;
@@ -20,7 +21,7 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TokenUtil extends StompSessionHandlerAdapter {
+public class TokenUtil extends StompSessionHandlerAdapter{
 
     private final RedisUtil redisUtil;
     private final MemberRepository memberRepository;
@@ -77,8 +78,10 @@ public class TokenUtil extends StompSessionHandlerAdapter {
 
         } catch (ExpiredJwtException e) { // 어세스 토큰 만료
             e.printStackTrace();
+            throw  e;
+        } catch (Exception e) {
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
-        return false;
     }
 
 
