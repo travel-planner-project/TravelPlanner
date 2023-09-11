@@ -9,14 +9,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.util.TokenUtil;
-import travelplanner.project.demo.global.util.WebsocketUtil;
-
-import java.util.ArrayList;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,20 +38,6 @@ public class StompHandler implements ChannelInterceptor {
 
             if (tokenUtil.isValidToken(accessToken)) {
                 tokenUtil.getAuthenticationFromToken(accessToken);
-
-//                String principal = tokenUtil.getEmail(accessToken);
-//                log.info("어세스토큰: " + accessToken);
-//                log.info("유저 이메일: " + principal);
-//
-//                // JWT 토큰이 유효하면, 사용자 정보를 연결 세션에 추가
-//                UsernamePasswordAuthenticationToken authenticationToken =
-//                        new UsernamePasswordAuthenticationToken(principal, accessToken, new ArrayList<>());
-//                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-//
-//                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//                String username = authentication.getName(); // 현재 사용자의 email 얻기
-//                log.info("authentication: " + authentication);
-//                log.info("username: " + username);
             }
         }
         return message;
