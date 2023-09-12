@@ -9,5 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MailDto {
     private String email;
-    private String nickName;
+//    private String nickName;
 }

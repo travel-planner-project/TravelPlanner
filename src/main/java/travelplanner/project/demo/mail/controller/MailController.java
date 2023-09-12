@@ -16,12 +16,11 @@ import travelplanner.project.demo.member.MemberRepository;
 public class MailController {
 
     private final ForgotPasswordService forgotPasswordService;
-    private final MailService mailService;
 
     @PostMapping("/forgot")
     public String getChangePasswordApi(@RequestBody MailDto mailDto) {
 
-        forgotPasswordService.generateTempToken(mailDto.getEmail(), mailDto.getNickName());
+        forgotPasswordService.generateTempToken(mailDto.getEmail());
 
         return null;
     }

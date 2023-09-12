@@ -23,10 +23,11 @@ public class ForgotPasswordService {
     private final MailService mailService;
     private final TokenUtil tokenUtil;
     private final RedisUtil redisUtil;
-
+    private static final String PROVIDER_LOCAL = "local";
     // 임시 토큰 생성
-    public void generateTempToken(String email, String nickName) {
-        Member member = memberRepository.findByEmailAndUserNickname(email, nickName)
+    public void generateTempToken(String email) {
+
+        Member member = memberRepository.findMemberByEmailAndProvider(email, PROVIDER_LOCAL)
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         String tempToken = tokenUtil.generateTempToken(member.getId());  // TokenUtil에 임시 토큰 생성 메서드 추가
