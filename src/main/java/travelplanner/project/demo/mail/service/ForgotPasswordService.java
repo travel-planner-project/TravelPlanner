@@ -37,14 +37,15 @@ public class ForgotPasswordService {
 
     public void changePassword(ChangePasswordDto changePasswordDto) {
 
-        // 제외해야함
-        // "https://localhost:8080/reset-password?token="
 
-        if (!tokenUtil.isValidToken(changePasswordDto.getToken())) {
+        // URI 부분을 제거
+        String token = changePasswordDto.getToken().replaceFirst("https://localhost:8080/reset-password\\?token=", "");
+
+        if (!tokenUtil.isValidToken(token)) {
             throw new ApiException(ErrorType.TOKEN_NOT_VALID);
         }
 
-        String email = tokenUtil.getEmailFromToken(changePasswordDto.getToken());
+        String email = tokenUtil.getEmailFromToken(token);
 
         // 이메일을 사용하여 멤버 찾기
         Member memberToUpdate = memberRepository.findByEmail(email)
