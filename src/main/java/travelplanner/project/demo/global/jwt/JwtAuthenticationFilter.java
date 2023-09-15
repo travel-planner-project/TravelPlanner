@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
@@ -22,8 +20,6 @@ import java.util.ArrayList;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenUtil;
-    private final CookieUtil cookieUtil;
-    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

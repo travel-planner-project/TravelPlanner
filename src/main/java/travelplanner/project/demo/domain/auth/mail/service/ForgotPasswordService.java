@@ -3,21 +3,20 @@ package travelplanner.project.demo.domain.auth.mail.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.member.editor.MemberEditor;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
 import travelplanner.project.demo.domain.auth.mail.dto.ChangePasswordDto;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberEditor;
-import travelplanner.project.demo.member.MemberRepository;
 
 import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
 public class ForgotPasswordService {
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final MailService mailService;

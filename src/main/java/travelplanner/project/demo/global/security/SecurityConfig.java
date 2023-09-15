@@ -121,7 +121,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenUtil, cookieUtil, redisUtil);
+        return new JwtAuthenticationFilter(tokenUtil);
     }
 
 }

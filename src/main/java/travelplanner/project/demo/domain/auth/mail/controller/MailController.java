@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.auth.mail.dto.ChangePasswordDto;
 import travelplanner.project.demo.domain.auth.mail.dto.MailDto;
 import travelplanner.project.demo.domain.auth.mail.service.ForgotPasswordService;
-import travelplanner.project.demo.member.MemberRepository;
 
 @RestController
 @RequestMapping("/password")
