@@ -7,12 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
+
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TokenUtil extends StompSessionHandlerAdapter {
+public class TokenUtil extends StompSessionHandlerAdapter{
 
     private final RedisUtil redisUtil;
     private final MemberRepository memberRepository;
@@ -78,8 +78,10 @@ public class TokenUtil extends StompSessionHandlerAdapter {
 
         } catch (ExpiredJwtException e) { // 어세스 토큰 만료
             e.printStackTrace();
+            throw  e;
+        } catch (Exception e) {
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
-        return false;
     }
 
 
@@ -135,27 +137,4 @@ public class TokenUtil extends StompSessionHandlerAdapter {
 //        log.info("-------------------------authentication: " + authentication);
 //        log.info("-------------------------username: " + username);
     }
-
-    // 임시 토큰 발급
-    public String generateTempToken(Long userId) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(userId)); // Subject를 이메일로 설정
-        Date now = new Date();
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis())) // 임시 토큰은 30분 동안 유효
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
-    }
-
-    // 토큰으로 claim에서 이메일 추출
-    public String getEmailFromToken(String token) {
-        String email = Jwts.parser().setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
-        return email;
-    }
-
-
 }
