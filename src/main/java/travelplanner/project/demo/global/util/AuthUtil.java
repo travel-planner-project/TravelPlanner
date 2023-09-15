@@ -4,19 +4,14 @@ package travelplanner.project.demo.global.util;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.domain.GroupMember;
-import travelplanner.project.demo.planner.repository.GroupMemberRepository;
+import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
+import travelplanner.project.demo.domain.planner.groupmember.domain.GroupMember;
+import travelplanner.project.demo.domain.planner.groupmember.repository.GroupMemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
