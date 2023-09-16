@@ -5,6 +5,7 @@ export type FriendType = {
   profileImgUrl?: string
   userNickname?: string
   email?: string
+  message?: string
 }
 
 type FriendInfoProps = {
