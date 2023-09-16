@@ -66,10 +66,10 @@
 .planner {
   @include U.flex-c(row, flex-start, flex-start);
   width: 100%;
-  // height: calc(100% - 500px);
+  height: calc(100% - 500px);
   // max-height: calc(100% - 500px);
   overflow-x: scroll;
-  overflow-y: hidden;
+  overflow-y: scroll;
   background-color: C.$gray100;
   padding: 36px;
   gap: 36px;
@@ -78,10 +78,10 @@
 
 .planList {
   height: 100%;
-  max-height: 1500px;
+  // max-height: 1500px;
   @include U.flex-c(row, flex-start, flex-start);
   gap: 36px;
-  overflow-y: hidden;
+  // overflow-y: hidden;
 }
 
 .plan {
