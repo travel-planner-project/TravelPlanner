@@ -543,6 +543,8 @@ function PlanDetail() {
             setEditingScheduleId(-1)
             setScheduleData(initialScheduleData)
             setIsScheduleEditorOpened(false)
+          } else if (resBody.type === 'add-user') {
+            setGroupMember(members => [...members, resBody.msg])
           }
         }
       }
