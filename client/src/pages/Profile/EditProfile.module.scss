@@ -23,6 +23,11 @@
   @include U.flex-c(row, center, center);
 }
 
+.profileImg {
+  @include U.size(100%);
+  object-fit: cover;
+}
+
 .deleteImage {
   position: absolute;
   top: 0;
