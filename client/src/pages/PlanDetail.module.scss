@@ -6,7 +6,7 @@
   // width: 100%;
   // height: 100%;
   max-height: 100%;
-  overflow-y: hidden;
+  // overflow-y: hidden;
   @include U.flex-c(column, flex-start, flex-start);
   gap: 36px;
 }
@@ -27,7 +27,7 @@
   width: 100%;
   // height: 100%;
   // max-height: 100%;
-  overflow-y: hidden;
+  // overflow-y: hidden;
   padding: 36px;
   @include U.flex-c(column, flex-start, flex-start);
   gap: 36px;
@@ -66,7 +66,7 @@
 .planner {
   @include U.flex-c(row, flex-start, flex-start);
   width: 100%;
-  height: calc(100% - 500px);
+  // height: calc(100% - 500px);
   // max-height: calc(100% - 500px);
   overflow-x: scroll;
   overflow-y: scroll;
