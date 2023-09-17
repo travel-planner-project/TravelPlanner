@@ -50,7 +50,7 @@ public class ForgotPasswordService {
         String email = tokenUtil.getEmailFromToken(tempToken);
 
         // 이메일을 사용하여 멤버 찾기
-        Member memberToUpdate = memberRepository.findByEmailAndProvider(email, "local")
+        Member memberToUpdate = memberRepository.findByEmailAndProvider(email, PROVIDER_LOCAL)
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         String newPassword = changePasswordDto.getNewPassword();
