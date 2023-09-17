@@ -20,7 +20,7 @@ import travelplanner.project.demo.domain.auth.auth.dto.request.RegisterRequest;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 
 
-@Tag(name = "User", description = "회원가입 / 로그인 API")
+@Tag(name = "Auth", description = "회원가입/로그인 관련 API")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

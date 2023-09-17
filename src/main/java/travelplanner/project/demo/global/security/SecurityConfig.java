@@ -94,7 +94,6 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
         config.addExposedHeader("Authorization");
-        config.addExposedHeader("TempToken");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

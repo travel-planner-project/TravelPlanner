@@ -112,8 +112,9 @@ public class PlannerController {
     @Operation(summary = "플래너 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "플래너 수정 성공"),
-            @ApiResponse(responseCode = "422", description = "페이지를 찾을 수 없습니다."),
-            @ApiResponse(responseCode = "500", description = "입력하지  ₩않은 요소가 존재합니다.",
+            @ApiResponse(responseCode = "422", description = "페이지를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "입력하지  않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping

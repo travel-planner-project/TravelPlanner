@@ -33,7 +33,7 @@ public class ForgotPasswordService {
 
         String tempToken = tokenUtil.generateTempToken(member.getId());  // TokenUtil에 임시 토큰 생성 메서드 추가
         redisUtil.setDataExpireWithPrefix("temp", email, tempToken, Duration.ofMinutes(30));
-        String resetLink = "http://localhost:8080/password/change?tempToken=" + tempToken;
+        String resetLink = "http://localhost:8080/password/callback?tempToken=" + tempToken;
         return resetLink;
     }
 
@@ -50,7 +50,7 @@ public class ForgotPasswordService {
         String email = tokenUtil.getEmailFromToken(tempToken);
 
         // 이메일을 사용하여 멤버 찾기
-        Member memberToUpdate = memberRepository.findByEmailAndProvider(email, "local")
+        Member memberToUpdate = memberRepository.findByEmailAndProvider(email, PROVIDER_LOCAL)
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 
         String newPassword = changePasswordDto.getNewPassword();
