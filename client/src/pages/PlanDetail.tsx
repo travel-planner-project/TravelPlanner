@@ -99,21 +99,15 @@ function PlanDetailView({
               )
             })}
           </div>
-          {isMember && (
-            <div className={styles.userBtnBox}>
-              <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
-                <Icon name='add-person' size={42} />
-              </button>
-              <button
-                type='button'
-                className={styles.deletePerson}
-                onClick={handleMemberDeleteMode}
-              >
-                <Icon name='delete-person' size={42} />
-              </button>
-              <Modal type='invite' />
-            </div>
-          )}
+          <div className={styles.userBtnBox}>
+            <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
+              <Icon name='add-person' size={42} />
+            </button>
+            <button type='button' className={styles.deletePerson} onClick={handleMemberDeleteMode}>
+              <Icon name='delete-person' size={42} />
+            </button>
+            <Modal type='invite' />
+          </div>
         </div>
         <div className={styles.planner}>
           <ul className={styles.planList}>
