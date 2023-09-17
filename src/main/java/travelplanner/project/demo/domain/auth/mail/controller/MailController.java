@@ -51,7 +51,7 @@ public class MailController {
     })
     @GetMapping("/callback")
     public String getChangePasswordUrl(@RequestParam String tempToken) {
-        return "http://localhost:5173/password/change?tempToken=" + tempToken;
+        return "https://dev.travel-planner.xyz/password/change?tempToken=" + tempToken;
     }
 
     @Operation(summary = "비밀번호 변경")
