@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.auth.mail.dto.ChangePasswordDto;
@@ -15,8 +13,6 @@ import travelplanner.project.demo.domain.auth.mail.dto.MailDto;
 import travelplanner.project.demo.domain.auth.mail.service.ForgotPasswordService;
 import travelplanner.project.demo.domain.auth.mail.service.MailService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
-
-import java.io.IOException;
 
 @Tag(name = "Auth", description = "회원가입/로그인 관련 API")
 @RestController
@@ -55,7 +51,7 @@ public class MailController {
     })
     @GetMapping("/callback")
     public String getChangePasswordUrl(@RequestParam String tempToken) {
-        return "http://localhost:8080/password/change?tempToken=" + tempToken;
+        return "http://localhost:5173/password/change?tempToken=" + tempToken;
     }
 
     @Operation(summary = "비밀번호 변경")
