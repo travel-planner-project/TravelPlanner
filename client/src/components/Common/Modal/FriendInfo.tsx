@@ -2,7 +2,7 @@ import Icon from '../Icon'
 import styles from './FriendInfo.module.scss'
 
 export type FriendType = {
-  profileImgUrl?: string
+  profileImageUrl?: string
   userNickname?: string
   email?: string
 }
@@ -13,6 +13,7 @@ type FriendInfoProps = {
 }
 
 function FriendInfo({ friend, onChecked }: FriendInfoProps) {
+  console.log('friend', friend.profileImageUrl)
   return friend.email ? (
     <label htmlFor='friend' className={styles.infoContainer}>
       <input
@@ -21,8 +22,8 @@ function FriendInfo({ friend, onChecked }: FriendInfoProps) {
         className={styles.checkbox}
         onChange={event => onChecked(event.target.checked)}
       />
-      {friend.profileImgUrl ? (
-        <img src={friend.profileImgUrl} alt='profile' className={styles.profileImg} />
+      {friend.profileImageUrl ? (
+        <img src={friend.profileImageUrl} alt='profile' className={styles.profileImg} />
       ) : (
         <Icon name='profile' size={20} className={styles.profileIcon} />
       )}
