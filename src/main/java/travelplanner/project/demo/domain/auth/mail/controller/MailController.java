@@ -34,9 +34,8 @@ public class MailController {
 //    }
 
     @PostMapping("/change/**")
-    public String getUriMailToken(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
+    public void getUriMailToken(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
         forgotPasswordService.changePassword(changePasswordDto, tempToken);
-        return "성공";
     }
 
 }
