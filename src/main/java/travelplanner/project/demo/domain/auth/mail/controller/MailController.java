@@ -28,10 +28,10 @@ public class MailController {
         return null;
     }
 
-    @GetMapping("/reset/**")
-    public String getPasswordChangePage (@RequestParam String tempToken) {
-        return "http://localhost:8080/password/change?tempToken=" + tempToken;
-    }
+//    @GetMapping("/reset/**")
+//    public String getPasswordChangePage (@RequestParam String tempToken) {
+//        return "http://localhost:8080/password/change?tempToken=" + tempToken;
+//    }
 
     @PostMapping("/change/**")
     public String getUriMailToken(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
