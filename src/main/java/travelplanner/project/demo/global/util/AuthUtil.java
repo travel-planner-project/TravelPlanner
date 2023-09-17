@@ -4,19 +4,14 @@ package travelplanner.project.demo.global.util;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
-import travelplanner.project.demo.planner.domain.GroupMember;
-import travelplanner.project.demo.planner.repository.GroupMemberRepository;
+import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
+import travelplanner.project.demo.domain.planner.groupmember.domain.GroupMember;
+import travelplanner.project.demo.domain.planner.groupmember.repository.GroupMemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -28,11 +23,18 @@ public class AuthUtil {
     private final MemberRepository memberRepository;
     private final GroupMemberRepository groupMemberRepository;
 
-    public Member getCurrentMember() {
+    public Member getCurrentMember(HttpServletRequest request) {
+        String accessToken = tokenUtil.getJWTTokenFromHeader(request);
+        String userId = tokenUtil.getUserIdFromToken(accessToken);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // 현재 사용자의 email 얻기
-        return memberRepository.findByEmail(username)
+        return memberRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
+    }
+
+    public Member getCurrentMemberForWebSocket(String accessToken) {
+        String userId = tokenUtil.getUserIdFromToken(accessToken);
+
+        return memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
     }
 
@@ -53,14 +55,7 @@ public class AuthUtil {
         String accessToken = tokenUtil.getJWTTokenFromHeader(request);
 
         if (accessToken != null) {
-
-            String tokenUtilEmail = tokenUtil.getEmail(accessToken);
-            log.info("------------------------- 유저 정보: " + tokenUtilEmail);
-
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(tokenUtilEmail, accessToken, new ArrayList<>());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+            tokenUtil.getAuthenticationFromToken(accessToken);
             return true;
         }
 

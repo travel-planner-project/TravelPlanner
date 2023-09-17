@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import travelplanner.project.demo.member.Member;
-import travelplanner.project.demo.member.MemberRepository;
+import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
 
 import java.util.Optional;
 

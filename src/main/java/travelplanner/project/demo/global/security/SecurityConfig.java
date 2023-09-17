@@ -2,6 +2,7 @@ package travelplanner.project.demo.global.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,12 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import travelplanner.project.demo.global.security.jwt.JwtAuthenticationFilter;
+import travelplanner.project.demo.global.jwt.JwtAuthenticationFilter;
 import travelplanner.project.demo.global.util.CookieUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.global.util.TokenUtil;
-import travelplanner.project.demo.member.socialauth.OAuth2AuthenticationSuccessHandler;
-import travelplanner.project.demo.member.socialauth.CustomOAuth2UserService;
+import travelplanner.project.demo.domain.auth.oauth2.handler.OAuth2AuthenticationSuccessHandler;
+import travelplanner.project.demo.domain.auth.oauth2.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -92,6 +93,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
         config.addExposedHeader("Authorization");
+        config.addExposedHeader("X-Route-To");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
