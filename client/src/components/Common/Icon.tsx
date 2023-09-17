@@ -22,6 +22,7 @@ type IconNameType =
   | 'check-square-gray'
   | 'check-square-blue'
   | 'add-person'
+  | 'delete-person'
   | 'profile'
   | 'eye'
   | 'eye-close'
@@ -29,6 +30,7 @@ type IconNameType =
   | 'plus-square'
   | 'arrow-down'
   | 'x-circle-blue'
+  | 'x-circle-red'
 
 type IconProps = {
   name: IconNameType
