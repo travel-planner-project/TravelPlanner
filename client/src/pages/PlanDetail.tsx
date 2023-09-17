@@ -147,6 +147,7 @@ function PlanDetailView({
                                 handleDelete={handleDeleteSchedule}
                                 handleEditBtnClick={handleEditScheduleBtnClick}
                                 dateId={item.dateId}
+                                isMember={isMember}
                               />
                             )}
                           </li>
