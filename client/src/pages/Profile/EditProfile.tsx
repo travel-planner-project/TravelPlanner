@@ -35,7 +35,7 @@ function EditProfileView({
         <div className={styles.profileBox}>
           {previewImage ? (
             <>
-              <img src={previewImage} alt='profile' />
+              <img src={previewImage} alt='profile' className={styles.profileImg} />
               <button className={styles.deleteImage} type='button' onClick={handleDeleteImage}>
                 <Icon name='x-circle-blue' size={24} />
               </button>
