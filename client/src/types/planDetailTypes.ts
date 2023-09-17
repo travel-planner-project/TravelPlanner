@@ -75,8 +75,10 @@ export interface PlanDetailProps {
   chatModal: boolean
   groupMember: GroupMemberListType
   isMember: boolean
+  memberDeleteMode: boolean
   onChatModalTrue: () => void
   onInviteModalOpen: () => void
+  handleMemberDeleteMode: () => void
 }
 
 export interface PlanDetailViewProps extends ChattingProps, PlanDetailProps, ScheduleProps {}

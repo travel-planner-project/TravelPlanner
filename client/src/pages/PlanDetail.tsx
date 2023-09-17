@@ -62,6 +62,8 @@ function PlanDetailView({
   onInviteModalOpen,
   groupMember,
   isMember,
+  memberDeleteMode,
+  handleMemberDeleteMode,
   handleDeleteSchedule,
   handleEditScheduleBtnClick,
   handleEditSchedule,
@@ -86,6 +88,11 @@ function PlanDetailView({
                     ) : (
                       <Icon name='profile' size={42} />
                     )}
+                    {memberDeleteMode && (
+                      <button className={styles.deleteMember} type='button'>
+                        <Icon name='x-circle-red' size={24} />
+                      </button>
+                    )}
                   </div>
                   <div className={styles.userName}>{member.nickname}</div>
                 </div>
@@ -93,9 +100,16 @@ function PlanDetailView({
             })}
           </div>
           {isMember && (
-            <div className={styles.addUserBtnBox}>
+            <div className={styles.userBtnBox}>
               <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
                 <Icon name='add-person' size={42} />
+              </button>
+              <button
+                type='button'
+                className={styles.deletePerson}
+                onClick={handleMemberDeleteMode}
+              >
+                <Icon name='delete-person' size={42} />
               </button>
               <Modal type='invite' />
             </div>
@@ -278,6 +292,9 @@ function PlanDetail() {
     }),
     [token, groupMember]
   )
+
+  // 친구 삭제 관련
+  const [memberDeleteMode, setMemberDeleteMode] = useState(false)
 
   // 플래너 관련
   const [dateListData, setDateListData] = useState<DateListType>([])
@@ -607,8 +624,10 @@ function PlanDetail() {
     chatModal,
     groupMember,
     isMember,
+    memberDeleteMode,
     onChatModalTrue: () => setChatModal(true),
     onInviteModalOpen: () => openModal(InviteModalObj),
+    handleMemberDeleteMode: () => setMemberDeleteMode(prev => !prev),
   }
 
   const chattingProps: ChattingProps = {

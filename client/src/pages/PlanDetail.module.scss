@@ -48,6 +48,7 @@
 .user {
   @include U.flex-c(column);
   gap: 12px;
+  position: relative;
 }
 
 .userProfileBox {
@@ -59,8 +60,21 @@
   @include U.flex-c(row);
 }
 
-.addPerson {
+.deleteMember {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  background-color: white;
+}
+
+.userBtnBox {
   padding-bottom: 36px;
+  @include U.flex-c(row);
+  gap: 12px;
 }
 
 .planner {
