@@ -49,6 +49,15 @@ public class MailController {
 //        return "http://localhost:8080/password/change?tempToken=" + tempToken;
 //    }
 
+    @Operation(summary = "비밀번호 변경 callback")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 주소 반환 성공"),
+    })
+    @GetMapping("/callback")
+    public String getChangePasswordUrl(@RequestParam String tempToken) {
+        return "http://localhost:8080/password/change?tempToken=" + tempToken;
+    }
+
     @Operation(summary = "비밀번호 변경")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
@@ -58,7 +67,7 @@ public class MailController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping("/change")
-    public void getUriMailToken(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
+    public void changePassword(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
         forgotPasswordService.changePassword(changePasswordDto, tempToken);
     }
 
