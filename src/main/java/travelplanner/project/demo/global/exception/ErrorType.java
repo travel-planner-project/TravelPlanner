@@ -22,6 +22,7 @@ public enum ErrorType {
     // 어세스 토큰이 만료되어 인증을 진행하지 못하는 경우
     TOKEN_USER_DOES_NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN-004", "어세스 토큰 만료로 인해 유저 인증단계를 밟을 수 없습니다."),
 
+    TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "TOKEN-005", "유효하지 않은 토큰입니다."),
 
     // ==================================================================================================================
 
