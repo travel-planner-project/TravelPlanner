@@ -1,5 +1,7 @@
 package travelplanner.project.demo.domain.auth.mail.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.auth.mail.dto.ChangePasswordDto;
@@ -7,9 +9,11 @@ import travelplanner.project.demo.domain.auth.mail.dto.MailDto;
 import travelplanner.project.demo.domain.auth.mail.service.ForgotPasswordService;
 import travelplanner.project.demo.domain.auth.mail.service.MailService;
 
+import java.io.IOException;
+
 @RestController
-@RequestMapping("/password")
 @RequiredArgsConstructor
+@RequestMapping("/password")
 public class MailController {
 
     private final ForgotPasswordService forgotPasswordService;
@@ -24,12 +28,15 @@ public class MailController {
         return null;
     }
 
-    @PostMapping("/change")
-    public String getUriMailToken(@RequestBody ChangePasswordDto changePasswordDto) {
+    @GetMapping("/reset/**")
+    public String getPasswordChangePage (@RequestParam String tempToken) {
+        return "http://localhost:8080/password/change?tempToken=" + tempToken;
+    }
 
-        forgotPasswordService.changePassword(changePasswordDto);
-
-        return null;
+    @PostMapping("/change/**")
+    public String getUriMailToken(@RequestParam String tempToken, @RequestBody ChangePasswordDto changePasswordDto) {
+        forgotPasswordService.changePassword(changePasswordDto, tempToken);
+        return "성공";
     }
 
 }

@@ -58,7 +58,7 @@ public class SecurityConfig {
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
-                    .requestMatchers(HttpMethod.POST,"/password/forgot").permitAll()
+                    .requestMatchers("/password/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -94,7 +94,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
         config.addExposedHeader("Authorization");
-        config.addExposedHeader("X-Route-To");
+        config.addExposedHeader("TempToken");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

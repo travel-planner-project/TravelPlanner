@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 requestURI.startsWith("/feed") ||
                 requestURI.startsWith("/login") ||
                 (requestURI.startsWith("/planner") && method.equals("GET")) ||
-                (requestURI.startsWith("/password/forgot") && method.equals("GET"))
+                requestURI.startsWith("/password")
         ) {
 
             filterChain.doFilter(request, response);
