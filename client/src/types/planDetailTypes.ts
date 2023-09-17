@@ -74,6 +74,7 @@ export interface PlanDetailProps {
   userId: number
   chatModal: boolean
   groupMember: GroupMemberListType
+  isMember: boolean
   onChatModalTrue: () => void
   onInviteModalOpen: () => void
 }

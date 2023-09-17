@@ -61,6 +61,7 @@ function PlanDetailView({
   isScheduleEditorOpened,
   onInviteModalOpen,
   groupMember,
+  isMember,
   handleDeleteSchedule,
   handleEditScheduleBtnClick,
   handleEditSchedule,
@@ -91,12 +92,14 @@ function PlanDetailView({
               )
             })}
           </div>
-          <div className={styles.addUserBtnBox}>
-            <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
-              <Icon name='add-person' size={42} />
-            </button>
-            <Modal type='invite' />
-          </div>
+          {isMember && (
+            <div className={styles.addUserBtnBox}>
+              <button type='button' className={styles.addPerson} onClick={onInviteModalOpen}>
+                <Icon name='add-person' size={42} />
+              </button>
+              <Modal type='invite' />
+            </div>
+          )}
         </div>
         <div className={styles.planner}>
           <ul className={styles.planList}>
@@ -144,6 +147,7 @@ function PlanDetailView({
                                 handleDelete={handleDeleteSchedule}
                                 handleEditBtnClick={handleEditScheduleBtnClick}
                                 dateId={item.dateId}
+                                isMember={isMember}
                               />
                             )}
                           </li>
@@ -163,12 +167,14 @@ function PlanDetailView({
                           type='add'
                         />
                       ) : (
-                        <button
-                          className={styles.addElementBtn}
-                          onClick={() => handleOpenScheduleEditor(item.dateId)}
-                        >
-                          <Icon name='plus-square' size={24} />
-                        </button>
+                        isMember && (
+                          <button
+                            className={styles.addElementBtn}
+                            onClick={() => handleOpenScheduleEditor(item.dateId)}
+                          >
+                            <Icon name='plus-square' size={24} />
+                          </button>
+                        )
                       )}
                     </ul>
                   </div>
@@ -176,27 +182,33 @@ function PlanDetailView({
               )
             })}
           </ul>
-          <DateAddEditBtnBox
-            handleAdd={handleAddDateBtnClick}
-            handleEdit={handleEditDateListBtnClick}
-            handleCancelEditing={handleCancelEditingDateList}
-            isEditingDateList={isEditingDateList}
-          />
+          {isMember && (
+            <DateAddEditBtnBox
+              handleAdd={handleAddDateBtnClick}
+              handleEdit={handleEditDateListBtnClick}
+              handleCancelEditing={handleCancelEditingDateList}
+              isEditingDateList={isEditingDateList}
+            />
+          )}
         </div>
       </div>
-      {chatModal ? (
-        <ChatModal
-          userId={userId}
-          chatList={chatList}
-          newChat={newChat}
-          onChatModalFalse={onChatModalFalse}
-          onChatChange={onChatChange}
-          onChatSubmit={onChatSubmit}
-        />
-      ) : (
-        <button type='button' className={styles.chatModalBtn} onClick={onChatModalTrue}>
-          <Icon name='chatting-dots' size={50} />
-        </button>
+      {isMember && (
+        <>
+          {chatModal ? (
+            <ChatModal
+              userId={userId}
+              chatList={chatList}
+              newChat={newChat}
+              onChatModalFalse={onChatModalFalse}
+              onChatChange={onChatChange}
+              onChatSubmit={onChatSubmit}
+            />
+          ) : (
+            <button type='button' className={styles.chatModalBtn} onClick={onChatModalTrue}>
+              <Icon name='chatting-dots' size={50} />
+            </button>
+          )}
+        </>
       )}
     </div>
   )
@@ -232,8 +244,9 @@ function PlanDetail() {
 
   const { params } = useRouter()
   const { plannerId } = params
-  const { userId } = useRecoilValue(userInfo)
+  const { userId, email } = useRecoilValue(userInfo)
 
+  const [isMember, setIsMember] = useState(false)
   const [token, setToken] = useState(sessionStorage.getItem('token'))
 
   // 채팅 관련
@@ -273,12 +286,10 @@ function PlanDetail() {
       if (plannerId) {
         const res = await getPlanDetail(plannerId)
         if (res) {
-          console.log(res.data.calendars)
-          // 스케줄, 채팅 state 세팅
+          // 스케줄, 채팅, 멤버 state 세팅
           const schedules = res.data.calendars
           const chattings = res.data.chattings
           const groupMemberList = res.data.groupMemberList
-          console.log(groupMemberList)
           setDateListData(schedules)
           setChatList(chattings)
           setGroupMember(groupMemberList)
@@ -436,6 +447,12 @@ function PlanDetail() {
   }, [])
 
   useEffect(() => {
+    if (groupMember.find(member => member.email === email)) {
+      setIsMember(true)
+    }
+  }, [groupMember, email])
+
+  useEffect(() => {
     // 1. 클라이언트 객체 생성
     const client = new StompJs.Client({
       brokerURL: import.meta.env.VITE_BROKER_URL,
@@ -589,6 +606,7 @@ function PlanDetail() {
     userId,
     chatModal,
     groupMember,
+    isMember,
     onChatModalTrue: () => setChatModal(true),
     onInviteModalOpen: () => openModal(InviteModalObj),
   }

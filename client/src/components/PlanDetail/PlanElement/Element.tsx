@@ -1,7 +1,13 @@
 import styles from './Element.module.scss'
 
 type ElementViewProps = ElementProps
-function ElementView({ data, handleDelete, dateId, handleEditBtnClick }: ElementViewProps) {
+function ElementView({
+  data,
+  handleDelete,
+  dateId,
+  handleEditBtnClick,
+  isMember,
+}: ElementViewProps) {
   return (
     <div className={styles.container}>
       <div className={styles.itemBox}>
@@ -21,24 +27,26 @@ function ElementView({ data, handleDelete, dateId, handleEditBtnClick }: Element
         <div className={styles.itemAddress}>{data.itemAddress}</div>
         <div className={styles.itemDetail}>{data.itemContent}</div>
       </div>
-      <div className={styles.buttons}>
-        <button
-          type='button'
-          className={styles.okBtn}
-          onClick={() => {
-            handleEditBtnClick(dateId, data.itemId)
-          }}
-        >
-          수정
-        </button>
-        <button
-          type='button'
-          className={styles.deleteBtn}
-          onClick={() => handleDelete(dateId, data.itemId)}
-        >
-          삭제
-        </button>
-      </div>
+      {isMember && (
+        <div className={styles.buttons}>
+          <button
+            type='button'
+            className={styles.okBtn}
+            onClick={() => {
+              handleEditBtnClick(dateId, data.itemId)
+            }}
+          >
+            수정
+          </button>
+          <button
+            type='button'
+            className={styles.deleteBtn}
+            onClick={() => handleDelete(dateId, data.itemId)}
+          >
+            삭제
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -54,17 +62,19 @@ type ElementProps = {
     budget: number | null
     itemAddress: string
   }
-  handleDelete: (dateId: number, itemId: number) => void
   dateId: number
+  isMember: boolean
   handleEditBtnClick: (dateId: number, itemId: number) => void
+  handleDelete: (dateId: number, itemId: number) => void
 }
-function Element({ data, handleDelete, dateId, handleEditBtnClick }: ElementProps) {
+function Element({ data, handleDelete, dateId, handleEditBtnClick, isMember }: ElementProps) {
   return (
     <ElementView
       data={data}
       handleDelete={handleDelete}
       dateId={dateId}
       handleEditBtnClick={handleEditBtnClick}
+      isMember={isMember}
     />
   )
 }
