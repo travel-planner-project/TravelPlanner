@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.member.repository.MemberRepository;
 import travelplanner.project.demo.domain.message.Repository.MessageRepository;
 import travelplanner.project.demo.domain.message.domain.Message;
 import travelplanner.project.demo.domain.message.dto.request.MessageSendRequest;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class MessageService {
     private final AuthUtil authUtil;
     private final MessageRepository messageRepository;
+    private final MemberRepository memberRepository;
 
     // 특정 유저의 메세지 리스트
     public Map<Long, List<Message>> getMessageList (HttpServletRequest request) {
@@ -32,7 +35,7 @@ public class MessageService {
 
         return messages.stream()
                 .collect(Collectors.groupingBy(message ->
-                                message.getSenderUserId().equals(member.getId()) ? message.getReceivedUserId() : message.getSenderUserId(),
+                                message.getSendUserId().equals(member.getId()) ? message.getReceivedUserId() : message.getSendUserId(),
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
                             list.sort(Comparator.comparing(Message::getCreatedAt));
                             return list;
@@ -50,9 +53,15 @@ public class MessageService {
             throw new ApiException(ErrorType.LOGIN_USER_AND_SEND_USER_ARE_NOT_SAME);
         }
 
+        Optional<Member> receivedUser = memberRepository.findById(request.getReceivedUserId());
+
         Message message = Message.builder()
-                .senderUserId(sendUser.getId())
+                .sendUserId(sendUser.getId())
+                .sendUserNickname(sendUser.getUserNickname())
+                .sendUserProfileImg(sendUser.getProfile().getProfileImgUrl())
                 .receivedUserId(request.getReceivedUserId())
+                .receivedUserNickname(receivedUser.get().getUserNickname())
+                .receivedUserProfileImg(receivedUser.get().getProfile().getProfileImgUrl())
                 .messageContent(request.getMessageContent())
                 .createdAt(LocalDateTime.now())
                 .build();

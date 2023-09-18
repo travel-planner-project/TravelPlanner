@@ -23,9 +23,17 @@ public class Message {
     private Long id;
 
     // 보낸 사람의 유저 인덱스
-    private Long senderUserId;
+    private Long sendUserId;
+    // 보낸 사람의 닉네임
+    private String sendUserNickname;
+    // 보낸 사람의 프로필 이미지
+    private String sendUserProfileImg;
     // 받은 사람의 유저 인덱스
     private Long receivedUserId;
+    // 받은 사람의 닉네임
+    private String receivedUserNickname;
+    //받은 사람의 유저 인덱스
+    private String receivedUserProfileImg;
     // 메세지 내용
     private String messageContent;
     // 메세지 생성 시간
