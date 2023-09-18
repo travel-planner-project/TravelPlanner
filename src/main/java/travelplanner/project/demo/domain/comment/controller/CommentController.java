@@ -7,12 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerCreateRequest;
-import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerDeleteRequest;
-import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerCreateResponse;
-import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerDetailResponse;
-import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerListResponse;
-import travelplanner.project.demo.domain.planner.planner.editor.PlannerEditRequest;
+import travelplanner.project.demo.domain.comment.request.CommentCreateRequest;
+import travelplanner.project.demo.domain.comment.request.CommentDeleteRequest;
+import travelplanner.project.demo.domain.comment.request.CommentEditRequest;
+import travelplanner.project.demo.domain.comment.response.CommentCreateResponse;
+import travelplanner.project.demo.domain.comment.response.CommentDetailResponse;
+import travelplanner.project.demo.domain.comment.response.CommentListResponse;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
 
@@ -29,7 +29,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping
-    public PageUtil<PlannerListResponse> getPostList() {
+    public PageUtil<CommentListResponse> getPostList() {
         return null;
     }
 
@@ -42,7 +42,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/{commentId}")
-    public PlannerDetailResponse getCommentDetail(@PathVariable Long commentId) {
+    public CommentDetailResponse getCommentDetail(@PathVariable Long commentId) {
         return null;
     }
 
@@ -56,7 +56,7 @@ public class CommentController {
     })
     @DeleteMapping
     //포스트 삭제
-    public void deletePlanner(@RequestBody PlannerDeleteRequest plannerDeleteRequest) {
+    public void deletePlanner(@RequestBody CommentDeleteRequest commentDeleteRequest) {
 
     }
 
@@ -67,8 +67,8 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public PlannerCreateResponse createPlanner(
-            @RequestBody PlannerCreateRequest plannerCreateRequest) {
+    public CommentCreateResponse createPlanner(
+            @RequestBody CommentCreateRequest commentCreateRequest) {
         return null;
     }
 
@@ -82,7 +82,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping
-    public ResponseEntity updatePlanner(@RequestBody PlannerEditRequest plannerEditRequest) {
+    public ResponseEntity updatePlanner(@RequestBody CommentEditRequest commentEditRequest) {
 
         return ResponseEntity.ok().body("댓글 수정 성공");
     }
