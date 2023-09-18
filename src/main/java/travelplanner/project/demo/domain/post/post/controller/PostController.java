@@ -1,4 +1,4 @@
-package travelplanner.project.demo.domain.post.controller;
+package travelplanner.project.demo.domain.post.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
