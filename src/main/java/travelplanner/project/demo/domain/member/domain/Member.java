@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import travelplanner.project.demo.domain.member.editor.MemberEditor;
+import travelplanner.project.demo.domain.post.post.domain.Post;
 import travelplanner.project.demo.domain.profile.domain.Profile;
 import travelplanner.project.demo.domain.planner.planner.domain.Planner;
 
@@ -39,6 +40,9 @@ public class Member {
     /*@JoinColumn(name = "profile_id")*/
     private Profile profile;
 
+    @OneToMany(mappedBy = "member", cascade=CascadeType.REMOVE)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
 
     public void mappingPlanner(Planner planner) {
         planners.add(planner);
