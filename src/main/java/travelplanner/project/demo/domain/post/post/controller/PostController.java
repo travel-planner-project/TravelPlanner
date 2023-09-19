@@ -1,6 +1,8 @@
 package travelplanner.project.demo.domain.post.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +19,12 @@ import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerCrea
 import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerCreateResponse;
 import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerDetailResponse;
-import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerListResponse;
 import travelplanner.project.demo.domain.planner.planner.editor.PlannerEditRequest;
+import travelplanner.project.demo.domain.post.post.dto.request.PostDeleteRequest;
+import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
+import travelplanner.project.demo.domain.post.post.service.PostService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
+import travelplanner.project.demo.global.util.PageUtil;
 
 @Tag(name = "Post", description = "포스트 API")
 @RestController
@@ -26,7 +32,7 @@ import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 @RequestMapping("/post")
 public class PostController {
 
-
+    private final PostService postService;
     @Operation(summary = "포스트 리스트 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "포스트 리스트 조회 성공"),
@@ -36,10 +42,16 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping
-    public Page<PlannerListResponse> getPostList(
-            Pageable pageable,
+    public PageUtil<PostListResponse> getPostList(
+            @Parameter(name="page", description = "몇번째 페이지(0부터 시작), 기본값 0", in = ParameterIn.QUERY)
+            @RequestParam(defaultValue = "0") int page,
+
+            @Parameter(name = "size", description = "희망 플래너 갯수, 기본값 6", in = ParameterIn.QUERY) // swagger
+            @RequestParam(defaultValue = "6") int size,
+
             HttpServletRequest request) {
-        return null;
+        PageUtil<PostListResponse> posts = postService.getPostList(PageRequest.of(page, size), request);
+        return posts;
     }
 
     @Operation(summary = "포스트 상세 조회")
@@ -65,8 +77,8 @@ public class PostController {
     })
     @DeleteMapping
     //포스트 삭제
-    public void deletePlanner(HttpServletRequest request, @RequestBody PlannerDeleteRequest plannerDeleteRequest) {
-
+    public void deletePost(HttpServletRequest request, @RequestBody PostDeleteRequest postDeleteRequest) {
+        postService.deletePost(request, postDeleteRequest);
     }
 
     @Operation(summary = "포스트 생성")
