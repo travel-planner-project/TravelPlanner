@@ -40,7 +40,7 @@ public class MessageController {
     @Operation(summary = "쪽지 보내기")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "쪽지 보내기 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "로그인한 유저와 메세지를 보내는 유저가 일치하지 않습니다.",
+            @ApiResponse(responseCode = "400", description = "로그인한 유저와 메세지를 보내는 유저가 일치하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
     @PostMapping("")
