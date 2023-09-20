@@ -29,14 +29,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String kakaoRedirectUri;
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String googleRedirectUri;
-
-    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
-    private String naverRedirectUri;
+    private String redirectUri;
 
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
@@ -63,7 +57,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             email = naverUserInfo.getEmail();
         }
 
-        String targetUrl = determineTargetUrl(request, response, authentication);
+        String targetUrl = redirectUri;
+
         log.info(targetUrl+"------------------targetUrl");
         if(response.isCommitted()) {
             log.debug("------------------ Response 전송 완료");
@@ -104,22 +99,4 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
-    // 소셜 종류에 따른 리다이렉트 결정
-    @Override
-    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-
-        CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-
-        if (customOAuth2User.getUser().getProvider().equals("kakao")) {
-            return kakaoRedirectUri;
-
-        } else if (customOAuth2User.getUser().getProvider().equals("google")) {
-            return googleRedirectUri;
-
-        } else if (customOAuth2User.getUser().getProvider().equals("naver")) {
-            return naverRedirectUri;
-        }
-
-        return null;
-    }
 }
