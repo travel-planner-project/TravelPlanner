@@ -1,4 +1,4 @@
-package travelplanner.project.demo.domain.profile.Service;
+package travelplanner.project.demo.global.util;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Paths;
 
 @Service
-public class S3Service {
+public class S3Util {
 
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
@@ -26,7 +26,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public void uploadFile(String keyName, String filePath) {
+    public void uploadFile(String keyName, String filePath, String directory) {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
 
         S3Client s3 = S3Client.builder()
@@ -36,13 +36,13 @@ public class S3Service {
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key("upload/profile/" + keyName) // 변경된 keyName 경로
+                .key(directory + keyName) // 변경된 keyName 경로
                 .build();
 
         s3.putObject(putObjectRequest, Paths.get(filePath));
     }
 
-    public void deleteFile(String keyName) {
+    public void deleteFile(String keyName, String directory) {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
 
         S3Client s3 = S3Client.builder()
@@ -52,7 +52,7 @@ public class S3Service {
 
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(bucketName)
-                .key("upload/profile/" + keyName)
+                .key(directory + keyName)
                 .build();
 
         s3.deleteObject(deleteObjectRequest);
