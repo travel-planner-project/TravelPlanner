@@ -17,6 +17,7 @@ import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.RedisUtil;
 import travelplanner.project.demo.domain.profile.dto.request.PasswordUpdateRequest;
+import travelplanner.project.demo.global.util.S3Util;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class UserService {
 
     private MemberRepository memberRepository;
     private ProfileRepository profileRepository;
-    private S3Service s3Service;
+    private S3Util s3Util;
     private AuthUtil authUtil;
     private RedisUtil redisUtil;
     private PasswordEncoder encoder;
@@ -70,7 +71,7 @@ public class UserService {
         Profile profile = profileRepository.findProfileByMemberId(currentMember.getId());
 
         // 프로필 이미지 삭제하기
-        s3Service.deleteFile(profile.getKeyName());
+        s3Util.deleteFile(profile.getKeyName(), "upload/profile/");
 
         // 레디스 삭제
         redisUtil.deleteData(currentMember.getEmail());

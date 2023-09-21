@@ -16,7 +16,7 @@ import travelplanner.project.demo.domain.profile.dto.response.ProfileUpdateRespo
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
-import travelplanner.project.demo.global.util.TokenUtil;
+import travelplanner.project.demo.global.util.S3Util;
 import travelplanner.project.demo.domain.profile.domain.ProfileEditor;
 import travelplanner.project.demo.domain.profile.dto.request.ProfileUpdateRequest;
 
@@ -31,11 +31,10 @@ import java.time.LocalDate;
 @Slf4j
 public class ProfileService {
 
-    private final TokenUtil tokenUtil;
     private final AuthUtil authUtil;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final S3Service s3Service;
+    private final S3Util s3Util;
 
     // 특정 유저의 프로필 찾기
     @Transactional
@@ -100,7 +99,7 @@ public class ProfileService {
             }
 
             // 프로필 이미지가 있는 경우, 삭제하고 진행
-            s3Service.deleteFile(profile.getKeyName());
+            s3Util.deleteFile(profile.getKeyName(), "upload/profile/");
 
             String originalImgName = profileImg.getOriginalFilename();
             String uniqueImgName = generateUniqueImgName(originalImgName, member.getId());
@@ -110,7 +109,7 @@ public class ProfileService {
             profileImg.transferTo(Paths.get(localFilePath));
 
             // S3 에 이미지 업로드
-            s3Service.uploadFile(uniqueImgName, localFilePath);
+            s3Util.uploadFile(uniqueImgName, localFilePath, "upload/profile/");
             String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/profile/";
 //            profile.setProfileImgUrl(imgUrl + uniqueImgName);
 //            profile.setKeyName(uniqueImgName);
