@@ -22,9 +22,9 @@ public class Comment {
 
     private String commentContent;
 
-    private Long parentId;
+//    private Long parentId;
 
-    private String writer;
+//    private String writer;
 //    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
