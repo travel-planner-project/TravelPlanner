@@ -62,6 +62,12 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long postId, Long commentId) {
+        postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
 
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
+
+        commentRepository.delete(comment);
     }
 }

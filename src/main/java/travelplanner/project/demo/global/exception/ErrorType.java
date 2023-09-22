@@ -77,8 +77,9 @@ public enum ErrorType {
 
     // ==================================================================================================================
 
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-001", "포스트 존재하지 않습니다.");
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-001", "포스트가 존재하지 않습니다."),
 
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "댓글이 존재하지 않습니다.");
     // ==================================================================================================================
 
     private final HttpStatus status;
