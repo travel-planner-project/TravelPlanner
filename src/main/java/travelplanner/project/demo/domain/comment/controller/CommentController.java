@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
@@ -36,12 +38,19 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping
-    public List<CommentResponse> getPostList(
+    public PageUtil<CommentResponse> getPostList(
+            @Parameter(name="page", description = "몇번째 페이지(0부터 시작), 기본값 0", in = ParameterIn.QUERY)
+            @RequestParam(defaultValue = "0") int page,
+
+            @Parameter(name = "size", description = "희망 플래너 갯수, 기본값 6", in = ParameterIn.QUERY) // swagger
+            @RequestParam(defaultValue = "6") int size,
 
             @Parameter(name = "postId", description = "게시글의 index", in = ParameterIn.QUERY)
             @RequestParam(required = false) Long postId){
 
-        List<CommentResponse> commentList = commentService.getCommentList(postId);
+
+        PageUtil<CommentResponse> commentList = commentService.getCommentList(postId, PageRequest.of(page, size));
+
         return commentList;
     }
 

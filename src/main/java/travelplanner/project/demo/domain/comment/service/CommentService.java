@@ -1,6 +1,9 @@
 package travelplanner.project.demo.domain.comment.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.domain.comment.domain.Comment;
@@ -12,6 +15,7 @@ import travelplanner.project.demo.domain.post.post.domain.Post;
 import travelplanner.project.demo.domain.post.post.repository.PostRepository;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
+import travelplanner.project.demo.global.util.PageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +28,17 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public List<CommentResponse> getCommentList(Long postId) {
+    public PageUtil<CommentResponse> getCommentList(Long postId, Pageable pageable) {
 
         postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
 
-        List<Comment> commentList = commentRepository.findByPostId(postId);
+        Page<Comment> commentList = commentRepository.findByPostId(postId, pageable);
+
+
         List<CommentResponse> commentResponseList = new ArrayList<>();
 
-        for (Comment comment : commentList) {
+        for (Comment comment : commentList.getContent()) {
 
             CommentResponse commentResponse = CommentResponse.builder()
                     .postId(comment.getPost().getId())
@@ -43,7 +49,7 @@ public class CommentService {
             commentResponseList.add(commentResponse);
         }
 
-        return commentResponseList;
+        return new PageUtil<>(commentResponseList, pageable, commentList.getTotalPages());
     }
 
 //    댓글 한개 조회
