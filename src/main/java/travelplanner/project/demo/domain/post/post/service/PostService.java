@@ -48,7 +48,7 @@ public class PostService {
                 ))
                 .collect(Collectors.toList());
 
-        return new PageUtil<>(postListResponses, pageable, page.getTotalElements());
+        return new PageUtil<>(postListResponses, pageable, page.getTotalPages());
     }
 
 
