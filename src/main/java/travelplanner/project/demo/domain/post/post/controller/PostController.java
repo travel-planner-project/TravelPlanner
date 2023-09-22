@@ -15,16 +15,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerCreateRequest;
 import travelplanner.project.demo.domain.planner.planner.dto.request.PlannerDeleteRequest;
 import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerCreateResponse;
 import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerDetailResponse;
 import travelplanner.project.demo.domain.planner.planner.editor.PlannerEditRequest;
+import travelplanner.project.demo.domain.post.post.dto.request.PostCreateRequest;
 import travelplanner.project.demo.domain.post.post.dto.request.PostDeleteRequest;
+import travelplanner.project.demo.domain.post.post.dto.response.PostDetailResponse;
 import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
 import travelplanner.project.demo.domain.post.post.service.PostService;
+import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
+
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "Post", description = "포스트 API")
 @RestController
@@ -63,8 +70,8 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping("/{postId}")
-    public PlannerDetailResponse getPlannerDetail(@PathVariable Long plannerId, HttpServletRequest request) {
-        return null;
+    public PostDetailResponse getPostDetail(@PathVariable Long postId, HttpServletRequest request) {
+        return postService.getPostDetailById(postId, request);
     }
 
     @Operation(summary = "포스트 삭제")
@@ -84,14 +91,15 @@ public class PostController {
     @Operation(summary = "포스트 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "포스트 생성 성공"),
-            @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
+            @ApiResponse(responseCode = "500", description = "입력 하지 않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public PlannerCreateResponse createPlanner(
-            @RequestBody PlannerCreateRequest plannerCreateRequest, HttpServletRequest request) {
+    public ResponseEntity<?> createPost(
+            @RequestPart (value = "multipartFileList", required = false) List<MultipartFile> fileList,
+            @RequestPart PostCreateRequest postCreateRequest, HttpServletRequest request) throws IOException {
 
-        return null;
+        return postService.createPost(request, fileList, postCreateRequest);
     }
 
 

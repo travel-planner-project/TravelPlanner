@@ -6,20 +6,35 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.post.image.domain.Image;
+import travelplanner.project.demo.domain.post.image.repository.ImageRepository;
 import travelplanner.project.demo.domain.post.post.domain.Post;
+import travelplanner.project.demo.domain.post.post.dto.request.PostCreateRequest;
 import travelplanner.project.demo.domain.post.post.dto.request.PostDeleteRequest;
+import travelplanner.project.demo.domain.post.post.dto.response.PostDetailResponse;
 import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
 import travelplanner.project.demo.domain.post.post.repository.PostRepository;
 import travelplanner.project.demo.global.exception.ApiException;
+import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.PageUtil;
+import travelplanner.project.demo.global.util.S3Util;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +44,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ImageRepository imageRepository;
+    private final S3Util s3Util;
     private final AuthUtil authUtil;
     // 포스트 리스트
     public PageUtil<PostListResponse> getPostList(Pageable pageable, HttpServletRequest request) {
@@ -73,4 +90,68 @@ public class PostService {
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
     }
+
+    public PostDetailResponse getPostDetailById(Long postId, HttpServletRequest request) {
+        Optional<Post> post = postRepository.findById(postId);
+        // 댓글 추가
+        return PostDetailResponse.builder()
+                .postId(post.get().getId())
+                .postTitle(post.get().getPostTitle())
+                .postContent(post.get().getPostContent())
+                .createdAt(post.get().getCreatedAt())
+                .images(post.get().getImages())
+                .build();
+    }
+
+    public ResponseEntity<?> createPost(HttpServletRequest request, List<MultipartFile> fileList, PostCreateRequest postCreateRequest) throws IOException {
+
+        Member member = authUtil.getCurrentMember(request);
+
+        //포스트 등록
+        Post createPost = Post.builder()
+                .postTitle(postCreateRequest.getPostTitle())
+                .postContent(postCreateRequest.getPostContent())
+                .member(member)
+                .build();
+
+        postRepository.save(createPost);
+
+
+        // 파일 있는 경우 세팅
+        if(!fileList.isEmpty()){
+            Long rank=1L;
+            List<Image> imageList = new ArrayList<>();
+            for(MultipartFile multipartFile : fileList){
+
+                String originalImgName = multipartFile.getOriginalFilename();
+                String uniqueImgName = s3Util.generateUniqueImgName(originalImgName, member.getId());
+
+                //파일을 디렉토리에 저장
+                String localFilePath = System.getProperty("java.io.tmpdir")+ "/" + uniqueImgName;
+                multipartFile.transferTo(Paths.get(localFilePath));
+
+                //s3 이미지 업로드
+                s3Util.uploadFile(uniqueImgName, localFilePath, "upload/post/");
+                String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/post/";
+
+                //파일 객체 생성
+                Image image = Image.builder()
+                        .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
+                        .rank(rank)
+                        .isThumbnail(false)
+                        .build();
+
+                //이미지 리스트에 추가
+                imageList.add(image);
+                rank++;
+            }
+            imageRepository.saveAll(imageList);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        return new ResponseEntity<>(ErrorType.CREATED, headers, HttpStatus.OK);
+    }
+
 }

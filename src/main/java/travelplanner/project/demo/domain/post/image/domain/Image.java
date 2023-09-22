@@ -25,6 +25,8 @@ public class Image {
 
     private Boolean isThumbnail;
 
+    private Long rank;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="post_id")
     private Post post;
