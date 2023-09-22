@@ -9,7 +9,9 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
 @Service
 public class S3Util {
@@ -56,5 +58,23 @@ public class S3Util {
                 .build();
 
         s3.deleteObject(deleteObjectRequest);
+    }
+
+    public String generateUniqueImgName(String originalImgName, Long loginUserId) {
+        return loginUserId + "_" + LocalDate.now() + "_" + System.currentTimeMillis() + getFileExtension(originalImgName);
+    }
+
+    public String getFileExtension(String imgName) {
+
+        int dotIndex = imgName.lastIndexOf('.');
+        return dotIndex == -1 ? "" : imgName.substring(dotIndex);
+    }
+
+    public void deleteLocalFile(String localFilePath) {
+
+        File file = new File(localFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 }

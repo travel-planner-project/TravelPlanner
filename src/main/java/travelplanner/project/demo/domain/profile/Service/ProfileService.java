@@ -102,7 +102,7 @@ public class ProfileService {
             s3Util.deleteFile(profile.getKeyName(), "upload/profile/");
 
             String originalImgName = profileImg.getOriginalFilename();
-            String uniqueImgName = generateUniqueImgName(originalImgName, member.getId());
+            String uniqueImgName = s3Util.generateUniqueImgName(originalImgName, member.getId());
 
             // 업로드할 파일을 시스템의 기본 임시 디렉토리에 저장
             String localFilePath = System.getProperty("java.io.tmpdir") + "/" + uniqueImgName;
@@ -118,7 +118,7 @@ public class ProfileService {
 //            profileRepository.save(profile);
 
             // 로컬 임시 파일 삭제
-            deleteLocalFile(localFilePath);
+            s3Util.deleteLocalFile(localFilePath);
 
 //            response.setProfileImgUrl(profile.getProfileImgUrl());
         }
@@ -132,24 +132,6 @@ public class ProfileService {
                 .build();
 
         return response;
-    }
-
-    private String generateUniqueImgName(String originalImgName, Long loginUserId) {
-        return loginUserId + "_" + LocalDate.now() + "_" + System.currentTimeMillis() + getFileExtension(originalImgName);
-    }
-
-    private String getFileExtension(String imgName) {
-
-        int dotIndex = imgName.lastIndexOf('.');
-        return dotIndex == -1 ? "" : imgName.substring(dotIndex);
-    }
-
-    private void deleteLocalFile(String localFilePath) {
-
-        File file = new File(localFilePath);
-        if (file.exists()) {
-            file.delete();
-        }
     }
 
     // 프로필 수정 [END] =========================================================================================
