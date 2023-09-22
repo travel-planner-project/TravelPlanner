@@ -1,14 +1,12 @@
 package travelplanner.project.demo.domain.comment.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelplanner.project.demo.domain.member.domain.Member;
+import travelplanner.project.demo.domain.planner.planner.domain.Planner;
 import travelplanner.project.demo.domain.post.post.domain.Post;
 
 @NoArgsConstructor
@@ -29,5 +27,12 @@ public class Comment {
     private String writer;
 //    private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
+
+    public void mappingPost(Post post) {
+        this.post = post;
+        post.mappingComment(this);
+    }
 }
