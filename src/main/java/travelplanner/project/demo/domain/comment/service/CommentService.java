@@ -7,14 +7,13 @@ import travelplanner.project.demo.domain.comment.domain.Comment;
 import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
 import travelplanner.project.demo.domain.comment.dto.response.CommentResponse;
-import travelplanner.project.demo.domain.comment.dto.response.CommentDetailResponse;
-import travelplanner.project.demo.domain.comment.dto.response.CommentListResponse;
 import travelplanner.project.demo.domain.comment.repository.CommentRepository;
 import travelplanner.project.demo.domain.post.post.domain.Post;
 import travelplanner.project.demo.domain.post.post.repository.PostRepository;
 import travelplanner.project.demo.global.exception.ApiException;
 import travelplanner.project.demo.global.exception.ErrorType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,13 +24,32 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public List<CommentListResponse> getCommentList(Long postId) {
-        return null;
+    public List<CommentResponse> getCommentList(Long postId) {
+
+        postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+
+        List<Comment> commentList = commentRepository.findByPostId(postId);
+        List<CommentResponse> commentResponseList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+
+            CommentResponse commentResponse = CommentResponse.builder()
+                    .postId(comment.getPost().getId())
+                    .commentId(comment.getId())
+                    .commentContent(comment.getCommentContent())
+                    .build();
+
+            commentResponseList.add(commentResponse);
+        }
+
+        return commentResponseList;
     }
 
-    public CommentDetailResponse getCommentDetail(Long postId, Long commentId) {
-        return null;
-    }
+//    댓글 한개 조회
+//    public CommentDetailResponse getCommentDetail(Long postId, Long commentId) {
+//        return null;
+//    }
 
     @Transactional
     public CommentResponse createComment(Long postId, CommentCreateRequest commentCreateRequest) {

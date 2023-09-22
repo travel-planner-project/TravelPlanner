@@ -11,8 +11,6 @@ import travelplanner.project.demo.domain.comment.dto.request.CommentCreateReques
 import travelplanner.project.demo.domain.comment.dto.request.CommentDeleteRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
 import travelplanner.project.demo.domain.comment.dto.response.CommentResponse;
-import travelplanner.project.demo.domain.comment.dto.response.CommentDetailResponse;
-import travelplanner.project.demo.domain.comment.dto.response.CommentListResponse;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
 
