@@ -1,4 +1,4 @@
 package travelplanner.project.demo.domain.comment.dto.response;
 
-public class CommentCreateResponse {
+public class CommentResponse {
 }

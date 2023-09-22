@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentDeleteRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
-import travelplanner.project.demo.domain.comment.dto.response.CommentCreateResponse;
+import travelplanner.project.demo.domain.comment.dto.response.CommentResponse;
 import travelplanner.project.demo.domain.comment.dto.response.CommentDetailResponse;
 import travelplanner.project.demo.domain.comment.dto.response.CommentListResponse;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
@@ -67,7 +67,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public CommentCreateResponse createPlanner(
+    public CommentResponse createPlanner(
             @RequestBody CommentCreateRequest commentCreateRequest) {
         return null;
     }
