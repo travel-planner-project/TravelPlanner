@@ -7,12 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import travelplanner.project.demo.domain.comment.request.CommentCreateRequest;
-import travelplanner.project.demo.domain.comment.request.CommentDeleteRequest;
-import travelplanner.project.demo.domain.comment.request.CommentEditRequest;
-import travelplanner.project.demo.domain.comment.response.CommentCreateResponse;
-import travelplanner.project.demo.domain.comment.response.CommentDetailResponse;
-import travelplanner.project.demo.domain.comment.response.CommentListResponse;
+import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
+import travelplanner.project.demo.domain.comment.dto.request.CommentDeleteRequest;
+import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
+import travelplanner.project.demo.domain.comment.dto.response.CommentCreateResponse;
+import travelplanner.project.demo.domain.comment.dto.response.CommentDetailResponse;
+import travelplanner.project.demo.domain.comment.dto.response.CommentListResponse;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
 
