@@ -119,7 +119,10 @@ public class PlannerService {
         int end = Math.min((start + pageable.getPageSize()), planners.size());
         Page<Planner> plannerPage = new PageImpl<>(planners.subList(start, end), pageable, planners.size());
 
-        return plannerPage.map(PlannerListResponse::new);
+        return plannerPage.map(planner -> {
+            List<GroupMemberResponse> groupMemberResponses = groupMemberService.getGroupMemberList(planner.getId());
+            return new PlannerListResponse(planner, groupMemberResponses);  // 수정된 부분
+        });
     }
 
     // TODO 여행 그룹의 정보도 같이 줘야 합니다. (프로필 사진, 닉네임, 인덱스, 타입)
