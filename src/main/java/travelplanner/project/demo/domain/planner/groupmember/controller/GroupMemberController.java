@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.planner.groupmember.dto.request.GroupMemberCreateRequest;
 import travelplanner.project.demo.domain.planner.groupmember.dto.request.GroupMemberDeleteRequest;
+import travelplanner.project.demo.domain.planner.groupmember.dto.response.GroupMemberDeleteResponse;
 import travelplanner.project.demo.domain.search.MemberSearchResponse;
 import travelplanner.project.demo.domain.planner.groupmember.service.GroupMemberService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
@@ -60,7 +62,9 @@ public class GroupMemberController {
     ) throws Exception {
 
         tokenUtil.getUserIdFromToken(accessToken);
-        groupMemberService.deleteGroupMember(request);
-        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId, Collections.emptyMap());
+        messagingTemplate.convertAndSend("/sub/planner-message/" + plannerId,
+                Map.of("type","delete-user", "msg",   groupMemberService.deleteGroupMember(request)
+                )
+        );
     }
 }

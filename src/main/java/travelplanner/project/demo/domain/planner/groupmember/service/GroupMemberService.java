@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.domain.member.domain.Member;
 import travelplanner.project.demo.domain.member.repository.MemberRepository;
+import travelplanner.project.demo.domain.planner.groupmember.dto.response.GroupMemberDeleteResponse;
 import travelplanner.project.demo.domain.planner.groupmember.repository.GroupMemberRepository;
 import travelplanner.project.demo.domain.planner.groupmember.domain.GroupMember;
 import travelplanner.project.demo.domain.planner.groupmember.domain.GroupMemberType;
@@ -111,10 +112,15 @@ public class GroupMemberService {
 
     // 그룹 멤버 삭제
     @Transactional
-    public void deleteGroupMember(GroupMemberDeleteRequest request) {
+    public GroupMemberDeleteResponse deleteGroupMember(GroupMemberDeleteRequest request) {
 
         GroupMember groupMember = groupMemberRepository.findGroupMemberById(request.getGroupMemberId());
+
         groupMemberRepository.delete(groupMember);
+
+        return GroupMemberDeleteResponse.builder()
+                .groupMemberId(request.getGroupMemberId())
+                .build();
     }
 
     // 플래너 조회 시 해당 채팅 내역 조회
