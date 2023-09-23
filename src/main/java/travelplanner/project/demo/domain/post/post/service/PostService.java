@@ -19,6 +19,7 @@ import travelplanner.project.demo.domain.post.image.repository.ImageRepository;
 import travelplanner.project.demo.domain.post.post.domain.Post;
 import travelplanner.project.demo.domain.post.post.dto.request.PostCreateRequest;
 import travelplanner.project.demo.domain.post.post.dto.request.PostDeleteRequest;
+import travelplanner.project.demo.domain.post.post.dto.request.PostUpdateRequest;
 import travelplanner.project.demo.domain.post.post.dto.response.PostDetailResponse;
 import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
 import travelplanner.project.demo.domain.post.post.repository.PostRepository;
@@ -154,4 +155,54 @@ public class PostService {
         return new ResponseEntity<>(ErrorType.CREATED, headers, HttpStatus.OK);
     }
 
+    public ResponseEntity<?> updatePost(HttpServletRequest request, List<MultipartFile> fileList, PostUpdateRequest postUpdateRequest) throws IOException {
+
+        Member member = authUtil.getCurrentMember(request);
+
+        // 포스트가 존재하지 않을 경우
+        Optional<Post> post = Optional.ofNullable(postRepository.findById(postUpdateRequest.getPostId())
+                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND)));
+
+        // 포스트를 생성한 사람이 아닐 경우
+        if(!post.get().getMember().getId().equals(member.getId())){
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+        }
+
+        Post postUpdate = Post.builder()
+                .postTitle(postUpdateRequest.getPostTitle())
+                .postContent(postUpdateRequest.getPostContent())
+                .build();
+
+        // 파일이 존재하는 경우
+        if(!fileList.isEmpty()){
+            Long rank=1L;
+            List<Image> imageList = new ArrayList<>();
+            for(MultipartFile multipartFile : fileList){
+                //
+                String originalImgName = multipartFile.getOriginalFilename();
+                String uniqueImgName = s3Util.generateUniqueImgName(originalImgName, member.getId());
+
+                //파일을 디렉토리에 저장
+                String localFilePath = System.getProperty("java.io.tmpdir")+ "/" + uniqueImgName;
+                multipartFile.transferTo(Paths.get(localFilePath));
+
+                //s3 이미지 업로드
+                s3Util.uploadFile(uniqueImgName, localFilePath, "upload/post/");
+                String imgUrl = "https://travel-planner-buckets.s3.ap-northeast-2.amazonaws.com/upload/post/";
+
+                //파일 객체 생성
+                Image image = Image.builder()
+                        .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
+                        .rank(rank)
+                        .isThumbnail(false)
+                        .build();
+
+                //이미지 리스트에 추가
+                imageList.add(image);
+                rank++;
+            }
+            imageRepository.saveAll(imageList);
+        }
+
+    }
 }

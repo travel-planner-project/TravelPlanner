@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.PostUpdate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import travelplanner.project.demo.domain.planner.planner.dto.response.PlannerDet
 import travelplanner.project.demo.domain.planner.planner.editor.PlannerEditRequest;
 import travelplanner.project.demo.domain.post.post.dto.request.PostCreateRequest;
 import travelplanner.project.demo.domain.post.post.dto.request.PostDeleteRequest;
+import travelplanner.project.demo.domain.post.post.dto.request.PostUpdateRequest;
 import travelplanner.project.demo.domain.post.post.dto.response.PostDetailResponse;
 import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
 import travelplanner.project.demo.domain.post.post.service.PostService;
@@ -112,10 +114,11 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping
-    public ResponseEntity updatePlanner(
-            HttpServletRequest request, @RequestBody  PlannerEditRequest plannerEditRequest) {
+    public ResponseEntity<?> updatePost(
+            @RequestPart (value = "multipartFileList", required = false) List<MultipartFile> fileList,
+            @RequestPart PostUpdateRequest postUpdateRequest, HttpServletRequest request) throws IOException {
 
-        return ResponseEntity.ok().body("포스트 수정 성공");
+        return postService.updatePost(request, fileList, postUpdateRequest);
     }
 
 
