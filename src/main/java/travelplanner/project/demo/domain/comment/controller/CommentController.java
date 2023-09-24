@@ -88,9 +88,11 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public CommentResponse createPlanner(
+    public CommentResponse createPlanner(@PathVariable Long postId,
             @RequestBody CommentCreateRequest commentCreateRequest) {
-        return null;
+        CommentResponse createCommentResponse = commentService.createComment(postId, commentCreateRequest);
+
+        return createCommentResponse;
     }
 
 
