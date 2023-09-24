@@ -218,6 +218,9 @@ public class PostService {
             }
             imageRepository.saveAll(imageList);
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 }
