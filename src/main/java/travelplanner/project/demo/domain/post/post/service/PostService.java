@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -145,6 +146,9 @@ public class PostService {
                 //이미지 리스트에 추가
                 imageList.add(image);
                 rank++;
+                
+                //임시 파일 삭제
+                s3Util.deleteLocalFile(localFilePath);
             }
             imageRepository.saveAll(imageList);
         }
@@ -178,7 +182,15 @@ public class PostService {
             Long rank=1L;
             List<Image> imageList = new ArrayList<>();
             for(MultipartFile multipartFile : fileList){
-                //
+
+                //기존 이미지 삭제
+                List<Image> images = imageRepository.findAllById(Collections.singleton(postUpdateRequest.getPostId()));
+                for(Image image : images){
+                    String key = image.getKeyName();
+                    s3Util.deleteFile(key, "upload/post/");    
+                }
+                
+                //수정 이미지 등록
                 String originalImgName = multipartFile.getOriginalFilename();
                 String uniqueImgName = s3Util.generateUniqueImgName(originalImgName, member.getId());
 
@@ -200,6 +212,9 @@ public class PostService {
                 //이미지 리스트에 추가
                 imageList.add(image);
                 rank++;
+                
+                // 임시 파일 삭제
+                s3Util.deleteLocalFile(localFilePath);
             }
             imageRepository.saveAll(imageList);
         }
