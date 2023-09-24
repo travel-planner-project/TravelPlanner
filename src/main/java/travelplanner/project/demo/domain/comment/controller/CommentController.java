@@ -8,20 +8,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
-import travelplanner.project.demo.domain.comment.dto.request.CommentDeleteRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
 import travelplanner.project.demo.domain.comment.dto.response.CommentResponse;
 import travelplanner.project.demo.domain.comment.service.CommentService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -77,8 +72,8 @@ public class CommentController {
     })
     @DeleteMapping
     //포스트 삭제
-    public void deletePlanner(@RequestBody CommentDeleteRequest commentDeleteRequest) {
-
+    public void deletePlanner(@PathVariable Long postId, @PathVariable Long commentId) {
+        commentService.deleteComment(postId, commentId);
     }
 
     @Operation(summary = "댓글 생성")

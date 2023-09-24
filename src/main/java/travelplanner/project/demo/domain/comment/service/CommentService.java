@@ -71,8 +71,8 @@ public class CommentService {
         commentRepository.save(comment);
 
         CommentResponse response = CommentResponse.builder()
-                .commentId(comment.getId())
                 .postId(post.getId())
+                .commentId(comment.getId())
                 .commentContent(comment.getCommentContent())
                 .build();
 
