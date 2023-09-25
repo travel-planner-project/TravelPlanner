@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +73,8 @@ public class CommentController {
     })
     @DeleteMapping
     //포스트 삭제
-    public void deletePlanner(@PathVariable Long postId, @PathVariable Long commentId) {
-        commentService.deleteComment(postId, commentId);
+    public void deleteComment(@PathVariable Long postId, @PathVariable Long commentId, HttpServletRequest request) {
+        commentService.deleteComment(postId, commentId, request);
     }
 
     @Operation(summary = "댓글 생성")
@@ -100,7 +101,10 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PatchMapping
-    public ResponseEntity updatePlanner(@RequestBody CommentEditRequest commentEditRequest) {
+    public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId,
+                                        @RequestBody CommentEditRequest commentEditRequest) {
+
+        commentService.editComment(postId, commentId, commentEditRequest);
 
         return ResponseEntity.ok().body("댓글 수정 성공");
     }
