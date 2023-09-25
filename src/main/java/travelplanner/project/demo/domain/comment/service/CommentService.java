@@ -84,7 +84,23 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse editComment(Long postId, Long commentId, CommentEditRequest commentEditRequest) {
+    public CommentResponse editComment(Long postId, Long commentId,
+                                       CommentEditRequest commentEditRequest,
+                                       HttpServletRequest request) {
+
+        postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
+
+        Member currentMember = authUtil.getCurrentMember(request);
+
+        if (comment.getPost().getMember() != currentMember) {
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+        }
+
+        // TODO 수정하는 로직 추가
         return null;
     }
 

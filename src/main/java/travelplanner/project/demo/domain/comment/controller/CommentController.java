@@ -102,9 +102,10 @@ public class CommentController {
     })
     @PatchMapping
     public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId,
-                                        @RequestBody CommentEditRequest commentEditRequest) {
+                                        @RequestBody CommentEditRequest commentEditRequest,
+                                        HttpServletRequest request) {
 
-        commentService.editComment(postId, commentId, commentEditRequest);
+        commentService.editComment(postId, commentId, commentEditRequest, request);
 
         return ResponseEntity.ok().body("댓글 수정 성공");
     }
