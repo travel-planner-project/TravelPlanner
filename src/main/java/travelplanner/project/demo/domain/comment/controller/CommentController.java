@@ -34,7 +34,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @GetMapping
-    public PageUtil<CommentResponse> getPostList(
+    public PageUtil<CommentResponse> getCommentList(
             @Parameter(name="page", description = "몇번째 페이지(0부터 시작), 기본값 0", in = ParameterIn.QUERY)
             @RequestParam(defaultValue = "0") int page,
 
@@ -84,7 +84,7 @@ public class CommentController {
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
     @PostMapping
-    public CommentResponse createPlanner(@PathVariable Long postId,
+    public CommentResponse createComment(@PathVariable Long postId,
             @RequestBody CommentCreateRequest commentCreateRequest) {
         CommentResponse createCommentResponse = commentService.createComment(postId, commentCreateRequest);
 
