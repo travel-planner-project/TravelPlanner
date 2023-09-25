@@ -89,9 +89,7 @@ public class CommentService {
 
         Member currentMember = authUtil.getCurrentMember(request);
 
-        if (comment.getPost().getMember() != currentMember) {
-            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
-        }
+        validateCommentAccess(comment, currentMember);
 
         // TODO 수정하는 로직 추가
         return null;
@@ -105,9 +103,7 @@ public class CommentService {
 
         Member currentMember = authUtil.getCurrentMember(request);
 
-        if (comment.getPost().getMember() != currentMember) {
-            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
-        }
+        validateCommentAccess(comment, currentMember);
 
         commentRepository.delete(comment);
     }
@@ -120,5 +116,11 @@ public class CommentService {
     public Comment validateComment(Long commentId){
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
+    }
+
+    public void validateCommentAccess(Comment comment, Member currentMember) {
+        if (comment.getPost().getMember() != currentMember) {
+            throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
+        }
     }
 }
