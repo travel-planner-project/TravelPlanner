@@ -34,11 +34,9 @@ public class CommentService {
 
     public PageUtil<CommentResponse> getCommentList(Long postId, Pageable pageable) {
 
-        postRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+        validatePost(postId);
 
         Page<Comment> commentList = commentRepository.findByPostId(postId, pageable);
-
 
         List<CommentResponse> commentResponseList = new ArrayList<>();
 
@@ -64,8 +62,7 @@ public class CommentService {
     @Transactional
     public CommentResponse createComment(Long postId, CommentCreateRequest commentCreateRequest) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+        Post post = validatePost(postId);
 
         Comment comment = Comment.builder()
                 .post(post)
@@ -87,9 +84,7 @@ public class CommentService {
     public CommentResponse editComment(Long postId, Long commentId,
                                        CommentEditRequest commentEditRequest,
                                        HttpServletRequest request) {
-
-        postRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+        validatePost(postId);
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
@@ -106,8 +101,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long postId, Long commentId, HttpServletRequest request) {
-        postRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
+        validatePost(postId);
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
@@ -119,5 +113,10 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    public Post validatePost(Long postId){
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
     }
 }
