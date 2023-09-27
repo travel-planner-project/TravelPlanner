@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelplanner.project.demo.domain.comment.domain.Comment;
+import travelplanner.project.demo.domain.comment.domain.CommentEditor;
 import travelplanner.project.demo.domain.comment.dto.request.CommentCreateRequest;
 import travelplanner.project.demo.domain.comment.dto.request.CommentEditRequest;
 import travelplanner.project.demo.domain.comment.dto.response.CommentResponse;
@@ -81,7 +82,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse editComment(Long postId, Long commentId,
+    public void editComment(Long postId, Long commentId,
                                        CommentEditRequest commentEditRequest,
                                        HttpServletRequest request) {
         validatePost(postId);
@@ -92,9 +93,11 @@ public class CommentService {
         validateCommentAccess(comment, currentMember);
 
         // TODO 수정하는 로직 추가
-
-
-        return null;
+        CommentEditor.CommentEditorBuilder editorBuilder = comment.toEditor();
+        CommentEditor commentEditor = editorBuilder
+                .commentContent(commentEditRequest.getCommentContent())
+                .build();
+        comment.edit(commentEditor);
     }
 
     @Transactional
