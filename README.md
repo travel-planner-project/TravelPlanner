@@ -178,7 +178,7 @@ https://go.travel-planner.xyz/feed
 
 ## Backend Architecture
 
-<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/c3ecd4a2-2bf3-41fc-8eef-7639db1ccf20" width="80%"/>
+<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/c3ecd4a2-2bf3-41fc-8eef-7639db1ccf20" width="90%"/>
 
 <br>
 <br>
