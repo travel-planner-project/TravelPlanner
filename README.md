@@ -1,81 +1,62 @@
-## Travel Planner.
+# 𝙏𝙍𝘼𝙑𝙀𝙇 𝙋𝙇𝘼𝙉𝙉𝙀𝙍
+- **`Travel Planner`** 는 친구들과 실시간으로 여행을 계획할 수 있는 웹 애플리케이션입니다.
+- 친구들과 실시간으로 채팅을 하며, 직접 만나지 않고도 **Travel Planner** 를 통해 마치 함께 있는 것처럼 여행 계획을 짤 수 있습니다. 또한 SNS 기능을 통해 자신의 여행을 사진과 글로 기록하고 공유하며 친구들과 소통할 수 있어요.
+- 앞으로 추가될 커뮤니티 기능을 통해 관광지의 사장님들이 가게를 홍보하고, 지역 주민들의 숨겨진 여행지를 추천 받을 수 있어요.
 
----
+#### **여행을 떠나고 싶다면 Travel Planner 와 함께 떠나요~** 😎✈️
+
+<br>
+<br>
+<br>
+
+## 𝙏𝙀𝘼𝙈 𝙏𝙍𝘼𝙑𝙀𝙇 𝙋𝙇𝘼𝙉𝙉𝙀𝙍
 
 🕓 개발 기간 : 2023.06.18 ~ 현재
 
 👩‍👧‍👦 팀 구성 : 프론트 `3`, 백엔드 `3` 
 
-### Links.
+<br>
 
----
+### TEAM FRONTEND
 
-- Github:  👉🏻 [travel-planner-project/TravelPlanner (github.com)](https://github.com/travel-planner-project/TravelPlanner)
-- 운영
+|이미지|이미지|이미지|
+|:------:|:------:|:------:|
+|박설화|최예슬|하종승|
+
+<br>
+
+### TEAM BACKEND
+|이미지|이미지|이미지|
+|:------:|:------:|:------:|
+|김시은|신세인|임준형|
+
+<br>
+<br>
+<br>
+
+
+## 𝙇𝙄𝙉𝙆
+### 배포 주소
+https://go.travel-planner.xyz/feed
+
+**아래 테스트 계정을 통해 한번 이용해보세요!**
+|아이디|비밀번호|
+|:------:|:------:|
+|||
+|||
+
+### 스웨거
+- **운영 스웨거** : https://travel-planner.xyz/swagger-ui/index.html
+- **개발 스웨거** : https://travel-planner.xyz/swagger-ui/index.html
+### Notion
+- **Team** : [https://www.notion.so/72671c3f13344a40a41dd0fd0901addf?pvs=21](https://sieun96.notion.site/72671c3f13344a40a41dd0fd0901addf?pvs=4)
+- **Backend notion** : [https://sieun96.notion.site/bf6ac20970fa495885e6323dfc9e66d4?pvs=4](https://sieun96.notion.site/bf6ac20970fa495885e6323dfc9e66d4?pvs=4)
     
-    > Server : 👉🏻
-    Swagger : 👉🏻 https://travel-planner.xyz/swagger-ui/index.html
-    > 
-- 배포
-    
-    > Server : 👉🏻
-    Swagger : 👉🏻  https://dev.travel-planner.xyz/swagger-ui/index.html
-    > 
-- Notion
-    
-    > Team : 👉🏻 [https://sieun96.notion.site/72671c3f13344a40a41dd0fd0901addf?pvs=4](https://www.notion.so/72671c3f13344a40a41dd0fd0901addf?pvs=21)
-    Backend WIKI : 👉🏻 [https://sieun96.notion.site/bf6ac20970fa495885e6323dfc9e66d4?pvs=4](https://www.notion.so/bf6ac20970fa495885e6323dfc9e66d4?pvs=21)
-    > 
-    
+<br>
+<br>
+<br>
 
-### Teams.
-
-밑에 메일이나 깃헙 주소를 넣을까여? 아님 한 일을 정리해서 넣을까여?
-
-- 이름에 깃헙 주소 링크를 달고, 한 일을 아래에 같이 정리하면 좋을 듯 합니당!
-- 굳굳
-
----
-
-Backend
-
-김시은
-
-Backend
-
-신세인
-
-Backend
-
-임준형
-
-Front
-
-박설화
-
-Front
-
-최예슬
-
-Front
-
-하종승
-
-### About Project.
-
----
-
-**`Travel Planner`**는 친구들과 실시간으로 여행을 계획할 수 있는 웹 애플리케이션입니다.
-
-친구들과 실시간으로 채팅을 하며, 직접 만나지 않고도 Travel Planner를 통해 마치 함께 있는 것처럼 여행 계획을 짤 수 있습니다, 
-
-또한 SNS 및 커뮤니티 기능을 통해 자신의 여행을 사진과 글로 기록하고 공유하며 친구들과 소통할 수 있습니다.
-
-여행을 떠나고 싶다면 Travel Planner와 함께 떠나요 ~😎✈️
-
-### Stacks.
-
----
+## 𝙎𝙏𝘼𝘾𝙆 & 𝙏𝙊𝙊𝙇
 
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 
@@ -109,58 +90,59 @@ websocketDevTools
 
 notion, figma, discord
 
-### Layout.
+<br>
+<br>
+<br>
 
----
-
-- 메인페이지
-- 로그인 / 회원가입 페이지
-- 플래너 페이지
-    - 플래너 생성
-    - 친구 추가
-- 채팅 페이지
-- SNS 페이지
-- 커뮤니티 페이지
-
-### Main Function.
-
----
-
-⚙️ 로그인 / 회원 가입
-
+## 주요 기능
+⚙️ **로그인 / 회원 가입**
 - JWT Token(Access/Refresh)을 사용하여 로그인 진행.
 - OAuth2.0을 사용하여 소셜 로그인 진행.
 - 비밀번호 변경 시 임시 비밀번호를 해당 이메일로 전송.
 
-⚙️ 플래너 및 채팅 기능
+<br>
 
-- Websocket을 적용하여 그룹 멤버와 함께 즉각적으로 여행 계획 공유.
+⚙️ **플래너 및 채팅 기능**
+- Websocket을 적용하여 그룹 멤버와 함께 실시간으로 여행 계획 공유.
 - Websocket을 적용하여 그룹 멤버와 함께 실시간 채팅.
 - 이메일 검색을 통한 그룹 멤버 추가 및 삭제.
 - 날짜 별 장소와 할 일 기록.
 
-⚙️ SNS 기능
+<br>
 
+⚙️ **SNS 기능**
 - 사진 / 글을 기록 및 공유.
 - 댓글 및 대댓글 기능.
 
-⚙️ 커뮤니티 기능
+<br>
 
-### Architecture.
+⚙️ **쪽지 기능**
+- 유저검색을 통해 특정 유저와 1:1 로 쪽지 주고 받기.
 
----
+<br>
 
-![제목 없는 다이어그램-페이지-2.drawio.svg](https://prod-files-secure.s3.us-west-2.amazonaws.com/362810da-0f97-409b-9071-01de43102871/78d7df0c-d907-4263-8fa4-2d46cdf40409/%EC%A0%9C%EB%AA%A9_%EC%97%86%EB%8A%94_%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8-%ED%8E%98%EC%9D%B4%EC%A7%80-2.drawio.svg)
+⚙️ **커뮤니티 기능**
 
+<br>
+<br>
+<br>
 
-### ERD.
+## 𝘼𝙍𝘾𝙃𝙄𝙏𝙀𝘾𝙏𝙐𝙍𝙀
+<br>
 
----
+![백엔드 아키텍쳐](https://github.com/travel-planner-project/TravelPlanner/assets/119668620/81e20279-3b5c-4c91-88bf-81c7dd6449d0)
 
-- 1차 배포
+<br>
+<br>
+<br>
 
-![entityManagerFactory(EntityManagerFactoryBuilder, PersistenceManagedTypes).png](https://prod-files-secure.s3.us-west-2.amazonaws.com/362810da-0f97-409b-9071-01de43102871/c5ad0a7d-d438-40e4-8a17-a2805a17922f/entityManagerFactory(EntityManagerFactoryBuilder_PersistenceManagedTypes).png)
+## 𝙀𝙉𝙏𝙄𝙏𝙔 𝘿𝙄𝘼𝙂𝙍𝘼𝙈
+<br>
 
-- 2차 배포
+|1차 배포|2차 배포|
+|:------:|:------:|
+|![1차 배포 erd](https://github.com/travel-planner-project/TravelPlanner/assets/119668620/66ad1af2-7584-492e-8bed-6b50144e57c0)|![2차 배포 erd](https://github.com/travel-planner-project/TravelPlanner/assets/119668620/827aa250-849d-4385-918d-7dfaefd556ce)|
 
-![ㄴ.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/362810da-0f97-409b-9071-01de43102871/62678e99-e4e7-41a0-8102-36b505d9b0d2/%E3%84%B4.png)
+<br>
+<br>
+<br>
