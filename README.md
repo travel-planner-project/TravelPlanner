@@ -58,37 +58,60 @@ https://go.travel-planner.xyz/feed
 
 ## 𝙎𝙏𝘼𝘾𝙆 & 𝙏𝙊𝙊𝙇
 
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-
-[Simple Icons](https://simpleicons.org/?q=github) 참고하여 작성
-
 🛠️ **Frontend**  
 
 🛠️ **Backend**
 
-java, spring boot, websocket, stomp
+<div align=left> 
+    <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
+    <img src="https://img.shields.io/badge/springBoot-6DB33F?style=for-the-badge&logo=springBoot&logoColor=white"> 
+    <img src="https://img.shields.io/badge/springSecurity-6DB33F?style=for-the-badge&logo=springSecurity&logoColor=white"> 
+    <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white">
+    <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white">
+    </br>
+    <img src="https://img.shields.io/badge/JWT-FFD700?style=for-the-badge&logo=JWT&logoColor=white">
+    <img src="https://img.shields.io/badge/Websocket-85EA2D?style=for-the-badge&logo=Websocket&logoColor=white">
+    <img src="https://img.shields.io/badge/OAuth2.0-FFFFE0?style=for-the-badge&logo=OAuth2.0&logoColor=white">
+</div>
 
-hibernate, Spring Security, jwt, swagger
-
-OAuth2.0
+<br>
+<br>
 
 🛠️ **Server/DB**
+<div align=left> 
+  <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+  <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
+  <img src="https://img.shields.io/badge/apache tomcat-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=white">
+  <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=Nginx&logoColor=white"> 
+  <br>
+  <img src="https://img.shields.io/badge/AmazonAWS-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonRds-527FFF?style=for-the-badge&logo=AmazonRds&logoColor=white"> 
+</div>
 
-mysql, rds, redis
 
-AWS, Nginx
+<br>
+<br>
+
 
 🛠️ **Tools**
+<div align=left>
+    <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+    <img src="https://img.shields.io/badge/IntelliJ-000000?style=for-the-badge&logo=IntelliJ&logoColor=white">
+    <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white">
+    <img src="https://img.shields.io/badge/websocketDevTools-FF6347?style=for-the-badge&logo=websocketDevTools&logoColor=white">
+</div>
 
-git, github
 
-intellij, postman
-
-websocketDevTools
+<br>
+<br>
 
 🛠️ **Communication**
+<div align=left>
+    <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
+    <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white">
+    <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white">
+</div>
 
-notion, figma, discord
 
 <br>
 <br>
