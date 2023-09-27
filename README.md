@@ -26,7 +26,7 @@
 <br>
 
 ### TEAM BACKEND
-|이미지|이미지|이미지|
+|<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/7bb9d25f-3084-4085-b14f-c712020da134" width="50%"/>|<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/a283dcdb-b3b6-4411-8a44-07513976821c" width="50%"/>|이미지|
 |:------:|:------:|:------:|
 |김시은|신세인|임준형|
 
@@ -153,7 +153,7 @@ https://go.travel-planner.xyz/feed
 ## 𝘼𝙍𝘾𝙃𝙄𝙏𝙀𝘾𝙏𝙐𝙍𝙀
 <br>
 
-![백엔드 아키텍쳐](https://github.com/travel-planner-project/TravelPlanner/assets/119668620/81e20279-3b5c-4c91-88bf-81c7dd6449d0)
+<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/81e20279-3b5c-4c91-88bf-81c7dd6449d0" width="70%"/>
 
 <br>
 <br>
