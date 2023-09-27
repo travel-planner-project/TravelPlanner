@@ -153,7 +153,7 @@ https://go.travel-planner.xyz/feed
 ## 𝘼𝙍𝘾𝙃𝙄𝙏𝙀𝘾𝙏𝙐𝙍𝙀
 <br>
 
-<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/81e20279-3b5c-4c91-88bf-81c7dd6449d0" width="80%"/>
+<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/a198fe42-3592-44e4-b003-109a38e82378" width="80%"/>
 
 <br>
 <br>
