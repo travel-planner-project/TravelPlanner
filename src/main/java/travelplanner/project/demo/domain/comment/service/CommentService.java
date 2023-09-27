@@ -92,6 +92,8 @@ public class CommentService {
         validateCommentAccess(comment, currentMember);
 
         // TODO 수정하는 로직 추가
+
+
         return null;
     }
 
@@ -108,16 +110,19 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
+    // Post 존재 여부 검증
     public Post validatePost(Long postId){
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorType.POST_NOT_FOUND));
     }
 
+    // Comment 존재 여부 검증
     public Comment validateComment(Long commentId){
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApiException(ErrorType.COMMENT_NOT_FOUND));
     }
 
+    // 작성자와 현재 로그인한 유저가 다를 경우
     public void validateCommentAccess(Comment comment, Member currentMember) {
         if (comment.getPost().getMember() != currentMember) {
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
