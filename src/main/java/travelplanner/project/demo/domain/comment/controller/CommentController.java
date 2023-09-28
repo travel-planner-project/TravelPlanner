@@ -19,8 +19,10 @@ import travelplanner.project.demo.domain.comment.service.CommentService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
 
+
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/comment")
 public class CommentController {
 
     private final CommentService commentService;
@@ -71,7 +73,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "댓글 찾을 수 없습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
-    @DeleteMapping
+    @DeleteMapping("/{postId}")
     //포스트 삭제
     public void deleteComment(@PathVariable Long postId, @PathVariable Long commentId, HttpServletRequest request) {
         commentService.deleteComment(postId, commentId, request);
@@ -83,7 +85,7 @@ public class CommentController {
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
-    @PostMapping
+    @PostMapping("/{postId}")
     public CommentResponse createComment(@PathVariable Long postId,
             @RequestBody CommentCreateRequest commentCreateRequest) {
         CommentResponse createCommentResponse = commentService.createComment(postId, commentCreateRequest);
@@ -100,7 +102,7 @@ public class CommentController {
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
-    @PatchMapping
+    @PatchMapping("/{postId}")
     public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId,
                                         @RequestBody CommentEditRequest commentEditRequest,
                                         HttpServletRequest request) {
