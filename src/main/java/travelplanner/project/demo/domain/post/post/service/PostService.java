@@ -53,7 +53,7 @@ public class PostService {
     public PageUtil<PostListResponse> getPostList(Pageable pageable, HttpServletRequest request) {
 
         // 최신 피드
-        Page<Post> page = postRepository.findAll(pageable, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> page = postRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         List<PostListResponse> postListResponses = page.getContent()
                 .stream()
@@ -139,7 +139,7 @@ public class PostService {
                 //파일 객체 생성
                 Image image = Image.builder()
                         .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
-                        .rank(rank)
+                        .sort(rank)
                         .isThumbnail(false)
                         .build();
 
@@ -205,7 +205,7 @@ public class PostService {
                 //파일 객체 생성
                 Image image = Image.builder()
                         .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
-                        .rank(rank)
+                        .sort(rank)
                         .isThumbnail(false)
                         .build();
 

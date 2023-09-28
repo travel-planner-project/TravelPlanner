@@ -24,6 +24,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="post_id")
     private Long id;
 
     private String postTitle;
@@ -37,11 +38,13 @@ public class Post {
     private Member member;
 
     @OneToMany(mappedBy = "post")
+    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     //댓글 추가
 
     @OneToMany(mappedBy = "post",  cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     public void mappingComment(Comment comment) {

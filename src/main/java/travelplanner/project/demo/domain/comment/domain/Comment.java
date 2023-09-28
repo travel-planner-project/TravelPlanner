@@ -48,6 +48,7 @@ public class Comment {
     // 자식 엔터티가 더 이상 부모 엔터티에 참조되지 않을 때, 자식 엔터티를 자동으로 삭제
     // 부모 댓글이 삭제될 때 그에 속한 모든 대댓글도 함께 삭제
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @Builder.Default
     private List<Comment> children = new ArrayList<>();
 
     public CommentEditor.CommentEditorBuilder toEditor() {
