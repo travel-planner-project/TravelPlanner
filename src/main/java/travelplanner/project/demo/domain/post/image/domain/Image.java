@@ -1,6 +1,7 @@
 package travelplanner.project.demo.domain.post.image.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="post_id")
+    @JsonBackReference
     private Post post;
 
 }
