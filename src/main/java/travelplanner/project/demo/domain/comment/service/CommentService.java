@@ -1,6 +1,7 @@
 package travelplanner.project.demo.domain.comment.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -64,20 +65,19 @@ public class CommentService {
     @Transactional
     public CommentResponse createComment(Long postId, CommentCreateRequest commentCreateRequest) {
 
+        boolean parentIsNull = commentCreateRequest.getParentId() == null;
         Post post = validatePost(postId);
-
 
         Comment comment = null;
 
-        if (commentCreateRequest.getParentId() == null) {
+        if (parentIsNull) {
             comment = Comment.builder()
                     .post(post)
                     .commentContent(commentCreateRequest.getCommentContent())
                     .build();
         }
 
-        if (commentCreateRequest.getParentId() != null) {
-
+        if (!parentIsNull) {
             Long parentId = commentCreateRequest.getParentId();
             Comment findParent = validateComment(parentId);
 
@@ -90,13 +90,25 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        CommentResponse response = CommentResponse.builder()
+        CommentResponse.CommentResponseBuilder commentResponseBuilder = CommentResponse.builder()
                 .postId(post.getId())
                 .commentId(comment.getId())
-                .commentContent(comment.getCommentContent())
-                .build();
+                .commentContent(comment.getCommentContent());
 
-        return response;
+        CommentResponse commentResponse = null;
+        if(parentIsNull){
+            commentResponse = commentResponseBuilder
+                    .parentId(null)
+                    .build();
+        }
+
+        if (!parentIsNull) {
+            commentResponse = commentResponseBuilder
+                    .parentId(commentCreateRequest.getParentId())
+                    .build();
+        }
+
+        return commentResponse;
     }
 
     @Transactional
