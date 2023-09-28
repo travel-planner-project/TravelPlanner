@@ -77,3 +77,10 @@ jar {
 test {
 	exclude '*/'
 }
+
+// 빌드 시 application.yml 을 서브모듈에서 복사하기
+task copySubmoduleYml(type: Copy) {
+	from './dev-submodule'
+	include '*.yml'
+	into './src/main/resources'
+}
