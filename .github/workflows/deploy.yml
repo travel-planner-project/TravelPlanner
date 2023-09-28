@@ -30,7 +30,7 @@ jobs:
     - name: Checkout submodules
       uses: actions/checkout@v3
       with:
-        submodules: true
+        submodules: 'recursive'
         token: ${{ secrets.SUBMODULE_TOKEN }}
         
     - name: Set up JDK 17
