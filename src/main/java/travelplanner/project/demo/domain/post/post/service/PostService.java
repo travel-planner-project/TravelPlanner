@@ -163,6 +163,7 @@ public class PostService {
         return new ResponseEntity<>(ErrorType.CREATED, headers, HttpStatus.OK);
     }
 
+    @Transactional(readOnly = false)
     public ResponseEntity<?> updatePost(HttpServletRequest request, List<MultipartFile> fileList, PostUpdateRequest postUpdateRequest) throws IOException {
 
         Member member = authUtil.getCurrentMember(request);
@@ -191,9 +192,11 @@ public class PostService {
                 List<Image> images = imageRepository.findAllById(Collections.singleton(postUpdateRequest.getPostId()));
                 for(Image image : images){
                     String key = image.getKeyName();
-                    s3Util.deleteFile(key, "upload/post/");    
+                    s3Util.deleteFile(key, "upload/post/");
                 }
-                
+
+                imageRepository.deleteAllByPostId(postUpdateRequest.getPostId());
+
                 //수정 이미지 등록
                 String originalImgName = multipartFile.getOriginalFilename();
                 String uniqueImgName = s3Util.generateUniqueImgName(originalImgName, member.getId());
@@ -211,6 +214,7 @@ public class PostService {
                         .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
                         .sort(rank)
                         .isThumbnail(false)
+                        .post(post.get())
                         .build();
 
                 //이미지 리스트에 추가
