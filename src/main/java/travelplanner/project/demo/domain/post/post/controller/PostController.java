@@ -86,8 +86,8 @@ public class PostController {
     })
     @DeleteMapping
     //포스트 삭제
-    public void deletePost(HttpServletRequest request, @RequestBody PostDeleteRequest postDeleteRequest) {
-        postService.deletePost(request, postDeleteRequest);
+    public ResponseEntity<?> deletePost(HttpServletRequest request, @RequestBody PostDeleteRequest postDeleteRequest) {
+        return postService.deletePost(request, postDeleteRequest);
     }
 
     @Operation(summary = "포스트 생성")

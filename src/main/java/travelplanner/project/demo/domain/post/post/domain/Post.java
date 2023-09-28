@@ -38,7 +38,7 @@ public class Post {
     private Member member;
 
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Builder.Default
     @JsonManagedReference
     private List<Image> images = new ArrayList<>();

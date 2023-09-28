@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +23,6 @@ import travelplanner.project.demo.domain.post.post.dto.response.PostDetailRespon
 import travelplanner.project.demo.domain.post.post.dto.response.PostListResponse;
 import travelplanner.project.demo.domain.post.post.repository.PostRepository;
 import travelplanner.project.demo.global.exception.ApiException;
-import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.exception.ErrorType;
 import travelplanner.project.demo.global.util.AuthUtil;
 import travelplanner.project.demo.global.util.PageUtil;
@@ -73,7 +71,7 @@ public class PostService {
 
 
     @Transactional
-    public void deletePost(HttpServletRequest request, PostDeleteRequest postDeleteRequest) {
+    public ResponseEntity<?> deletePost(HttpServletRequest request, PostDeleteRequest postDeleteRequest) {
         Long postId = postDeleteRequest.getPostId();
 
         //포스트가 존재하지 않을 경우
@@ -92,6 +90,10 @@ public class PostService {
             // 포스트를 생성한 사람과 현재 유저가 다름 -> 권한 없음
             throw new ApiException(ErrorType.USER_NOT_AUTHORIZED);
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     public PostDetailResponse getPostDetailById(Long postId, HttpServletRequest request) {
@@ -108,7 +110,6 @@ public class PostService {
 
     @Transactional(readOnly = false)
     public ResponseEntity<?> createPost(HttpServletRequest request, List<MultipartFile> fileList, PostCreateRequest postCreateRequest) throws IOException {
-        //log.info("------------포스트 생성 들어오나?");
         Member member = authUtil.getCurrentMember(request);
 
         //포스트 등록
@@ -160,7 +161,7 @@ public class PostService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        return new ResponseEntity<>(ErrorType.CREATED, headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @Transactional(readOnly = false)
