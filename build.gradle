@@ -84,3 +84,6 @@ task copySubmoduleYml(type: Copy) {
 	include '*.yml'
 	into './src/main/resources'
 }
+
+// build 태스크가 copySubmoduleYml 태스크에 의존하도록 설정
+build.dependsOn copySubmoduleYml
