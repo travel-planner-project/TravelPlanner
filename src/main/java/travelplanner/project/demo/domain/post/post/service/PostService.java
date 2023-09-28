@@ -33,6 +33,7 @@ import travelplanner.project.demo.global.util.S3Util;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,14 +106,16 @@ public class PostService {
                 .build();
     }
 
+    @Transactional(readOnly = false)
     public ResponseEntity<?> createPost(HttpServletRequest request, List<MultipartFile> fileList, PostCreateRequest postCreateRequest) throws IOException {
-
+        //log.info("------------포스트 생성 들어오나?");
         Member member = authUtil.getCurrentMember(request);
 
         //포스트 등록
         Post createPost = Post.builder()
                 .postTitle(postCreateRequest.getPostTitle())
                 .postContent(postCreateRequest.getPostContent())
+                .createdAt(LocalDateTime.now())
                 .member(member)
                 .build();
 
@@ -141,6 +144,7 @@ public class PostService {
                         .postImgUrl(imgUrl+uniqueImgName).keyName(uniqueImgName)
                         .sort(rank)
                         .isThumbnail(false)
+                        .post(createPost)
                         .build();
 
                 //이미지 리스트에 추가
