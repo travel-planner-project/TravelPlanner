@@ -23,6 +23,7 @@ import travelplanner.project.demo.global.util.PageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -65,10 +66,27 @@ public class CommentService {
 
         Post post = validatePost(postId);
 
-        Comment comment = Comment.builder()
-                .post(post)
-                .commentContent(commentCreateRequest.getCommentContent())
-                .build();
+
+        Comment comment = null;
+
+        if (commentCreateRequest.getParentId() == null) {
+            comment = Comment.builder()
+                    .post(post)
+                    .commentContent(commentCreateRequest.getCommentContent())
+                    .build();
+        }
+
+        if (commentCreateRequest.getParentId() != null) {
+
+            Long parentId = commentCreateRequest.getParentId();
+            Comment findParent = validateComment(parentId);
+
+            comment = Comment.builder()
+                    .post(post)
+                    .commentContent(commentCreateRequest.getCommentContent())
+                    .parent(findParent)
+                    .build();
+        }
 
         commentRepository.save(comment);
 
