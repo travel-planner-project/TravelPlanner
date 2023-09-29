@@ -22,7 +22,7 @@ public class CommentEditor {
         }
 
         public CommentEditorBuilder commentContent(final String commentContent) {
-            if (commentContent != null && commentContent.isEmpty()) {
+            if (commentContent != null && !commentContent.isEmpty()) {
                 this.commentContent = commentContent;
             }
             return this;

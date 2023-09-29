@@ -102,7 +102,7 @@ public class CommentController {
             @ApiResponse(responseCode = "500", description = "입력하지 않은 요소가 존재합니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
-    @PatchMapping("/{postId}")
+    @PatchMapping("/{postId}/{commentId}")
     public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId,
                                         @RequestBody CommentEditRequest commentEditRequest,
                                         HttpServletRequest request) {

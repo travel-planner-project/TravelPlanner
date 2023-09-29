@@ -3,6 +3,7 @@ package travelplanner.project.demo.domain.comment.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -122,12 +124,16 @@ public class CommentService {
 
         validateCommentAccess(comment, currentMember);
 
-        // TODO 수정하는 로직 추가
         CommentEditor.CommentEditorBuilder editorBuilder = comment.toEditor();
+        log.info("flag 1 commentEditRequest.getCommentContent() = " + commentEditRequest.getCommentContent());
+
         CommentEditor commentEditor = editorBuilder
                 .commentContent(commentEditRequest.getCommentContent())
                 .build();
+        log.info("flag 2 commentEditor.getCommentContent() = " + commentEditor.getCommentContent());
+
         comment.edit(commentEditor);
+        log.info("flag 3 comment.getCommentContent() = " + comment.getCommentContent());
     }
 
     @Transactional
