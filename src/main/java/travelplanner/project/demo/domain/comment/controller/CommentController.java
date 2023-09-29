@@ -73,7 +73,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "댓글 찾을 수 없습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class)))
     })
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{postId}/{commentId}")
     //포스트 삭제
     public void deleteComment(@PathVariable Long postId, @PathVariable Long commentId, HttpServletRequest request) {
         commentService.deleteComment(postId, commentId, request);
