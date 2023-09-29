@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,7 @@ import travelplanner.project.demo.domain.comment.service.CommentService;
 import travelplanner.project.demo.global.exception.ApiExceptionResponse;
 import travelplanner.project.demo.global.util.PageUtil;
 
-
+@Tag(name = "Comment", description = "댓글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comment")
