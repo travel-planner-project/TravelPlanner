@@ -48,7 +48,7 @@ public class FeedService {
                 .collect(Collectors.toList());
 
         // PageUtil 객체 생성
-        return new PageUtil<>(feedResponses, pageable, page.getTotalElements());
+        return new PageUtil<>(feedResponses, pageable, page.getTotalPages());
     }
 
 }
