@@ -195,10 +195,14 @@ https://go.travel-planner.xyz/feed
 
 
 # 𝙀𝙉𝙏𝙄𝙏𝙔 𝘿𝙄𝘼𝙂𝙍𝘼𝙈
-<br>
 
 ## 1차 배포
 <img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/66ad1af2-7584-492e-8bed-6b50144e57c0" width="70%"/>
+
+
+<br>
+<br>
+<br>
 
 ## 2차 배포
 <img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/827aa250-849d-4385-918d-7dfaefd556ce" width="80%" />
