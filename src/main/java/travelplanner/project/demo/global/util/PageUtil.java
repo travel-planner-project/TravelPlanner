@@ -14,9 +14,9 @@ public class PageUtil<T> {
     private int currentPageNumber;
     private int totalPageNumber;
 
-    public PageUtil(List<T> content, Pageable pageable, long totalElements) {
+    public PageUtil(List<T> content, Pageable pageable, int totalPageNumber) {
         this.content = content;
         this.currentPageNumber = pageable.getPageNumber();
-        this.totalPageNumber = (int) (totalElements / pageable.getPageSize()) + 1;
+        this.totalPageNumber = totalPageNumber;
     }
 }

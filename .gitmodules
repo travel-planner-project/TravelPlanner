@@ -1,0 +1,6 @@
+[submodule "oper-submodule"]
+	path = oper-submodule
+	url = https://github.com/travel-planner-project/oper-submodule.git
+[submodule "dev-submodule"]
+	path = dev-submodule
+	url = https://github.com/travel-planner-project/dev-submodule.git

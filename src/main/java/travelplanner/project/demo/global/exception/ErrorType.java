@@ -73,9 +73,16 @@ public enum ErrorType {
     // ==================================================================================================================
 
     // 메세지 형식이 잘못된 경우(웹소켓)
-    INVALID_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "MESSAGE-001", "메세지 형식이 올바르지 않습니다.");
+    INVALID_MESSAGE_FORMAT(HttpStatus.BAD_REQUEST, "MESSAGE-001", "메세지 형식이 올바르지 않습니다."),
 
     // ==================================================================================================================
+
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-001", "포스트가 존재하지 않습니다."),
+
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "댓글이 존재하지 않습니다.");
+    // ==================================================================================================================
+
+
 
     private final HttpStatus status;
     private final String errorCode;
