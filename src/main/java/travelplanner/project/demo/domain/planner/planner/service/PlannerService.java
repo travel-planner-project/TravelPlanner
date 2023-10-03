@@ -71,8 +71,9 @@ public class PlannerService {
         List<Planner> planners;
 
         if (userId == null) {
-            // 유저 아이디 값을 보내지 않았을 때, 모든 유저의 플래너 조회
-            planners = plannerRepository.findAll();
+            // 유저 아이디 값을 보내지 않았을 때 예외 던지기
+            throw new ApiException(ErrorType.NULL_VALUE_EXIST);
+            
         } else {
             // 특정 사용자의 플래너 조회
             Member member = memberRepository.findById(userId)
