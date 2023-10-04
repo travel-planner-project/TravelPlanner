@@ -1,6 +1,12 @@
 <br>
 
 
+<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/7686dbdd-dad0-48e4-898c-aaa49e857ce1" width="300px"/>
+
+<br>
+<br>
+<br>
+
 # 𝙏𝙍𝘼𝙑𝙀𝙇 𝙋𝙇𝘼𝙉𝙉𝙀𝙍
 - **`Travel Planner`** 는 친구들과 실시간으로 여행을 계획할 수 있는 웹 애플리케이션입니다.
 - 친구들과 실시간으로 채팅을 하며, 직접 만나지 않고도 **Travel Planner** 를 통해 마치 함께 있는 것처럼 여행 계획을 짤 수 있습니다. 또한 SNS 기능을 통해 자신의 여행을 사진과 글로 기록하고 공유하며 친구들과 소통할 수 있어요.
