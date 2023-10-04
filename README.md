@@ -1,8 +1,12 @@
 <br>
 <br>
+<br>
 
-<img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/7686dbdd-dad0-48e4-898c-aaa49e857ce1" width="300px"/>
+<div align="center">
+  <img src="https://github.com/travel-planner-project/TravelPlanner/assets/119668620/7686dbdd-dad0-48e4-898c-aaa49e857ce1" width="300px"/>
+</div>
 
+<br>
 <br>
 
 # 𝙏𝙍𝘼𝙑𝙀𝙇 𝙋𝙇𝘼𝙉𝙉𝙀𝙍
