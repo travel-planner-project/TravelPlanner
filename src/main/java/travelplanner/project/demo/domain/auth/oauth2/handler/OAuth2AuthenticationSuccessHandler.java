@@ -23,14 +23,15 @@ import travelplanner.project.demo.global.util.TokenUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String redirectUri;
+//    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String frontendRedirectUri = "http://localhost:5173";
 
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
@@ -57,7 +58,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             email = naverUserInfo.getEmail();
         }
 
-        String targetUrl = redirectUri;
+        String targetUrl = frontendRedirectUri;
 
         log.info(targetUrl+"------------------targetUrl");
         if(response.isCommitted()) {
@@ -89,14 +90,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .profileImgUrl(member.get().getProfile().getProfileImgUrl())
                 .build();
 
-        // JSON 형태로 변환하여 응답 보내기
-        response.setContentType("application/json;charset=UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(authResponse));
-        writer.flush();
+        String encodedEmail = URLEncoder.encode(authResponse.getEmail(), "UTF-8");
+        String encodedNickname = URLEncoder.encode(authResponse.getUserNickname(), "UTF-8");
+        String encodedProvider = URLEncoder.encode(authResponse.getProvider(), "UTF-8");
+        String encodedProfileImgUrl = URLEncoder.encode(authResponse.getProfileImgUrl(), "UTF-8");
 
-        // 리다이렉트 수행
-        super.onAuthenticationSuccess(request, response, authentication);
+        // 프론트엔드 페이지로 토큰과 함께 리다이렉트
+        String frontendRedirectUrl = String.format(
+                "%s/callback?token=%s&email=%s&nickname=%s&provider=%s&profileImgUrl=%s",
+                frontendRedirectUri, accessToken, encodedEmail, encodedNickname,
+                encodedProvider, encodedProfileImgUrl
+        );
+        response.sendRedirect(frontendRedirectUrl);
     }
 
 }
