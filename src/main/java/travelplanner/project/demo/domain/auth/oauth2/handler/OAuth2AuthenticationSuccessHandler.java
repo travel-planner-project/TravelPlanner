@@ -97,7 +97,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 프론트엔드 페이지로 토큰과 함께 리다이렉트
         String frontendRedirectUrl = String.format(
-                "%s/callback?token=%s&email=%s&nickname=%s&provider=%s&profileImgUrl=%s",
+                "%s/oauth/callback?token=%s&email=%s&nickname=%s&provider=%s&profileImgUrl=%s",
                 frontendRedirectUri, accessToken, encodedEmail, encodedNickname,
                 encodedProvider, encodedProfileImgUrl
         );
