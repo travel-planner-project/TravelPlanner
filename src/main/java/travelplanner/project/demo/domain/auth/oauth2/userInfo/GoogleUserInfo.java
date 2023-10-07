@@ -10,16 +10,6 @@ public class GoogleUserInfo implements OAuth2UserInfo {
     private Map<String, Object> attributes;
 
     @Override
-    public String getProviderId() {
-        return attributes.get("id").toString();
-    }
-
-    @Override
-    public String getProvider() {
-        return "google";
-    }
-
-    @Override
     public String getProfile() {
         return attributes.get("picture").toString();
     }
