@@ -24,6 +24,7 @@ import travelplanner.project.demo.global.util.TokenUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Slf4j
@@ -90,15 +91,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .profileImgUrl(member.get().getProfile().getProfileImgUrl())
                 .build();
 
-        String encodedEmail = URLEncoder.encode(authResponse.getEmail(), "UTF-8");
-        String encodedNickname = URLEncoder.encode(authResponse.getUserNickname(), "UTF-8");
-        String encodedProvider = URLEncoder.encode(authResponse.getProvider(), "UTF-8");
-        String encodedProfileImgUrl = URLEncoder.encode(authResponse.getProfileImgUrl(), "UTF-8");
+        String encodedUserId = URLEncoder.encode(String.valueOf(authResponse.getUserId()), StandardCharsets.UTF_8);
+        String encodedEmail = URLEncoder.encode(authResponse.getEmail(), StandardCharsets.UTF_8);
+        String encodedNickname = URLEncoder.encode(authResponse.getUserNickname(), StandardCharsets.UTF_8);
+        String encodedProvider = URLEncoder.encode(authResponse.getProvider(), StandardCharsets.UTF_8);
+        String encodedProfileImgUrl = URLEncoder.encode(authResponse.getProfileImgUrl(), StandardCharsets.UTF_8);
 
         // 프론트엔드 페이지로 토큰과 함께 리다이렉트
         String frontendRedirectUrl = String.format(
-                "%s/oauth/callback?token=%s&email=%s&nickname=%s&provider=%s&profileImgUrl=%s",
-                frontendRedirectUri, accessToken, encodedEmail, encodedNickname,
+                "%s/oauth/callback?token=%s&userId=%s&email=%s&nickname=%s&provider=%s&profileImgUrl=%s",
+                frontendRedirectUri, accessToken, encodedUserId, encodedEmail, encodedNickname,
                 encodedProvider, encodedProfileImgUrl
         );
         response.sendRedirect(frontendRedirectUrl);
