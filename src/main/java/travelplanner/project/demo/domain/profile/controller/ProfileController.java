@@ -39,7 +39,7 @@ public class ProfileController {
     @Operation(summary = "프로필 상세")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로필 조회 성공",
-                    content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProfileResponse.class))),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ApiExceptionResponse.class))),
     })
