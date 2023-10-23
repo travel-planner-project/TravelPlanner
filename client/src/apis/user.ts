@@ -107,3 +107,13 @@ export const refreshAccessToken = async () => {
     return axiosError.response
   }
 }
+
+export const findPassword = async (email: FormDataEntryValue | null) => {
+  try {
+    const response = await axiosInstance.post('/password/forgot', { email })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}

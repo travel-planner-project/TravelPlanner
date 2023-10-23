@@ -21,7 +21,7 @@ function SignInView({ submitSignIn }: SignInViewProps) {
           로그인
         </button>
         <Link to='/user/register'>회원가입</Link>
-        {/* <Link to='/findpassword'>비밀번호 찾기</Link> */}
+        <Link to='/findpassword'>비밀번호 찾기</Link>
       </div>
     </form>
   )
