@@ -33,7 +33,7 @@ public class ForgotPasswordService {
 
         String tempToken = tokenUtil.generateTempToken(member.getId());  // TokenUtil에 임시 토큰 생성 메서드 추가
         redisUtil.setDataExpireWithPrefix("temp", email, tempToken, Duration.ofMinutes(30));
-        String resetLink = "http://localhost:5173/password/callback?tempToken=" + tempToken;
+        String resetLink = "https://dev.travel-planner.xyz/findpassword?token=" + tempToken;
         return resetLink;
     }
 
