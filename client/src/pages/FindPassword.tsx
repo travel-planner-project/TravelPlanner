@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { editPassword, findPassword } from '../apis/user'
+import { changePassword, findPassword } from '../apis/user'
 import Email from '../components/SignIn/Email'
 import styles from './FindPassword.module.scss'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -37,8 +37,9 @@ const FindPassword = () => {
     getValues,
   } = useForm<FormValueType>({ mode: 'onChange' })
 
-  const changePassword = (data: FormValueType) => {
-    editPassword({ password: data.password }).then(response => {
+  const submitNewPassword = (data: FormValueType) => {
+    if (!token) return
+    changePassword(data.password, token).then(response => {
       if (response?.status === 200) {
         alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.')
         navigate('/user/login')
@@ -69,7 +70,7 @@ const FindPassword = () => {
       ) : (
         <RenderEdit
           register={register}
-          onSubmit={handleSubmit(data => changePassword(data))}
+          onSubmit={handleSubmit(data => submitNewPassword(data))}
           dirtyFields={dirtyFields}
           errors={errors}
           getValues={getValues}

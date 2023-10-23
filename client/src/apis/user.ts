@@ -86,6 +86,18 @@ export const editPassword = async ({ password }: PasswordType) => {
   }
 }
 
+export const changePassword = async (newPassword: string, token: string) => {
+  try {
+    const response = await axiosInstance.post(`/password/change?tempToken=${token}`, {
+      newPassword,
+    })
+    return response
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    return axiosError.response
+  }
+}
+
 export const deleteUser = async ({ password }: PasswordType) => {
   try {
     const response = await axiosInstance.delete('/profile/user/delete', {
