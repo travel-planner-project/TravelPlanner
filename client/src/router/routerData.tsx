@@ -10,8 +10,8 @@ const EditProfile = lazy(() => import('../pages/Profile/EditProfile'))
 const EditPassword = lazy(() => import('../pages/Profile/EditPassword'))
 const DeleteUser = lazy(() => import('../pages/Profile/DeleteUser'))
 const Feed = lazy(() => import('../pages/Feed'))
-
 const Board = lazy(() => import('../pages/Home'))
+const FindPassword = lazy(() => import('../pages/FindPassword'))
 
 type RouterElement = {
   id: number
@@ -154,6 +154,18 @@ export const routerData: RouterElement[] = [
     ),
     onNavBar: false,
     withAuth: true,
+  },
+  {
+    id: 11,
+    path: '/findpassword',
+    label: '비밀번호 찾기',
+    element: (
+      <Suspense fallback={<div>loading</div>}>
+        <FindPassword />
+      </Suspense>
+    ),
+    onNavBar: false,
+    withAuth: false,
   },
 ]
 
